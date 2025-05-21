@@ -38,16 +38,16 @@
                     <h2 class="font-bold">Website Pelayanan <br> <small>Sistem Monitoring SPJ</small></h2>
                 </div>
                 <div class="ibox-content">
-                    <p>Masuk untuk memulai sesi Anda</p>
+                    <p>Masuk untuk memulai sesi anda</p>
                     <form class="m-t" role="form" id="loginForm" action="{{ route('login') }}" method="POST">
                         @csrf
 
                         <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Email" name="email" required autofocus>
+                            <input type="email" class="form-control form-control-lg" placeholder="Email" name="email" required autofocus>
                             <small class="text-danger" id="email_error">@if($errors->has('email')) {{ $errors->first('email') }} @endif</small>
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" autocomplete="off" placeholder="Kata sandi" name="password" required>
+                            <input type="password" class="form-control form-control-lg" autocomplete="off" placeholder="Kata sandi" name="password" required>
                             <small class="text-danger" id="password_error">@if($errors->has('password')) {{ $errors->first('password') }} @endif</small>
                         </div>
                         <div class="form-group row">
@@ -73,7 +73,7 @@
         <hr />
         <div class="row">
             <div class="col-md-12">
-                &copy; <small>{{ date('Y') }} &bullet; Teknik Informatika UIN Jakarta</small>
+                &copy; <small>{{ date('Y') }} &bullet; Sistem Informasi Pelayanan Tata Usaha</small>
             </div>
 
         </div>

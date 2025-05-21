@@ -18,6 +18,7 @@ class Media extends Model
      */
     protected $fillable = [
         'name',
+        'original_name',
         'file_url',
     ];
 }

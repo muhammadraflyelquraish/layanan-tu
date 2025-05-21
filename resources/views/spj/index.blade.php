@@ -3,10 +3,10 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>SPJ</h2>
+        <h2>Surat Pertanggungjawaban</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item active">
-                <strong>SPJ</strong>
+                <strong>Daftar Surat Pertanggungjawaban</strong>
             </li>
         </ol>
     </div>
@@ -17,6 +17,7 @@
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
+                    <h4>Daftar SPJ</h4>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">

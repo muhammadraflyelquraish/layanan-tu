@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Letter;
 use App\Models\LetterDisposition;
+use App\Models\Media;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
@@ -24,7 +24,12 @@ class LetterController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = Letter::with(['pemohon', 'spjs']);
+        $app = Letter::with(['pemohon', 'spjs', 'file']);
+
+        if (auth()->user()->role_id == 2) {
+            $app->where("pemohon_id", auth()->user()->role_id);
+        }
+
         return DataTables::of($app)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
@@ -40,8 +45,8 @@ class LetterController extends Controller
                     $button .= '<a href="' . route('letter.spj', $row->id) . '" class="btn btn-sm btn-info" id="spj" data-integrity="' . $row->id . '"><i class="fa fa-book"></i> <small>SPJ</small></a>';
                 }
 
-                if (auth()->user()->role->name == 'Admin' || auth()->user()->role->name == 'Staff TU') {
-                    if ($row->status != 'Selesai' && $row->status != 'Ditolak' && $row->status != 'Menunggu Konfirmasi') {
+                if (auth()->user()->role->name == 'Admin' || auth()->user()->role->name == 'TU') {
+                    if ($row->status != 'Selesai' && $row->status != 'Ditolak' && $row->status != 'Menunggu Konfirmasi TU') {
                         $button .= '<button class="btn btn-sm btn-warning" data-mode="edit" data-integrity="' . $row->id . '" data-toggle="modal" data-target="#ModalAddEdit"><i class="fa fa-edit"></i></button>';
                     }
                 }
@@ -58,8 +63,11 @@ class LetterController extends Controller
             ->editColumn('tanggal_surat', function ($row) {
                 return $row->tanggal_surat ? date('d M Y', strtotime($row->tanggal_surat)) : '-';
             })
+            ->editColumn('file.original_name', function ($row) {
+                return $row->file ? '<a href="#" >' . $row->file->original_name . '</a>' : '-';
+            })
             ->editColumn('disertai_dana', function ($row) {
-                return $row->disertai_dana ? "Ya" : "Tidak";
+                return $row->disertai_dana ? "Disertai Pengajuan Dana" : "Tanpa Pengajuan Dana";
             })
             ->editColumn('tanggal_diterima', function ($row) {
                 return $row->tanggal_diterima ? date('d M Y', strtotime($row->tanggal_diterima)) : '-';
@@ -76,7 +84,7 @@ class LetterController extends Controller
                     return '<span class="label label-warning">' . $row->status . '</span>';
                 }
             })
-            ->rawColumns(['action', 'status', 'pemohon.name'])
+            ->rawColumns(['action', 'status', 'pemohon.name', 'file.original_name'])
             ->toJson();
     }
 
@@ -87,10 +95,28 @@ class LetterController extends Controller
                 $latestLetter = Letter::query()->latest()->first();
                 $code = $latestLetter ? sprintf('P' . date('Ym') . '%03s', substr($latestLetter->kode, 7) + 1) : 'P' . date('Ym') . '001';
 
+                $file = $request->file('proposal_file');
+                if ($file->getSize() > 614400) {
+                    throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
+                }
+                $fileName = uniqid() . '_' . $file->getClientOriginalName();
+
+                $media = Media::create([
+                    "name" => $fileName,
+                    "original_name" => $file->getClientOriginalName(),
+                    "file_url" => "",
+                ]);
+
                 $data = $request->all();
                 $data['kode'] = $code;
                 $data['status'] = 'Diproses';
                 $data['disertai_dana'] = $request->disertai_dana == "1";
+                $data['proposal_file'] = $media->id;
+
+                if (auth()->user()->role_id == 2) {
+                    $data['pemohon_id'] = auth()->user()->id;
+                }
+
                 $app = Letter::create($data);
 
                 // Create disposition history
@@ -111,13 +137,32 @@ class LetterController extends Controller
 
     public function show(Letter $letter)
     {
-        return $letter->load('pemohon', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator');
+        return $letter->load('pemohon', 'file', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator');
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, Letter $letter): JsonResponse
     {
         try {
-            Letter::findOrFail($id)->update($request->all());
+            $data = $request->all();
+            $data['proposal_file'] = $letter->proposal_file;
+
+            if ($request->proposal_file) {
+                $file = $request->file('proposal_file');
+                if ($file->getSize() > 614400) {
+                    throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
+                }
+                $fileName = uniqid() . '_' . $file->getClientOriginalName();
+
+                $media = Media::create([
+                    "name" => $fileName,
+                    "original_name" => $file->getClientOriginalName(),
+                    "file_url" => "",
+                ]);
+
+                $data['proposal_file'] = $media->id;
+            }
+
+            $letter->update($data);
             return response()->json(['res' => 'success', 'msg' => 'Data berhasil diubah'], Response::HTTP_ACCEPTED);
         } catch (\Exception $e) {
             return response()->json(['res' => 'error', 'msg' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -148,7 +193,7 @@ class LetterController extends Controller
                     // Position id default is follow the direction
                     // But if approved is 'Keuangan' will direcly to Staff TU
                     $positionId = $position ? $position->id : 3;
-                    $applicatoinStatus = $appHistory->position->name == 'Staff Keuangan' ? "Menunggu Konfirmasi TU" : 'Menunggu Approval ' . str_replace("Staff", "", $position->name);
+                    $applicatoinStatus = $appHistory->position->name == 'Keuangan' ? "Menunggu Konfirmasi TU" : 'Menunggu Approval ' . $position->name;
 
                     // Update letter status
                     $letter->update([
@@ -166,7 +211,7 @@ class LetterController extends Controller
                     $applicatoinStatus = 'Ditolak';
 
                     // Has been rejected
-                    if ($appHistory->position->name == 'Staff TU') {
+                    if ($appHistory->position->name == 'TU') {
                         // Update keterangan
                         $letter->update([
                             'status' => 'Ditolak',

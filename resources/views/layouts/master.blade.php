@@ -46,7 +46,7 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message"><b>Website Pelayanan </b> - Sistem Monitoring SPJ <br></span>
+                            <span class="m-r-sm text-muted welcome-message"><b>Sistem Informasi Pelayanan Tata Usaha </b> - Fakultas Sains & Teknologi<br></span>
                         </li>
                     </ul>
                 </nav>
@@ -59,7 +59,7 @@
                     <?= date('Y') ?>
                 </div>
                 <div>
-                    &copy; Teknik Informatika UIN Jakarta</a>
+                    &copy; Sistem Informasi Pelayanan Tata Usaha</a>
                 </div>
             </div>
         </div>

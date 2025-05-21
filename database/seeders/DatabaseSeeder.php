@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Staff TU",
+                "name" => "TU",
                 "role_id" => 3,
                 "is_disposition" => true,
                 "permission" => [
@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Staff Dekan",
+                "name" => "Dekan",
                 "role_id" => 4,
                 "is_disposition" => true,
                 "permission" => [
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Staff Keuangan",
+                "name" => "Keuangan",
                 "role_id" => 5,
                 "is_disposition" => true,
                 "permission" => [

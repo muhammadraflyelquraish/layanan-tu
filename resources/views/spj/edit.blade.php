@@ -3,13 +3,13 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Detail Lampiran Surat Pertanggungjawaban</h2>
+        <h2>Lampiran Surat Pertanggungjawaban</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <span><a href="{{ route('spj.index') }}"><u>SPJ</u></a></span>
+                <span><a href="{{ route('spj.index') }}"><u>Proposal</u></a></span>
             </li>
             <li class="breadcrumb-item active">
-                <strong>Detail</strong>
+                <strong>SPJ</strong>
             </li>
         </ol>
     </div>
@@ -17,15 +17,15 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Detail SPJ</h5>
+                    <h5>Data SPJ</h5>
                 </div>
                 <div class="ibox-content">
-                    <form action="{{ route('spj.store') }}" method="post" id="formRole" enctype="multipart/form-data">
+                    <form action="{{ route('spj.revisi', $spj->id) }}" method="post" id="formRole" enctype="multipart/form-data">
                         @csrf
-                        @method('POST')
+                        @method('PUT')
 
                         @if ($errors->any())
                         <div class="alert alert-danger">
@@ -39,34 +39,9 @@
 
                         <div class="form-group">
                             <label>Kategori SPJ</label>
-                            <input type="text" class="form-control" name="jenis" value="{{ $spj->jenis }}" readonly>
+                            <input type="text" class="form-control" name="jenis" value="{{ $spj->jenis }}" required autofocus placeholder="Masukan kategori...">
                             <small class="text-danger" id="jenis_error">@if($errors->has('jenis')) {{ $errors->first('jenis') }} @endif</small>
                         </div>
-
-                        <div class="hr-line-dashed"></div>
-
-                        <h4>Lampiran Dokumen</h4>
-
-                        <table class="table table-bordered" width="100%" id="spj-documents">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" width="1px">No</th>
-                                    <th>Jenis Dokumen</th>
-                                    <th>File</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($spj->documents as $document)
-                                <tr>
-                                    <td class="text-center" id="iteration">{{ $loop->iteration }}</td>
-                                    <td>{{$document->category->nama}}</td>
-                                    <td><a href="#">{{$document->file->name}}</a></td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                        <div class="hr-line-dashed"></div>
 
                         <div class="form-group">
                             <label>Catatan</label>
@@ -75,9 +50,65 @@
 
                         <div class="hr-line-dashed"></div>
 
+                        <h4>Lampiran Dokumen</h4>
+
+                        <div class="form-group">
+                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#ModalSpjCategory"><i class="fa fa-plus"></i> Tambah Jenis Dokumen</button>
+                        </div>
+
+                        <table class="table table-bordered" width="100%" id="spj-documents">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="1px">No</th>
+                                    <th>Jenis Dokumen</th>
+                                    <th>File</th>
+                                    <th class="text-right" width="1px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($spj->documents as $document)
+                                <tr>
+                                    <td class="text-center" id="iteration">{{ $loop->iteration }}</td>
+                                    <td>
+                                        <select name="categories[]" id="categories" class="form-control" required>
+                                            <option value="" selected disabled>--Pilih Jenis Dokumen--</option>
+                                            @foreach(App\Models\SPJCategory::pluck('nama', 'id') as $id => $nama)
+                                            <option value="{{ $id }}" @if($document->spj_category_id == $id) selected @endif >{{ $nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="document_ids[]" value="{{ $document->id }}">
+                                        @if ($spj->status == 'Revisi')
+                                        <input type="file" name="files[]" id="files" class="form-control" accept="application/pdf">
+                                        <input type="hidden" name="files[]" value="">
+                                        @endif
+                                        <a href="{{ asset('storage/' . $document->file->file_url) }}" target="_blank" style="color: #2980B9; text-decoration: none;">
+                                            <i class="fas fa-file-pdf"></i> {{ $document->file->name }}
+                                        </a>
+                                    </td>
+                                    @if ($spj->status == 'Revisi')
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-danger" id="remove-document" type="button"><i class="fa fa-trash"></i></button>
+                                    </td>
+                                    @endif
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4"><button class="btn btn-default" id="add-document" type="button"><i class="fa fa-plus"></i> Tambah Dokumen</button></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        </table>
+
+                        <div class="hr-line-dashed"></div>
+
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
-                                <a href="{{ route('spj.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
+                                <button class="btn btn-primary float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
                             </div>
                         </div>
                     </form>

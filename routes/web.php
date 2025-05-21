@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
 
     // SPJ
     Route::get('/spj/data', [SPJController::class, 'data'])->name('spj.data');
+    Route::get('/spj/{spj}/approval', [SPJController::class, 'approvalView'])->name('spj.approval.view');
+    Route::put('/spj/{spj}/revisi', [SPJController::class, 'revisi'])->name('spj.revisi');
     Route::resource('/spj', SPJController::class);
 
     // Profile

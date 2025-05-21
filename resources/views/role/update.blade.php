@@ -51,7 +51,7 @@
                                     'LETTER' => 'Proposal',
                                     'SPJ' => 'SPJ',
                                     'USER' => 'Pengguna',
-                                    'ROLE' => 'Role',
+                                    'ROLE' => 'Akses',
                                     ]
                                     @endphp
 

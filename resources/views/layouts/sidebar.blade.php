@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="logo-element">
-                    UIN
+                    TU
                 </div>
             </li>
 
@@ -24,7 +24,7 @@
 
             @if ($permissions['LETTER'])
             <li class="{{( request()->routeIs('letter.index')) ? 'active' : '' }}">
-                <a href="{{ route('letter.index') }}"><i class="fa fa-book"></i> <span class="nav-label">Proposal</span></a>
+                <a href="{{ route('letter.index') }}"><i class="fa fa-book"></i> <span class="nav-label">Pengajuan</span></a>
             </li>
             @endif
 
@@ -34,7 +34,19 @@
             </li>
             @endif
 
-            @if ($permissions['USER'] OR $permissions['ROLE'])
+            @if ($permissions['USER'])
+            <li class="{{( request()->routeIs('user.index')) ? 'active' : '' }}">
+                <a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span class="nav-label">Pengguna</span></a>
+            </li>
+            @endif
+
+            @if ($permissions['ROLE'])
+            <li class="{{( request()->routeIs('role.index')) ? 'active' : '' }}">
+                <a href="{{ route('role.index') }}"><i class="fa fa-key"></i> <span class="nav-label">Akses</span></a>
+            </li>
+            @endif
+
+            <!-- @if ($permissions['USER'] OR $permissions['ROLE'])
             <li class="{{(
                 request()->routeIs('role.index') OR
                 request()->routeIs('role.create') OR
@@ -62,7 +74,7 @@
                     @endif
                 </ul>
             </li>
-            @endif
+            @endif -->
 
             <li class="special_link">
                 <a href="javascript:void(0)" id="logout"><i class="fa fa-sign-out"></i> <span class="nav-label">Keluar</span></a>

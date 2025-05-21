@@ -13,6 +13,8 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    @if(auth()->user()->role_id != 2)
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -21,13 +23,13 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Search</label>
                                 <input name="search" id="search" class="form-control" placeholder="Kode/Pemohon/Surat...">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Pemohon</label>
                                 <select name="pemohon_id" id="pemohon_id" class="form-control">
@@ -38,7 +40,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Status</label>
                                 <select name="status" id="status" class="form-control">
@@ -47,12 +49,12 @@
                                     <option value="Selesai">Selesai</option>
                                     <option value="Menuggu Konfirmasi TU">Menuggu Konfirmasi TU</option>
                                     @foreach(App\Models\Role::where('is_disposition', '=', true)->pluck('name', 'id') as $id => $role)
-                                    <option value="{{ $id }}">Menunggu Approval {{ str_replace("Staff", "", $role) }}</option>
+                                    <option value="{{ $id }}">Menunggu Approval {{ $role }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>Jenis Surat</label>
                                 <select name="status" id="status" class="form-control">
@@ -62,38 +64,46 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Tanggal Dari</label>
-                                <input type="date" name="date" id="date" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>Tanggal Sampai</label>
-                                <input type="date" name="date" id="search" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <button class="btn btn-success" style="margin-top: 26px;" id="applyFilter" type="button">Filter</button>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
 
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
+                    @if(auth()->user()->role_id != 2)
                     <h5><button class="btn btn-primary btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEdit"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5>
+                    @else
+                    <h5><button class="btn btn-primary btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEditPemohon"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5>
+                    @endif
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
+
+                        @if (auth()->user()->role_id == 2)
+                        <table class="table table-striped table-bordered table-hover dataTables" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" width="1px">No</th>
+                                    <th>Kode Pengajuan</th>
+                                    <th>Asal Surat</th>
+                                    <th>Jenis Surat</th>
+                                    <th>Hal</th>
+                                    <th>Status</th>
+                                    <th>Proposal</th>
+                                    <th class="text-right" width="1px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        @else
                         <table class="table table-striped table-bordered table-hover dataTables" width="100%">
                             <thead>
                                 <tr>
@@ -107,14 +117,76 @@
                                     <th>Untuk</th>
                                     <th>Pengajuan Dana</th>
                                     <th>Status</th>
+                                    <th>Proposal</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
+                        @endif
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalAddEditPemohon" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formAddEditPemohon" method="POST">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Tanggal Surat</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" tabindex="3" required>
+                            <small class="text-danger" id="tanggal_surat_error"></small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Asal Surat</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="asal_surat" name="asal_surat" tabindex="4" required>
+                            <small class="text-danger" id="asal_surat_error"></small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Jenis Surat</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="disertai_dana" id="disertai_dana" required>
+                                <option value="">--Pilih Jenis Dokumen--</option>
+                                <option value="1">Disertai Pengajuan Dana</option>
+                                <option value="0">Tanpa Pengajuan Dana</option>
+                            </select>
+                            <small class="text-danger" id="disertai_dana_error"></small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Hal</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="hal" name="hal" required tabindex="5"></textarea>
+                            <small class="text-danger" id="hal_error"></small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Proposal</label>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="proposal_file" name="proposal_file" tabindex="7">
+                            <small class="text-danger" id="proposal_file_error"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
+                    <button type="submit" class="btn btn-primary ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -204,6 +276,13 @@
                             <small class="text-danger" id="disertai_dana_error"></small>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Proposal</label>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="proposal_file" name="proposal_file" tabindex="7">
+                            <small class="text-danger" id="proposal_file_error"></small>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
@@ -265,7 +344,7 @@
                             <td id="asal_surat"></td>
                             <th class="text-right">File</th>
                             <td class="text-center">:</td>
-                            <td id="proposal_file">-</td>
+                            <td id="proposal_file"></td>
                         </tr>
                         <tr>
                             <th>Hal</th>
@@ -427,7 +506,7 @@
                 hal: "Hal tidak boleh kosong",
                 tanggal_diterima: "Tanggal diterima tidak boleh kosong",
                 untuk: "Untuk tidak boleh kosong",
-                disertai_dana: "Jenis surat tidak boleh kosong"
+                disertai_dana: "Jenis surat tidak boleh kosong",
             },
             success: function(messages) {
                 $(messages).remove();
@@ -441,7 +520,45 @@
                 $.ajax({
                     url: $(form).attr('action'),
                     type: $(form).attr('method'),
-                    data: $(form).serialize(),
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    dataType: 'JSON',
+                    success: function(res) {
+                        $('#ModalAddEdit').modal('hide')
+                        LaddaAndDrawTable()
+                        sweetalert('Berhasil', res.msg, null, 500, false)
+                    },
+                    error: function(res) {
+                        LaddaAndDrawTable()
+                        sweetalert('Gagal', 'Terjadi kesalahan', 'error')
+                    }
+                })
+            }
+        });
+
+        $("#formAddEditPemohon").validate({
+            messages: {
+                tanggal_surat: "Tanggal surat tidak boleh kosong",
+                asal_surat: "Asal surat tidak boleh kosong",
+                hal: "Hal tidak boleh kosong",
+                disertai_dana: "Jenis surat tidak boleh kosong",
+            },
+            success: function(messages) {
+                $(messages).remove();
+            },
+            errorPlacement: function(error, element) {
+                let name = element.attr("name");
+                $("#" + name + "_error").text(error.text());
+            },
+            submitHandler: function(form) {
+                LaddaStart()
+                $.ajax({
+                    url: $(form).attr('action'),
+                    type: $(form).attr('method'),
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
                     dataType: 'JSON',
                     success: function(res) {
                         $('#ModalAddEdit').modal('hide')
@@ -456,16 +573,63 @@
             }
         });
 
-        let serverSideTable = $('.dataTables').DataTable({
-            processing: true,
-            serverSide: true,
-            order: [
-                [1, 'desc']
-            ],
-            ajax: {
-                url: "{{ route('letter.data') }}",
+        let columns = [{
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                searchable: false,
+                orderable: false,
+                className: 'text-center'
             },
-            columns: [{
+            {
+                data: 'kode',
+                name: 'kode'
+            },
+            {
+                data: 'pemohon.name',
+                name: 'pemohon.name'
+            },
+            {
+                data: 'tanggal_diterima',
+                name: 'tanggal_diterima'
+            },
+            {
+                data: 'nomor_surat',
+                name: 'nomor_surat'
+            },
+            {
+                data: 'asal_surat',
+                name: 'asal_surat'
+            },
+            {
+                data: 'hal',
+                name: 'hal'
+            },
+            {
+                data: 'untuk',
+                name: 'untuk'
+            },
+            {
+                data: 'disertai_dana',
+                name: 'disertai_dana'
+            },
+            {
+                data: 'status',
+                name: 'status'
+            },
+            {
+                data: 'file.original_name',
+                name: 'file.original_name'
+            },
+            {
+                data: 'action',
+                name: 'action',
+                searchable: false,
+                orderable: false
+            }
+        ]
+
+        if ("{{auth()->user()->role_id}}" == 2) {
+            columns = [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     searchable: false,
@@ -477,36 +641,24 @@
                     name: 'kode'
                 },
                 {
-                    data: 'pemohon.name',
-                    name: 'pemohon.name'
-                },
-                {
-                    data: 'tanggal_diterima',
-                    name: 'tanggal_diterima'
-                },
-                {
-                    data: 'nomor_surat',
-                    name: 'nomor_surat'
-                },
-                {
                     data: 'asal_surat',
                     name: 'asal_surat'
-                },
-                {
-                    data: 'hal',
-                    name: 'hal'
-                },
-                {
-                    data: 'untuk',
-                    name: 'untuk'
                 },
                 {
                     data: 'disertai_dana',
                     name: 'disertai_dana'
                 },
                 {
+                    data: 'hal',
+                    name: 'hal'
+                },
+                {
                     data: 'status',
                     name: 'status'
+                },
+                {
+                    data: 'file.original_name',
+                    name: 'file.original_name'
                 },
                 {
                     data: 'action',
@@ -514,7 +666,18 @@
                     searchable: false,
                     orderable: false
                 }
+            ]
+        }
+        let serverSideTable = $('.dataTables').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [
+                [1, 'desc']
             ],
+            ajax: {
+                url: "{{ route('letter.data') }}",
+            },
+            columns: columns,
             search: {
                 regex: true
             }
@@ -525,15 +688,14 @@
         });
 
         $('#ModalAddEdit').on('shown.bs.modal', function(e) {
-            $('#aplicant_name').focus();
             let button = $(e.relatedTarget)
             let modal = $(this)
             if (button.data('mode') == 'edit') {
                 let id = button.data('integrity')
                 let closeTr = button.closest('tr')
-                $('#formAddEdit').attr('action', '{{ route("letter.store") }}/' + id).attr('method', 'PATCH')
+                $('#formAddEdit').attr('action', '{{ route("letter.store") }}/' + id).attr('method', 'PUT')
 
-                modal.find('#modal-title').text('Edit Proposal');
+                modal.find('#modal-title').text('Edit Pengajuan');
                 $.get('{{ route("letter.store") }}/' + id, function(app) {
                     modal.find('#pemohon_id').val(app.pemohon_id)
                     modal.find('#nomor_agenda').val(app.nomor_agenda)
@@ -545,11 +707,17 @@
                     modal.find('#untuk').val(app.untuk)
                     modal.find('#disertai_dana').val(app.disertai_dana ? "1" : "0")
                 })
-
             } else {
                 $('#formAddEdit').trigger('reset').attr('action', '{{ route("letter.store") }}').attr('method', 'POST')
-                modal.find('#modal-title').text('Buat Proposal');
+                modal.find('#modal-title').text('Buat Pengajuan');
             }
+        })
+
+        $('#ModalAddEditPemohon').on('shown.bs.modal', function(e) {
+            let button = $(e.relatedTarget)
+            let modal = $(this)
+            $('#formAddEditPemohon').trigger('reset').attr('action', '{{ route("letter.store") }}').attr('method', 'POST')
+            modal.find('#modal-title').text('Buat Pengajuan');
         })
 
         $('#ModalDetail').on('shown.bs.modal', function(e) {
@@ -558,19 +726,25 @@
             let id = button.data('integrity')
 
             $.get('{{ route("letter.store") }}/' + id, function(app) {
-                const dateOfLetterObj = new Date(app.tanggal_surat);
-                const dateOfLetter = `
+                let dateOfLetter = ''
+                if (app.tanggal_surat) {
+                    const dateOfLetterObj = new Date(app.tanggal_surat);
+                    dateOfLetter = `
                     ${dateOfLetterObj.getDate().toString().padStart(2, '0')}
                     ${dateOfLetterObj.toLocaleString('id-ID', {month: 'long'})}
                     ${dateOfLetterObj.getFullYear()}
                 `;
+                }
 
-                const receivedDateObj = new Date(app.tanggal_diterima);
-                const receivedDate = `
-                    ${receivedDateObj.getDate().toString().padStart(2, '0')}
-                    ${receivedDateObj.toLocaleString('id-ID', {month: 'long'})}
-                    ${receivedDateObj.getFullYear()}
-                `;
+                let receivedDate = ''
+                if (app.tanggal_diterima) {
+                    const receivedDateObj = new Date(app.tanggal_diterima);
+                    receivedDate = `
+                        ${receivedDateObj.getDate().toString().padStart(2, '0')}
+                        ${receivedDateObj.toLocaleString('id-ID', {month: 'long'})}
+                        ${receivedDateObj.getFullYear()}
+                    `;
+                }
 
                 let jenisSurat = 'Tanpa Pengajuan Dana'
                 if (app.disertai_dana == true) {
@@ -588,6 +762,7 @@
                 modal.find('#detailInformation').find('#untuk').text(app.untuk);
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
                 modal.find('#detailInformation').find('#alasan_penolakan').text(app.alasan_penolakan);
+                modal.find('#detailInformation').find('#proposal_file').html(`<a href="#">${app.file.original_name}</a>`);
                 modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.status === 'Selesai' ? 'badge-primary' : app.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.status}</span>`);
 
                 // disposition detail
@@ -596,12 +771,15 @@
                 for (let index = 0; index < app.dispositions.length; index++) {
                     const element = app.dispositions[index];
 
-                    const recievedDateObj = new Date(element.tanggal_diterima);
-                    const recievedDate = `
+                    let recievedDate = ''
+                    if (element.tanggal_diterima) {
+                        const recievedDateObj = new Date(element.tanggal_diterima);
+                        recievedDate = `
                         ${recievedDateObj.getDate().toString().padStart(2, '0')}
                         ${recievedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${recievedDateObj.getFullYear()}
                     `;
+                    }
 
                     let approvedDate = ''
                     if (element.tanggal_diproses) {
@@ -618,7 +796,7 @@
                             <td class="text-center">${index + 1}</td>
                             <td>${element?.position?.name || '-'}</td>
                             <td><span class="badge badge-sm badge-${element.status === 'Diproses' || element.status === 'Menunggu Konfirmasi TU' ? 'warning' : element.status === 'Disposisi' ? 'primary' : element.status === 'Ditolak' ? 'danger' : 'info'}">${element.status}</span></td>
-                            <td>${recievedDate}</td>
+                            <td>${recievedDate || '-'}</td>
                             <td>${approvedDate || '-'}</td>
                             <td>${element?.verifikator?.name || '-'}</td>
                             <td>${element.keterangan || '-'}</td>

@@ -46,4 +46,9 @@ class Letter extends Model
     {
         return $this->hasMany(SPJ::class, 'letter_id', 'id')->orderBy('created_at', 'desc');
     }
+
+    function file()
+    {
+        return $this->belongsTo(Media::class,  'proposal_file', 'id');
+    }
 }

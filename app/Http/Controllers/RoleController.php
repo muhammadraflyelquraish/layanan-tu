@@ -25,8 +25,11 @@ class RoleController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
-                $button .= '<a class="btn btn-sm btn-warning" href="' .  route('role.edit', $row->id) . '"><i class="fa fa-edit"></i></a>';
-                $button .= '<button class="btn btn-sm btn-danger" id="delete" data-integrity="' . $row->id . '"><i class="fa fa-trash"></i></button>';
+
+                if ($row->name != "Admin") {
+                    $button .= '<a class="btn btn-sm btn-warning" href="' .  route('role.edit', $row->id) . '"><i class="fa fa-edit"></i></a>';
+                    // $button .= '<button class="btn btn-sm btn-danger" id="delete" data-integrity="' . $row->id . '"><i class="fa fa-trash"></i></button>';
+                }
                 $button .= '</div>';
                 return $button;
             })

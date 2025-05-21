@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class SPJHistory extends Model
 {
     use HasFactory;
 
-    protected $table = 't_role';
+    protected $table = 't_spj_history';
 
     /**
      * The attributes that are mass assignable.
@@ -17,12 +17,19 @@ class Role extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'is_disposition',
+        'spj_id',
+        'user_id',
+        'status',
+        'catatan',
     ];
 
-    function permissions()
+    function spj()
     {
-        return $this->hasMany(RolePermission::class)->orderBy('created_at', 'asc');
+        return $this->belongsTo(SPJ::class);
+    }
+
+    function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -3,13 +3,10 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Role</h2>
+        <h2>Akses</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <span>Managemen Akses</span>
-            </li>
             <li class="breadcrumb-item active">
-                <strong>Role</strong>
+                <strong>Daftar Akses</strong>
             </li>
         </ol>
     </div>
@@ -20,7 +17,8 @@
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5><a class="btn btn-primary btn-sm" href="{{ route('role.create') }}"><i class="fa fa-plus-square mr-1"></i> Tambah Role</a></h5>
+                    <!-- <h5><a class="btn btn-primary btn-sm" href="{{ route('role.create') }}"><i class="fa fa-plus-square mr-1"></i> Tambah Role</a></h5> -->
+                    <h4>Daftar Akses</h4>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">

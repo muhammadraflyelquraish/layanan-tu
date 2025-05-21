@@ -74,7 +74,7 @@
         <hr />
         <div class="row">
             <div class="col-md-12">
-                &copy; <small>{{ date('Y') }} &bullet; Teknik Informatika UIN Jakarta</small>
+                &copy; <small>{{ date('Y') }} &bullet; Sistem Informasi Pelayanan Tata Usaha</small>
             </div>
 
         </div>
