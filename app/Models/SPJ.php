@@ -40,4 +40,14 @@ class SPJ extends Model
     {
         return $this->hasMany(SPJDocument::class, 'spj_id', 'id');
     }
+
+    function ratings()
+    {
+        return $this->hasMany(SPJRating::class, 'spj_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    function histories()
+    {
+        return $this->hasMany(SPJHistory::class, 'spj_id', 'id')->orderBy('created_at', 'asc');
+    }
 }

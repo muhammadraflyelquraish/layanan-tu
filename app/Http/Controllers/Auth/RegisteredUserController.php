@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        return view('auth.register2');
     }
 
     /**
@@ -35,20 +35,24 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'no_identity' => ['required', 'string', 'max:50', 'unique:t_user'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:t_user'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'no_identity' => $request->no_identity,
+            'role_id' => 2,
             'password' => Hash::make($request->password),
+            'status' => 'ACTIVE'
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(RouteServiceProvider::LETTER);
     }
 }

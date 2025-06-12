@@ -3,18 +3,16 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Pengajuan</h2>
+        <h2>Arsip</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item active">
-                <strong>Pengajuan</strong>
+                <strong>Arsip</strong>
             </li>
         </ol>
     </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-
-    @if(auth()->user()->role_id != 2)
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -72,38 +70,12 @@
             </div>
         </div>
     </div>
-    @endif
 
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
-                <div class="ibox-title">
-                    @if(auth()->user()->role_id != 2)
-                    <h5><button class="btn btn-primary btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEdit"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5>
-                    @else
-                    <h5><button class="btn btn-primary btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEditPemohon"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5>
-                    @endif
-                </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
-
-                        @if (auth()->user()->role_id == 2)
-                        <table class="table table-striped table-bordered table-hover dataTables" width="100%">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" width="1px">No</th>
-                                    <th>Kode Pengajuan</th>
-                                    <th>Asal Surat</th>
-                                    <th>Jenis Surat</th>
-                                    <th>Hal</th>
-                                    <th>Status</th>
-                                    <th>Proposal</th>
-                                    <th class="text-right" width="1px">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        @else
                         <table class="table table-striped table-bordered table-hover dataTables" width="100%">
                             <thead>
                                 <tr>
@@ -123,199 +95,9 @@
                             </thead>
                             <tbody></tbody>
                         </table>
-                        @endif
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="ModalAddEditPemohon" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="formAddEditPemohon" method="POST" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Tanggal Surat</label>
-                        <div class="col-sm-8">
-                            <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" tabindex="3" required>
-                            <small class="text-danger" id="tanggal_surat_error"></small>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Asal Surat</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="asal_surat" name="asal_surat" tabindex="4" required>
-                            <small class="text-danger" id="asal_surat_error"></small>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Jenis Surat</label>
-                        <div class="col-sm-8">
-                            <select class="form-control" name="disertai_dana" id="disertai_dana" required>
-                                <option value="">--Pilih Jenis Dokumen--</option>
-                                <option value="1">Surat Pembayaran</option>
-                                <option value="0">Surat Masuk</option>
-                            </select>
-                            <small class="text-danger" id="disertai_dana_error"></small>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Hal</label>
-                        <div class="col-sm-8">
-                            <textarea class="form-control" id="hal" name="hal" required tabindex="5"></textarea>
-                            <small class="text-danger" id="hal_error"></small>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Proposal</label>
-                        <div class="col-sm-8">
-                            <input type="file" class="form-control" id="proposal_file" name="proposal_file" tabindex="7">
-                            <small class="text-danger" id="proposal_file_error"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
-                    <button type="submit" class="btn btn-primary ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="ModalAddEdit" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-
-            <form id="formAddEdit" method="POST" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <div class="modal-body">
-                            <h5>Data Pengajuan</h5>
-
-                            <input type="hidden" class="form-control" id="letter_id" name="letter_id">
-
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Pemohon</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" name="pemohon_id" id="pemohon_id" required>
-                                        <option value="" selected disabled>Pilih Pemohon</option>
-                                        @foreach($pemohon as $pm)
-                                        @php
-                                        $pemohonId = $pm->id;
-                                        @endphp
-                                        <option value="{{ $pemohonId }}" @selected(old('pemohon_id')==$pemohonId)>{{ $pm->name }} ({{$pm->no_identity}})</option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-danger" id="pemohon_id_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Nomor Agenda</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" id="nomor_agenda" name="nomor_agenda" value="{{ $nomorAgenda }}" disabled tabindex="2" required>
-                                    <small class="text-danger" id="nomor_agenda_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Tanggal Surat</label>
-                                <div class="col-sm-8">
-                                    <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" tabindex="3" required>
-                                    <small class="text-danger" id="tanggal_surat_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Nomor Surat</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" tabindex="3" required>
-                                    <small class="text-danger" id="nomor_surat_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Asal Surat</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="asal_surat" name="asal_surat" tabindex="4" required>
-                                    <small class="text-danger" id="asal_surat_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Hal</label>
-                                <div class="col-sm-8">
-                                    <textarea class="form-control" id="hal" name="hal" required tabindex="5"></textarea>
-                                    <small class="text-danger" id="hal_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Tanggal Diterima</label>
-                                <div class="col-sm-8">
-                                    <input type="date" class="form-control" id="tanggal_diterima" name="tanggal_diterima" tabindex="6" required>
-                                    <small class="text-danger" id="tanggal_diterima_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Untuk</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="untuk" name="untuk" tabindex="7" required>
-                                    <small class="text-danger" id="untuk_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Jenis Surat</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" name="disertai_dana" id="disertai_dana" required>
-                                        <option value="1">Surat Pembayaran</option>
-                                        <option value="0">Surat Masuk</option>
-                                    </select>
-                                    <small class="text-danger" id="disertai_dana_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Proposal</label>
-                                <div class="col-sm-8">
-                                    <input type="file" class="form-control" id="proposal_file" name="proposal_file" tabindex="7">
-                                    <small class="text-danger" id="proposal_file_error"></small>
-                                    <div id="proposal_file"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="modal-body">
-                            <h5>Pihak yang terlibat Approval</h5>
-
-                            @foreach($disposisi as $pm)
-                            <div class="row" style="margin-bottom: 5px;">
-                                <div class="col-sm-2" style="margin: auto;"><input type="checkbox" class="form-control disposisi-input" id="disposisi" value="{{ $pm->id }}" name="disposisi[]"></div>
-                                <div class="col-sm-10">{{ $pm->name }} <b id="order"></b></div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
-                    <button type="submit" class="btn btn-primary ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
-                </div>
-            </form>
-
         </div>
     </div>
 </div>
@@ -660,46 +442,6 @@
             }
         ]
 
-        if ("{{auth()->user()->role_id}}" == 2) {
-            columns = [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    searchable: false,
-                    orderable: false,
-                    className: 'text-center'
-                },
-                {
-                    data: 'kode',
-                    name: 'kode'
-                },
-                {
-                    data: 'asal_surat',
-                    name: 'asal_surat'
-                },
-                {
-                    data: 'disertai_dana',
-                    name: 'disertai_dana'
-                },
-                {
-                    data: 'hal',
-                    name: 'hal'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'file.original_name',
-                    name: 'file.original_name'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    searchable: false,
-                    orderable: false
-                }
-            ]
-        }
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
@@ -707,7 +449,7 @@
                 [1, 'desc']
             ],
             ajax: {
-                url: "{{ route('letter.data') }}",
+                url: "{{ route('arsip.data') }}",
                 type: "GET",
                 data: function(d) {
                     d.search = $('input[name="search"]').val()

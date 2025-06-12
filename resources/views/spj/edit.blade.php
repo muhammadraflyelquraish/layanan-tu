@@ -39,13 +39,8 @@
 
                         <div class="form-group">
                             <label>Kategori SPJ</label>
-                            <input type="text" class="form-control" name="jenis" value="{{ $spj->jenis }}" required autofocus placeholder="Masukan kategori...">
+                            <textarea class="form-control" name="jenis" required autofocus placeholder="Masukan kategori...">{{ $spj->jenis }}</textarea>
                             <small class="text-danger" id="jenis_error">@if($errors->has('jenis')) {{ $errors->first('jenis') }} @endif</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Catatan</label>
-                            <textarea class="form-control" name="catatan" id="catatan" readonly>{{ $spj->catatan }}</textarea>
                         </div>
 
                         <div class="hr-line-dashed"></div>
@@ -61,7 +56,7 @@
                                 <tr>
                                     <th class="text-center" width="1px">No</th>
                                     <th>Jenis Dokumen</th>
-                                    <th>File</th>
+                                    <th>Dokumen</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
@@ -83,8 +78,8 @@
                                         <input type="file" name="files[]" id="files" class="form-control" accept="application/pdf">
                                         <input type="hidden" name="files[]" value="">
                                         @endif
-                                        <a href="{{ asset('storage/' . $document->file->file_url) }}" target="_blank" style="color: #2980B9; text-decoration: none;">
-                                            <i class="fas fa-file-pdf"></i> {{ $document->file->name }}
+                                        <a href="{{ $document->file->file_url }}" target="_blank" style="color: #2980B9; text-decoration: none;">
+                                            <i class="fas fa-file-pdf"></i> Dokumen {{$document->category->nama}}
                                         </a>
                                     </td>
                                     @if ($spj->status == 'Revisi')
@@ -109,9 +104,45 @@
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
                                 <button class="btn btn-primary float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
+                                <a href="{{ route('spj.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>History Approval</h5>
+                </div>
+                <div class="ibox-content">
+
+                    @foreach($spj->histories as $i => $history)
+
+                    <div>
+                        <small>{{ date('d M Y - H:i', strtotime($history->created_at)) }}</small>
+
+                        <h4>
+                            <i class="fa fa-user"></i> {{ $history->user->name }} ({{ $history->user->role->name }})
+                            @switch($history->status)
+                            @case("Diproses")
+                            <span class="badge badge-warning">{{ $history->status }}</span>
+                            @break
+                            @case("Revisi")
+                            <span class="badge badge-warning">{{ $history->status }}</span>
+                            @break
+                            @default
+                            <span class="badge badge-success">{{ $history->status }}</span>
+                            @endswitch
+                        </h4>
+
+                        <p>Catatan: <i>{{ $history->catatan }}</i></p>
+
+                        <hr>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -16,12 +16,14 @@ class CreateLetterDispositionsTable extends Migration
         Schema::create('t_letter_disposition', function (Blueprint $table) {
             $table->id();
             $table->foreignId('letter_id')->references('id')->on('t_letter');
-            $table->foreignId('position_id')->references('id')->on('t_role');
+            $table->foreignId('position_id')->nullable()->references('id')->on('t_role');
+            $table->foreignId('disposisi_id')->nullable()->references('id')->on('t_disposisi');
             $table->timestamp('tanggal_diterima')->nullable();
             $table->timestamp('tanggal_diproses')->nullable();
             $table->foreignId('verifikator_id')->nullable()->references('id')->on('t_user');
             $table->text('keterangan')->nullable();
             $table->string('status')->nullable();
+            $table->integer('urutan')->default(0);
             $table->timestamps();
         });
     }

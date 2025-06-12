@@ -29,25 +29,65 @@
             @endif
 
             @if ($permissions['SPJ'])
-            <li class="{{( request()->routeIs('spj.index')) ? 'active' : '' }}">
+            <li class="{{( 
+                request()->routeIs('spj.index') OR
+                request()->routeIs('spj.create') OR
+                request()->routeIs('spj.edit') OR
+                request()->routeIs('spj.show') OR
+                request()->routeIs('spj.approval.view') OR
+                request()->routeIs('spj.revisi') OR
+                request()->routeIs('spj.rating')
+                ) ? 'active' : '' }}">
                 <a href="{{ route('spj.index') }}"><i class="fa fa-book"></i> <span class="nav-label">SPJ</span></a>
             </li>
             @endif
 
+            @if ($permissions['DISPOSISI'])
+            <li class="{{( 
+                request()->routeIs('disposisi.index') OR
+                request()->routeIs('disposisi.create') OR
+                request()->routeIs('disposisi.edit') OR
+                request()->routeIs('disposisi.show')
+                ) ? 'active' : '' }}">
+                <a href="{{ route('disposisi.index') }}"><i class="fa fa-sitemap"></i> <span class="nav-label">Disposisi</span></a>
+            </li>
+            @endif
+
+            @if ($permissions['ARSIP'])
+            <li class="{{( 
+                request()->routeIs('arsip.index') OR
+                request()->routeIs('arsip.create') OR
+                request()->routeIs('arsip.edit') OR
+                request()->routeIs('arsip.show')
+                ) ? 'active' : '' }}">
+                <a href="{{ route('arsip.index') }}"><i class="fa fa-folder-open"></i> <span class="nav-label">Arsip</span></a>
+            </li>
+            @endif
+
             @if ($permissions['USER'])
-            <li class="{{( request()->routeIs('user.index')) ? 'active' : '' }}">
+            <li class="{{( 
+                request()->routeIs('user.index') OR
+                request()->routeIs('user.create') OR
+                request()->routeIs('user.edit') OR
+                request()->routeIs('user.show')
+                ) ? 'active' : '' }}">
                 <a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span class="nav-label">Pengguna</span></a>
             </li>
             @endif
 
             @if ($permissions['ROLE'])
-            <li class="{{( request()->routeIs('role.index')) ? 'active' : '' }}">
+            <li class="{{( 
+                request()->routeIs('role.index') OR
+                request()->routeIs('role.create') OR
+                request()->routeIs('role.edit') OR
+                request()->routeIs('role.show')
+                ) ? 'active' : '' }}">
                 <a href="{{ route('role.index') }}"><i class="fa fa-key"></i> <span class="nav-label">Akses</span></a>
             </li>
             @endif
 
             <!-- @if ($permissions['USER'] OR $permissions['ROLE'])
-            <li class="{{(
+            <li class="{{ (
                 request()->routeIs('role.index') OR
                 request()->routeIs('role.create') OR
                 request()->routeIs('role.edit') OR

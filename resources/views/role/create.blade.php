@@ -64,13 +64,25 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>Disposisi</td>
+                                        <td class="text-center">
+                                            <div class="i-checks"><input type="checkbox" name="disposisi_permitted"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Arsip</td>
+                                        <td class="text-center">
+                                            <div class="i-checks"><input type="checkbox" name="arsip_permitted"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Pengguna</td>
                                         <td class="text-center">
                                             <div class="i-checks"><input type="checkbox" name="user_permitted"></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Role</td>
+                                        <td>Akses</td>
                                         <td class="text-center">
                                             <div class="i-checks"><input type="checkbox" name="role_permitted"></div>
                                         </td>

@@ -56,11 +56,14 @@ class RoleController extends Controller
             'SPJ',
             'USER',
             'ROLE',
+            'DISPOSISI',
+            'ARSIP',
         ];
 
         DB::transaction(function () use ($request, $permissions) {
             $role = Role::create([
                 "name" => $request['name'],
+                "is_disposition" => true,
             ]);
 
             foreach ($permissions as $i => $permission) {
@@ -103,11 +106,14 @@ class RoleController extends Controller
             'SPJ',
             'USER',
             'ROLE',
+            'DISPOSISI',
+            'ARSIP',
         ];
 
         DB::transaction(function () use ($request, $permissions, $role) {
             $role->update([
                 "name" => $request['name'],
+                "is_disposition" => true,
             ]);
             $role->permissions()->delete();
 

@@ -17,7 +17,7 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <div class="ibox ">
                 <div class="ibox-title">
                     <h5>Data SPJ</h5>
@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             <label>Kategori SPJ</label>
-                            <input type="text" class="form-control" value="{{ $spj->jenis }}" disabled>
+                            <textarea class="form-control" name="jenis" readonly>{{ $spj->jenis }}</textarea>
                         </div>
 
                         <div class="hr-line-dashed"></div>
@@ -51,7 +51,7 @@
                                 <tr>
                                     <th class="text-center" width="1px">No</th>
                                     <th>Jenis Dokumen</th>
-                                    <th>File</th>
+                                    <th>Dokumen</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,7 +59,7 @@
                                 <tr>
                                     <td class="text-center" id="iteration">{{ $loop->iteration }}</td>
                                     <td>{{$document->category->nama}}</td>
-                                    <td><a href="#">{{$document->file->name}}</a></td>
+                                    <td><a href="{{ $document->file->file_url }}" target="_blank">Dokumen {{$document->category->nama}}</a></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -69,7 +69,7 @@
 
                         <div class="form-group">
                             <label>Catatan</label>
-                            <textarea class="form-control" name="catatan" id="catatan">{{ $spj->catatan }}</textarea>
+                            <textarea class="form-control" cols="1" rows="3" name="catatan" id="catatan">{{ $spj->catatan }}</textarea>
                             <small class="text-danger" id="catatan_error"></small>
                         </div>
 
@@ -77,13 +77,50 @@
 
                         <input type="hidden" name="type" id="type">
 
-                        <div class="btn-group">
-                            <a href="{{ route('spj.index') }}" class="btn btn-default" type="button"><i class="fa fa-arrow-left"></i> Kembali</a>
-                            <button class="btn btn-warning" type="button" id="btn-revisi"><i class="fa fa-times"></i> Revisi</button>
-                            <button class="btn btn-primary" type="button" id="btn-terima"><i class="fa fa-check"></i> Terima</button>
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-sm-offset-2">
+                                <button class="btn btn-primary float-right" type="button" id="btn-terima"><i class="fa fa-check"></i> Terima</button>
+                                <button class="btn btn-warning float-right" type="button" id="btn-revisi"><i class="fa fa-times"></i> Revisi</button>
+                                <a href="{{ route('spj.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
+                            </div>
                         </div>
 
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>History Approval</h5>
+                </div>
+                <div class="ibox-content">
+
+                    @foreach($spj->histories as $i => $history)
+
+                    <div>
+                        <small>{{ date('d M Y - H:i', strtotime($history->created_at)) }}</small>
+
+                        <h4>
+                            <i class="fa fa-user"></i> {{ $history->user->name }} ({{ $history->user->role->name }})
+                            @switch($history->status)
+                            @case("Diproses")
+                            <span class="badge badge-warning">{{ $history->status }}</span>
+                            @break
+                            @case("Revisi")
+                            <span class="badge badge-warning">{{ $history->status }}</span>
+                            @break
+                            @default
+                            <span class="badge badge-success">{{ $history->status }}</span>
+                            @endswitch
+                        </h4>
+
+                        <p>Catatan: <i>{{ $history->catatan }}</i></p>
+
+                        <hr>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>

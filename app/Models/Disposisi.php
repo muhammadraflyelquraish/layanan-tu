@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SPJRating extends Model
+class Disposisi extends Model
 {
     use HasFactory;
 
-    protected $table = 't_spj_rating';
+    protected $table = 't_disposisi';
 
     /**
      * The attributes that are mass assignable.
@@ -17,19 +17,13 @@ class SPJRating extends Model
      * @var array
      */
     protected $fillable = [
-        'spj_id',
-        'user_id',
-        'rating',
-        'catatan',
+        'name',
+        'approver_id',
+        'urutan',
     ];
 
-    function spj()
+    function approver()
     {
-        return $this->belongsTo(SPJ::class);
-    }
-
-    function user()
-    {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Role::class, 'approver_id');
     }
 }

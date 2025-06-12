@@ -17,7 +17,7 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <div class="ibox ">
                 <div class="ibox-title">
                     <h5>Data SPJ</h5>
@@ -41,7 +41,7 @@
 
                         <div class="form-group">
                             <label>Kategori SPJ</label>
-                            <input type="text" class="form-control" name="jenis" value="{{ old('jenis') }}" required autofocus placeholder="Masukan kategori...">
+                            <textarea class="form-control" name="jenis" required autofocus placeholder="Masukan kategori...">{{ old('jenis') }}</textarea>
                             <small class="text-danger" id="jenis_error">@if($errors->has('jenis')) {{ $errors->first('jenis') }} @endif</small>
                         </div>
 

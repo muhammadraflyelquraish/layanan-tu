@@ -39,7 +39,7 @@ class Letter extends Model
 
     function dispositions()
     {
-        return $this->hasMany(LetterDisposition::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(LetterDisposition::class)->orderBy('urutan', 'desc');
     }
 
     function spjs()

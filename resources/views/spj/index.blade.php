@@ -1,5 +1,25 @@
 @extends('layouts.master')
 
+@push('css')
+<style>
+    .rating {
+        display: inline-flex;
+        font-size: 3rem;
+        cursor: pointer;
+    }
+
+    .star {
+        color: #ddd;
+        transition: color 0.3s;
+    }
+
+    .star.hovered,
+    .star.selected {
+        color: #f5b301;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -13,6 +33,54 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    @if(auth()->user()->role_id != 2)
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h4>Filter</h4>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Search</label>
+                                <input name="search" id="search" class="form-control" placeholder="Pengajuan/Pemohon/Surat...">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Pemohon</label>
+                                <select name="pemohon_id" id="pemohon_id" class="form-control">
+                                    <option value="">--Filter Pemohon--</option>
+                                    @foreach($pemohon as $pm)
+                                    <option value="{{ $pm->id }}">{{ $pm->name }} ({{$pm->no_identity}})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select name="status" id="status" class="form-control">
+                                    <option value="">--Filter Status--</option>
+                                    <option value="Diproses">Diproses</option>
+                                    <option value="Revisi">Revisi</option>
+                                    <option value="Disetujui">Disetujui</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success" style="margin-top: 26px;" id="applyFilter" type="button">Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -32,6 +100,7 @@
                                     <th>Tanggal Selesai</th>
                                     <th>Catatan</th>
                                     <th>Status</th>
+                                    <th>Rating</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
@@ -40,6 +109,42 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalRating" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('spj.rating') }}" method="POST">
+                <div class="modal-body">
+                    @csrf
+                    @method('POST')
+
+                    <h4 class="text-center">Bagaimana pengalaman kamu menggunakan layanan ini?</h4>
+
+
+                    <input type="hidden" name="spj_id" id="spj_id">
+                    <div class="modal-body text-center">
+                        <div id="starRating" class="rating" data-selected="0">
+                            <span data-value="1" class="star">&#9733;</span>
+                            <span data-value="2" class="star">&#9733;</span>
+                            <span data-value="3" class="star">&#9733;</span>
+                            <span data-value="4" class="star">&#9733;</span>
+                            <span data-value="5" class="star">&#9733;</span>
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput" value="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" cols="1" id="catatan" name="catatan" placeholder="Tulis pengalaman kamu disini yaa.."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-lg btn-primary btn-block" data-style="zoom-in" id="submit" tabindex="8">Rating</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -118,6 +223,12 @@
             ],
             ajax: {
                 url: "{{ route('spj.data') }}",
+                type: "GET",
+                data: function(d) {
+                    d.search = $('input[name="search"]').val()
+                    d.pemohon_id = $('select[name="pemohon_id"]').val()
+                    d.status = $('select[name="status"]').val()
+                }
             },
             columns: [{
                     data: 'DT_RowIndex',
@@ -153,6 +264,10 @@
                 {
                     data: 'status',
                     name: 'status'
+                },
+                {
+                    data: 'rating',
+                    name: 'rating'
                 },
                 {
                     data: 'action',
@@ -405,6 +520,35 @@
                 })
             }
         });
+
+        $("#starRating .star").each(function() {
+            $(this).on("mouseover", function() {
+                const value = $(this).attr("data-value");
+                $("#starRating .star").each(function() {
+                    $(this).toggleClass("hovered", $(this).attr("data-value") <= value);
+                });
+            });
+
+            $(this).on("mouseout", function() {
+                $("#starRating .star").each(function() {
+                    $(this).removeClass("hovered");
+                });
+            });
+
+            $(this).on("click", function() {
+                const value = $(this).attr("data-value");
+                $("#ratingInput").val(value);
+                $("#starRating .star").each(function() {
+                    $(this).toggleClass("selected", $(this).attr("data-value") <= value);
+                });
+            });
+        });
+
+        $('#modalRating').on('shown.bs.modal', function(e) {
+            let button = $(e.relatedTarget)
+            let modal = $(this)
+            modal.find('#spj_id').val(button.data('id'));
+        })
 
     });
 </script>

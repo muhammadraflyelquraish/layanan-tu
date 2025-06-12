@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DisposisiController;
 use App\Http\Controllers\LetterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -35,6 +37,7 @@ Route::middleware('auth')->group(function () {
     // Proposal
     Route::get('/letter/data', [LetterController::class, 'data'])->name('letter.data');
     Route::put('/letter/{letter}/disposition', [LetterController::class, 'disposition'])->name('letter.disposition');
+    Route::get('/letter/{letter}/target-disposition', [LetterController::class, 'targetDisposition'])->name('letter.target.disposition');
     Route::put('/letter/{letter}/confirmation', [LetterController::class, 'confirmation'])->name('letter.confirmation');
     Route::get('/letter/{letter}/spj', [LetterController::class, 'spj'])->name('letter.spj');
     Route::resource('/letter', LetterController::class);
@@ -46,7 +49,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/spj/data', [SPJController::class, 'data'])->name('spj.data');
     Route::get('/spj/{spj}/approval', [SPJController::class, 'approvalView'])->name('spj.approval.view');
     Route::put('/spj/{spj}/revisi', [SPJController::class, 'revisi'])->name('spj.revisi');
+    Route::post('/spj/rating', [SPJController::class, 'rating'])->name('spj.rating');
     Route::resource('/spj', SPJController::class);
+
+    // Disposisi
+    Route::get('/disposisi/data', [DisposisiController::class, 'data'])->name('disposisi.data');
+    Route::resource('/disposisi', DisposisiController::class);
+
+    // Arsip
+    Route::get('/arsip/data', [ArsipController::class, 'data'])->name('arsip.data');
+    Route::resource('/arsip', ArsipController::class);
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

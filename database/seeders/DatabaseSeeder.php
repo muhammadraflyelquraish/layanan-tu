@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Disposisi;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\User;
@@ -28,6 +29,8 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 1,
                     'LETTER' => 1,
                     'SPJ' => 1,
+                    'DISPOSISI' => 1,
+                    'ARSIP' => 1,
                 ]
             ],
             [
@@ -40,6 +43,8 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 1,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 0,
                 ]
             ],
             [
@@ -52,6 +57,8 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 0,
+                    'DISPOSISI' => 1,
+                    'ARSIP' => 1,
                 ]
             ],
             [
@@ -64,6 +71,8 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
                 ]
             ],
             [
@@ -76,6 +85,8 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 1,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
                 ]
             ]
         ];
@@ -113,6 +124,132 @@ class DatabaseSeeder extends Seeder
             ]
         ];
 
+        $users = [
+            [
+                "role_id" => 1,
+                "name" => "Rafly El",
+                "email" => "admin@gmail.com",
+                "no_identity" => "112109100001"
+            ],
+            [
+                "role_id" => 2,
+                "name" => "Joko",
+                "email" => "pemohon@gmail.com",
+                "no_identity" => "112109100002"
+            ],
+            [
+                "role_id" => 3,
+                "name" => "Susi",
+                "email" => "tu@gmail.com",
+                "no_identity" => "112109100003"
+            ],
+            [
+                "role_id" => 4,
+                "name" => "Alwi",
+                "email" => "dekan@gmail.com",
+                "no_identity" => "112109100004"
+            ],
+            [
+                "role_id" => 5,
+                "name" => "Nia",
+                "email" => "keuangan@gmail.com",
+                "no_identity" => "112109100005"
+            ]
+        ];
+
+        $dispositions = [
+            [
+                "name" => "Dekan",
+                "approver_id" => 4,
+                "urutan" => 1,
+            ],
+            [
+                "name" => "Wadek Akademik",
+                "approver_id" => 4,
+                "urutan" => 2,
+            ],
+            [
+                "name" => "Wadek Kemahasiswaan",
+                "approver_id" => 4,
+                "urutan" => 3,
+            ],
+            [
+                "name" => "Wadek Administrasi Umum",
+                "approver_id" => 4,
+                "urutan" => 4,
+            ],
+            [
+                "name" => "Kabag TU",
+                "approver_id" => 3,
+                "urutan" => 5,
+            ],
+            [
+                "name" => "Keuangan",
+                "approver_id" => 5,
+                "urutan" => 6,
+            ],
+            [
+                "name" => "Prodi Teknik Informatika",
+                "approver_id" => 3,
+                "urutan" => 7,
+            ],
+            [
+                "name" => "Prodi Agribisnis",
+                "approver_id" => 3,
+                "urutan" => 8,
+            ],
+            [
+                "name" => "Prodi Sistem Informasi",
+                "approver_id" => 3,
+                "urutan" => 9,
+            ],
+            [
+                "name" => "Prodi Matematika",
+                "approver_id" => 3,
+                "urutan" => 10,
+            ],
+            [
+                "name" => "Prodi Fisika",
+                "approver_id" => 3,
+                "urutan" => 11,
+            ],
+            [
+                "name" => "Prodi Kimia",
+                "approver_id" => 3,
+                "urutan" => 12,
+            ],
+            [
+                "name" => "Prodi Biologi",
+                "approver_id" => 3,
+                "urutan" => 13,
+            ],
+            [
+                "name" => "Prodi Teknik Pertambangan",
+                "approver_id" => 3,
+                "urutan" => 14,
+            ],
+            [
+                "name" => "PLT",
+                "approver_id" => 3,
+                "urutan" => 15,
+            ],
+            [
+                "name" => "Akademik",
+                "approver_id" => 3,
+                "urutan" => 16,
+            ],
+            [
+                "name" => "Umum",
+                "approver_id" => 3,
+                "urutan" => 17,
+            ],
+            [
+                "name" => "Perpus",
+                "approver_id" => 3,
+                "urutan" => 18,
+            ],
+        ];
+
         foreach ($role_permissions as $role) {
             Role::create([
                 "name" => $role['name'],
@@ -132,9 +269,17 @@ class DatabaseSeeder extends Seeder
                 "name" => $user['name'],
                 "no_identity" => $user['no_identity'],
                 "email" => $user['email'],
-                "password" => Hash::make("admin"),
+                "password" => Hash::make("Admin1++"),
                 "role_id" => $user['role_id'],
                 "status" => "ACTIVE"
+            ]);
+        };
+
+        foreach ($dispositions as $disposition) {
+            Disposisi::create([
+                "name" => $disposition['name'],
+                "approver_id" => $disposition['approver_id'],
+                "urutan" => $disposition['urutan'],
             ]);
         };
     }

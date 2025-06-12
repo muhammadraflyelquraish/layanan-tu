@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Letter;
 use App\Models\Media;
 use App\Models\SPJ;
 use App\Models\SPJDocument;
 use App\Models\SPJHistory;
+use App\Models\SPJRating;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -16,18 +20,43 @@ class SPJController extends Controller
 {
     public function index(): View
     {
-        return view('spj.index');
+        $pemohon = User::where("role_id", 2)->get();
+        return view('spj.index', compact('pemohon'));
     }
 
     public function data(): JsonResponse
     {
-        $app = SPJ::with(['user']);
+        $app = SPJ::with(['user', 'ratings']);
+
+        if (auth()->user()->role_id == 2) {
+            $app->where("t_spj.user_id", auth()->user()->id);
+        }
+
+        $app->when(request('status'), function ($app) {
+            $app->where('t_spj.status', request('status'));
+        });
+        $app->when(request('pemohon_id'), function ($app) {
+            $app->where('t_spj.user_id', request('pemohon_id'));
+        });
+        $app->when(request('search'), function ($app) {
+            $searchTerm = "%" . request('search') . "%";
+
+            $app->where('t_spj.jenis', 'ilike', $searchTerm)
+                ->orWhereHas('letter', function ($q) use ($searchTerm) {
+                    $q->where('kode', 'ilike', $searchTerm);
+                })
+                ->orWhereHas('user', function ($q) use ($searchTerm) {
+                    $q->where('name', 'ilike', $searchTerm);
+                    $q->orWhere('no_identity', 'ilike', $searchTerm);
+                });
+        });
+
         return DataTables::of($app)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
 
-                if ($row->status == "Diproses") {
+                if ($row->status == "Diproses" && auth()->user()->role_id != 2) {
                     $button .= '<a href="' . route('spj.approval.view', $row->id) . '" class="btn btn-sm btn-info"><i class="fa fa-arrow-right"></i></a>';
                 }
 
@@ -35,12 +64,15 @@ class SPJController extends Controller
                     $button .= '<a href="' . route('spj.edit', $row->id) . '" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>';
                 }
 
+                if ($row->status == "Disetujui" && $row->ratings->count() == 0 && auth()->user()->role_id == 2) {
+                    $button .= '<button type="button" data-toggle="modal" data-id="' . $row->id . '" data-target="#modalRating" class="btn btn-sm btn-info"><i class="fa fa-star"></i></button>';
+                }
+
                 $button .= '<a href="' . route('spj.show', $row->id) . '" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
                 $button .= '</div>';
                 return $button;
             })
             ->editColumn('letter', function ($row) {
-                // return $row->letter->kode;
                 return '' . $row->letter->kode . ' <br> <small>(' . $row->letter->untuk . ')</small>';
             })
             ->editColumn('user.name', function ($row) {
@@ -61,8 +93,18 @@ class SPJController extends Controller
                     return '<span class="label label-warning">' . $row->status . '</span>';
                 }
             })
-            ->rawColumns(['action', 'status', 'letter', 'user.name'])
-            ->addColumns(['letter'])
+            ->editColumn('rating', function ($row) {
+                $rating = '';
+                if (isset($row->ratings[0])) {
+                    for ($i = 1; $i <= 5; $i++) {
+                        $rating .= "<span data-value=\"" . $i . "\" class=\"star\" style=\"" . ($i <= $row->ratings[0]->rating ? 'color: #f5b301' : '') . "\">&#9733;</span>";
+                    }
+                    $rating .= "<br> <small>\"" . $row->ratings[0]->catatan . "\"</small>";
+                }
+                return $rating ? $rating : '-';
+            })
+            ->rawColumns(['action', 'status', 'letter', 'user.name', 'rating'])
+            ->addColumns(['letter', 'rating'])
             ->toJson();
     }
 
@@ -77,9 +119,11 @@ class SPJController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
+                $letter = Letter::with('pemohon')->find($request->letter_id);
+
                 $spj = SPJ::create([
                     "letter_id" => $request->letter_id,
-                    "user_id" => $request->user()->id,
+                    "user_id" => $letter->pemohon_id,
                     "jenis" => $request->jenis,
                     "status" => "Diproses",
                     "tanggal_proses" => now(),
@@ -92,11 +136,16 @@ class SPJController extends Controller
                     }
 
                     $fileName = uniqid() . '_' . $file->getClientOriginalName();
-                    // $filePath = $file->storeAs('spj', $fileName, 'public');
+
+                    $disk = 'pdf';
+                    $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                    $url = Storage::disk($disk)->url($uploadedPath);
 
                     $media = Media::create([
                         "name" => $fileName,
-                        "file_url" => "",
+                        "original_name" => $file->getClientOriginalName(),
+                        "path" => $uploadedPath,
+                        "file_url" => $url,
                     ]);
 
                     SPJDocument::create([
@@ -115,19 +164,19 @@ class SPJController extends Controller
 
     public function show(SPJ $spj)
     {
-        $spj = $spj->load(['letter', 'user', 'documents']);
+        $spj = $spj->load(['letter', 'user', 'documents', 'histories']);
         return view('spj.detail', compact('spj'));
     }
 
     public function approvalView(SPJ $spj)
     {
-        $spj = $spj->load(['letter', 'user', 'documents']);
+        $spj = $spj->load(['letter', 'user', 'documents', 'histories']);
         return view('spj.approval', compact('spj'));
     }
 
     public function edit(SPJ $spj)
     {
-        $spj = $spj->load(['letter', 'user', 'documents']);
+        $spj = $spj->load(['letter', 'user', 'documents', 'histories']);
         return view('spj.edit', compact('spj'));
     }
 
@@ -185,9 +234,15 @@ class SPJController extends Controller
 
                         $fileName = uniqid() . '_' . $file->getClientOriginalName();
 
+                        $disk = 'pdf';
+                        $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                        $url = Storage::disk($disk)->url($uploadedPath);
+
                         $media = Media::create([
                             "name" => $fileName,
-                            "file_url" => "",
+                            "original_name" => $file->getClientOriginalName(),
+                            "path" => $uploadedPath,
+                            "file_url" => $url,
                         ]);
 
                         $spjDocument = SPJDocument::create([
@@ -208,11 +263,16 @@ class SPJController extends Controller
                         }
 
                         $fileName = uniqid() . '_' . $file->getClientOriginalName();
-                        // $filePath = $file->storeAs('spj', $fileName, 'public');
+
+                        $disk = 'pdf';
+                        $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                        $url = Storage::disk($disk)->url($uploadedPath);
 
                         $media = Media::create([
                             "name" => $fileName,
-                            "file_url" => "",
+                            "original_name" => $file->getClientOriginalName(),
+                            "path" => $uploadedPath,
+                            "file_url" => $url,
                         ]);
 
                         $spjDocument->update([
@@ -232,5 +292,16 @@ class SPJController extends Controller
         }
 
         return redirect()->route('spj.index')->with('success', 'Data SPJ berhasil diubah.');
+    }
+
+    public function rating(Request $request)
+    {
+        SPJRating::create([
+            'spj_id' => $request->spj_id,
+            'user_id' => $request->user()->id,
+            'rating' => (int)$request->rating,
+            'catatan' => $request->catatan,
+        ]);
+        return redirect()->route('spj.index')->with('success', 'Rating SPJ berhasil simpan.');
     }
 }

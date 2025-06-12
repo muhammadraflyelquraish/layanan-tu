@@ -19,11 +19,13 @@ class LetterDisposition extends Model
     protected $fillable = [
         'letter_id',
         'position_id',
+        'disposisi_id',
         'tanggal_diterima',
         'tanggal_diproses',
         'verifikator_id',
         'keterangan',
         'status',
+        'urutan'
     ];
 
 
@@ -35,6 +37,11 @@ class LetterDisposition extends Model
     function position()
     {
         return $this->belongsTo(Role::class, 'position_id');
+    }
+
+    function disposition()
+    {
+        return $this->belongsTo(Disposisi::class, 'disposisi_id');
     }
 
     function verifikator()

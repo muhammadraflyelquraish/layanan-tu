@@ -50,6 +50,8 @@
                                     'DASHBOARD' => 'Beranda',
                                     'LETTER' => 'Proposal',
                                     'SPJ' => 'SPJ',
+                                    'DISPOSISI' => 'Disposisi',
+                                    'ARSIP' => 'Arsip',
                                     'USER' => 'Pengguna',
                                     'ROLE' => 'Akses',
                                     ]
