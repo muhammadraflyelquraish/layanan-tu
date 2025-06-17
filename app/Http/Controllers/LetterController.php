@@ -29,6 +29,9 @@ class LetterController extends Controller
     public function data(): JsonResponse
     {
         $app = Letter::with(['pemohon', 'spjs', 'file']);
+        $app->where(function ($query) {
+            $query->whereHas('spjs', null, '<', 1);
+        });
 
         if (auth()->user()->role_id === 2) {
             $app->where("t_letter.pemohon_id", auth()->user()->id);

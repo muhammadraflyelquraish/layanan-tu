@@ -28,6 +28,9 @@ class CreateLettersTable extends Migration
             $table->foreignId('proposal_file')->nullable()->references('id')->on('t_media');
             $table->boolean('disertai_dana')->nullable();
             $table->text('alasan_penolakan')->nullable();
+            $table->date('tanggal_selesai')->nullable();
+            $table->boolean('perlu_sk')->default(false);
+            $table->foreignId('pihak_pembuat_sk_id')->nullable()->references('id')->on('t_disposisi');
             $table->timestamps();
         });
     }

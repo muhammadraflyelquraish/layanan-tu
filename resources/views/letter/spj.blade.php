@@ -211,26 +211,6 @@
                 $(this).find('#iteration').text(index + 1);
             });
         }
-
-
-        $("#formRole").validate({
-            rules: {
-                kategori: 'required',
-            },
-            messages: {
-                kategori: "Kategori tidak boleh kosong",
-            },
-            success: function(messages) {
-                $(messages).remove();
-            },
-            errorPlacement: function(error, element) {
-                let name = element.attr("name");
-                $("#" + name + "_error").text(error.text());
-            },
-            submitHandler: function(form) {
-                form.submit()
-            }
-        });
     })
 </script>
 @endpush

@@ -29,7 +29,10 @@ class Letter extends Model
         'status',
         'proposal_file',
         'disertai_dana',
-        'alasan_penolakan'
+        'alasan_penolakan',
+        'tanggal_selesai',
+        'perlu_sk',
+        'pihak_pembuat_sk_id'
     ];
 
     function pemohon()

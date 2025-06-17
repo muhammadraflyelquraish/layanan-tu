@@ -31,24 +31,6 @@
             overflow: hidden;
         }
 
-        /* Background floating circles */
-        /* .auth-container::before,
-        .auth-container::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(74, 144, 226, 0.15);
-            animation: float 15s infinite ease-in-out;
-        } */
-        /* 
-        .auth-container::before {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 15%;
-            opacity: 0.7;
-        } */
-
         .auth-container::after {
             width: 150px;
             height: 150px;
@@ -359,7 +341,7 @@
                     <i class="fas fa-qrcode mr-2"></i> Tracking Surat
                 </a>
 
-                <a href="#" class="btn-google">
+                <a href="{{ route('auth.google') }}" class="btn-google">
                     <img src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s96-fcrop64=1,00000000ffffffff-rw" alt="Google Logo">
                     Login dengan Google
                 </a>

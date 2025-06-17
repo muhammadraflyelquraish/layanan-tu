@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Portal Surat FST</title>
+    <title>Login - Portal Surat FST</title>
     <link href="{{ asset('build/assets') }}/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -163,7 +163,7 @@
             text-decoration: underline;
         }
 
-        .btn-login,
+        .btn-reset,
         .btn-qr,
         .btn-google {
             display: flex;
@@ -180,7 +180,7 @@
             margin-bottom: 0.8rem;
         }
 
-        .btn-login:hover,
+        .btn-reset:hover,
         .btn-qr:hover,
         .btn-google:hover {
             animation: pulse 0.3s ease;
@@ -201,12 +201,12 @@
             }
         }
 
-        .btn-login {
-            background: #4a90e2;
+        .btn-reset {
+            background: #2d3748;
             color: #ffffff;
         }
 
-        .btn-login:hover {
+        .btn-reset:hover {
             background: #357abd;
         }
 
@@ -292,64 +292,63 @@
                 height: 100px;
             }
         }
+
+        .notification-box {
+            background-color: #f9f9f9;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 11px;
+            text-align: justify;
+        }
+
+        .notification-box .text-gray-800 {
+            color: #2d3748;
+        }
+
+        .header {
+            background-color: #2C3E50;
+            padding: 15px 0;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+            color: white;
+            margin: -2rem -2rem 1rem -2rem;
+        }
     </style>
 </head>
 
 <body>
     <div class="auth-container">
-        <!-- Form Register -->
+        <!-- Form Login -->
+
+
         <div class="login-card">
-            <div class="login-logo">
-                <img src="{{ asset('logo/fst.png') }}" alt="Logo">
+
+            <div class="header flex items-center justify-center mb-6">
+                <i class="fas fa-lock text-white text-3xl mr-1"></i> Atur Ulang Kata Sandi
             </div>
 
-            <p class="login-title">Daftar untuk memulai</p>
-            <p class="login-subtitle">Buat akun Anda sekarang</p>
+            <div class="notification-box text-sm text-gray-800 text-justify">
+                {{ __('Jika Anda lupa kata sandi, silakan masukkan alamat email Anda. Kami akan mengirimkan tautan untuk mengatur ulang kata sandi. Tautan tersebut memungkinkan Anda untuk membuat kata sandi baru dan mengakses akun Anda kembali.') }}
+            </div>
 
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('password.email') }}">
                 @csrf
-
-                <label for="name" class="form-label">Nama</label>
-                <div class="input-icon">
-                    <input id="name" class="form-input" type="text" name="name" value="{{old('name')}}" required autofocus autocomplete="name" />
-                    <small class="text-danger" id="name_error">@if($errors->has('name')) {{ $errors->first('name') }} @endif</small>
-                    <i class="fas fa-user icon"></i>
-                </div>
-
-                <label for="name" class="form-label">NIP/NIM/NIDN</label>
-                <div class="input-icon">
-                    <input id="name" class="form-input" type="text" name="no_identity" value="{{old('no_identity')}}" required autofocus autocomplete="no_identity" />
-                    <small class="text-danger" id="no_identity_error">@if($errors->has('no_identity')) {{ $errors->first('no_identity') }} @endif</small>
-                    <i class="fas fa-id-card icon"></i>
-                </div>
 
                 <label for="email" class="form-label">Email</label>
                 <div class="input-icon">
-                    <input id="email" class="form-input" type="email" name="email" value="{{old('email')}}" required autocomplete="username" />
+                    <input id="email" class="form-input" type="email" name="email" value="{{old('email')}}" required autofocus autocomplete="username" />
                     <small class="text-danger" id="email_error">@if($errors->has('email')) {{ $errors->first('email') }} @endif</small>
                     <i class="fas fa-envelope icon"></i>
                 </div>
 
-                <label for="password" class="form-label">Password</label>
-                <div class="input-icon">
-                    <input id="password" class="form-input" type="password" name="password" required autocomplete="new-password" />
-                    <small class="text-danger" id="password_error">@if($errors->has('password')) {{ $errors->first('password') }} @endif</small>
-                    <i class="fas fa-lock icon"></i>
-                </div>
-
-                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                <div class="input-icon">
-                    <input id="password_confirmation" class="form-input" type="password" name="password_confirmation" required autocomplete="new-password" />
-                    <small class="text-danger" id="password_confirmation_error">@if($errors->has('password_confirmation')) {{ $errors->first('password_confirmation') }} @endif</small>
-                    <i class="fas fa-lock icon"></i>
-                </div>
-
-                <button type="submit" class="btn-login">
-                    <i class="fas fa-user-plus mr-2"></i> Daftar
+                <button type="submit" class="btn-reset">
+                    <i class="fas fa-paper-plane mr-2"></i> Email Password Reset Link
                 </button>
 
                 <p class="register-text">
-                    Sudah terdaftar? <a href="{{ route('login') }}">Masuk</a>
+                    <a href="{{ route('login') }}"><i class="fas fa-arrow-left"></i> Kembali ke login</a>
                 </p>
             </form>
         </div>

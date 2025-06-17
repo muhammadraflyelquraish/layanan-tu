@@ -45,9 +45,8 @@
                                     <option value="">--Filter Status--</option>
                                     <option value="Diproses">Diproses</option>
                                     <option value="Selesai">Selesai</option>
-                                    <option value="Menuggu Konfirmasi TU">Menuggu Konfirmasi TU</option>
-                                    @foreach(App\Models\Role::where('is_disposition', '=', true)->pluck('name', 'id') as $id => $role)
-                                    <option value="{{ $id }}">Menunggu Approval {{ $role }}</option>
+                                    @foreach(App\Models\Disposisi::pluck('name', 'id') as $id => $name)
+                                    <option value="Menunggu Approval {{ $name }}">Menunggu Approval {{ $name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -74,6 +73,9 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
+                <div class="ibox-title">
+                    <h4>Daftar Pengajuan</h4>
+                </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables" width="100%">
@@ -567,6 +569,8 @@
                         ${recievedDateObj.getDate().toString().padStart(2, '0')}
                         ${recievedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${recievedDateObj.getFullYear()}
+                        ${recievedDateObj.getHours().toString().padStart(2, '0')}:${recievedDateObj.getMinutes().toString().padStart(2, '0')}
+
                     `;
                     }
 
@@ -577,6 +581,7 @@
                         ${approvedDateObj.getDate().toString().padStart(2, '0')}
                         ${approvedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${approvedDateObj.getFullYear()}
+                        ${approvedDateObj.getHours().toString().padStart(2, '0')}:${approvedDateObj.getMinutes().toString().padStart(2, '0')}
                     `;
                     }
 

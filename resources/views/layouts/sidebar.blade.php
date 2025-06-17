@@ -3,7 +3,11 @@
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element">
+                    @if (Auth::user()->avatar != null)
+                    <img alt="image" class="rounded-circle" src="{{ Auth::user()->avatar }}" width="48" height="48" />
+                    @else
                     <img alt="image" class="rounded-circle" src="{{ asset('build/assets') }}/img/default-profile.png" width="48" height="48" />
+                    @endif
                     <div class="dropdown-toggle">
                         <span class="block m-t-xs font-bold text-white">Hai, {{ substr(Auth::user()->name, 0, 20) }}..</span>
                         <span class="text-muted text-xs block">{{ Auth::user()->role->name }}</span>

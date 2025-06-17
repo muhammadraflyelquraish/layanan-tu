@@ -91,6 +91,7 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables" width="100%">
                             <thead>
+                                @if(auth()->user()->role_id != 2)
                                 <tr>
                                     <th class="text-center" width="1px">No</th>
                                     <th>Proposal</th>
@@ -103,6 +104,19 @@
                                     <th>Rating</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
+                                @else
+                                <tr>
+                                    <th class="text-center" width="1px">No</th>
+                                    <th>Proposal</th>
+                                    <th>Kategori</th>
+                                    <th>Tanggal Proses</th>
+                                    <th>Tanggal Selesai</th>
+                                    <th>Catatan</th>
+                                    <th>Status</th>
+                                    <th>Rating</th>
+                                    <th class="text-right" width="1px">Aksi</th>
+                                </tr>
+                                @endif
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -215,22 +229,55 @@
             }
         });
 
-        let serverSideTable = $('.dataTables').DataTable({
-            processing: true,
-            serverSide: true,
-            order: [
-                [1, 'desc']
-            ],
-            ajax: {
-                url: "{{ route('spj.data') }}",
-                type: "GET",
-                data: function(d) {
-                    d.search = $('input[name="search"]').val()
-                    d.pemohon_id = $('select[name="pemohon_id"]').val()
-                    d.status = $('select[name="status"]').val()
-                }
+        let columns = [{
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                searchable: false,
+                orderable: false,
+                className: 'text-center'
             },
-            columns: [{
+            {
+                data: 'letter',
+                name: 'letter'
+            },
+            {
+                data: 'user.name',
+                name: 'user.name'
+            },
+            {
+                data: 'jenis',
+                name: 'jenis'
+            },
+            {
+                data: 'tanggal_proses',
+                name: 'tanggal_proses'
+            },
+            {
+                data: 'tanggal_selesai',
+                name: 'tanggal_selesai'
+            },
+            {
+                data: 'catatan',
+                name: 'catatan'
+            },
+            {
+                data: 'status',
+                name: 'status'
+            },
+            {
+                data: 'rating',
+                name: 'rating'
+            },
+            {
+                data: 'action',
+                name: 'action',
+                searchable: false,
+                orderable: false
+            }
+        ]
+
+        if ("{{auth()->user()->role_id}}" == 2) {
+            columns = [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
                     searchable: false,
@@ -240,10 +287,6 @@
                 {
                     data: 'letter',
                     name: 'letter'
-                },
-                {
-                    data: 'user.name',
-                    name: 'user.name'
                 },
                 {
                     data: 'jenis',
@@ -275,7 +318,25 @@
                     searchable: false,
                     orderable: false
                 }
+            ]
+        }
+
+        let serverSideTable = $('.dataTables').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [
+                [1, 'desc']
             ],
+            ajax: {
+                url: "{{ route('spj.data') }}",
+                type: "GET",
+                data: function(d) {
+                    d.search = $('input[name="search"]').val()
+                    d.pemohon_id = $('select[name="pemohon_id"]').val()
+                    d.status = $('select[name="status"]').val()
+                }
+            },
+            columns: columns,
             search: {
                 regex: true
             }

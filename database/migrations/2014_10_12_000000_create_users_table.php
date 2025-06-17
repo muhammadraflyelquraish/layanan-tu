@@ -16,11 +16,15 @@ class CreateUsersTable extends Migration
         Schema::create('t_user', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('no_identity')->unique();
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->string('no_identity')->nullable()->unique();
+            $table->string('email')->nullable()->unique();
+            $table->boolean('email_verified')->default(false);
+            $table->string('password')->nullable();
             $table->foreignId('role_id')->references('id')->on('t_role');
             $table->enum('status', ['ACTIVE', 'INACTIVE']);
+            $table->text('avatar')->nullable();
+            $table->text('avatar_original')->nullable();
+            $table->enum('user_type', ['REGISTER', 'GOOGLE'])->default('REGISTER');
             $table->rememberToken();
             $table->timestamps();
         });

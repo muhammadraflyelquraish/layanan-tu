@@ -33,6 +33,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (auth()->user()->status == 'INACTIVE') {
+            Auth::logout();
+            return redirect()->route('login')->withErrors(['email' => 'Your account is inactive.']);
+        }
+
         if (auth()->user()->role_id == 2) {
             return redirect()->route('letter.index');
         }
