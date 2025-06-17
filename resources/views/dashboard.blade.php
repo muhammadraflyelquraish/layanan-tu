@@ -5,48 +5,59 @@
     <div class="wrapper wrapper-content">
         <div class="row">
             <div class="col-lg-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Total Permohonan</h5>
+                <a href="{{ route('letter.index') }}">
+                    <div class="ibox">
+                        <div class="ibox-title" style="padding: 15px 15px 8px 15px;">
+                            <h5>Total Surat</h5>
+                            <span class="label label-success float-right">Bulan Ini</span>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins">{{ $totalPengajuanBulanIni }}</h1>
+                            <small>Surat</small>
+                        </div>
                     </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins">12</h1>
-                        <small>Surat</small>
-                    </div>
-                </div>
+                </a>
             </div>
             <div class="col-lg-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Total Permohonan Hari Ini</h5>
+                <a href="{{ route('letter.index') }}">
+                    <div class="ibox ">
+                        <div class="ibox-title" style="padding: 15px 15px 8px 15px;">
+                            <h5>Menunggu Persetujuan</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins">{{ $totalMenugguPersetujuanBulanIni }}</h1>
+                            <small>Surat</small>
+                        </div>
                     </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins">4</h1>
-                        <small>Surat</small>
-                    </div>
-                </div>
+                </a>
             </div>
             <div class="col-lg-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Total Permohonan Berjalan</h5>
+                <a href="{{ route('arsip.index') }}">
+                    <div class="ibox">
+                        <div class="ibox-title" style="padding: 15px 15px 8px 15px;">
+                            <h5>Total Selesai</h5>
+                            <span class="label label-success float-right">Bulan Ini</span>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins">{{ $totalSelesai }}</h1>
+                            <small>Surat</small>
+                        </div>
                     </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins">2</h1>
-                        <small>Surat</small>
-                    </div>
-                </div>
+                </a>
             </div>
             <div class="col-lg-3">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Total Permohonan Selesai</h5>
+                <a href="{{ route('arsip.index') }}">
+                    <div class="ibox ">
+                        <div class="ibox-title" style="padding: 15px 15px 8px 15px;">
+                            <h5>Total Ditolak</h5>
+                            <span class="label label-success float-right">Bulan Ini</span>
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins">{{ $totalTolak }}</h1>
+                            <small>Surat</small>
+                        </div>
                     </div>
-                    <div class="ibox-content">
-                        <h1 class="no-margins">2</h1>
-                        <small>Surat</small>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
