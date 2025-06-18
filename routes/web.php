@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
 
     // Proposal
     Route::get('/letter/data', [LetterController::class, 'data'])->name('letter.data');
-    Route::put('/letter/{letter}/disposition', [LetterController::class, 'disposition'])->name('letter.disposition');
+    Route::post('/letter/{letter}/disposition', [LetterController::class, 'disposition'])->name('letter.disposition');
     Route::get('/letter/{letter}/target-disposition', [LetterController::class, 'targetDisposition'])->name('letter.target.disposition');
     Route::put('/letter/{letter}/confirmation', [LetterController::class, 'confirmation'])->name('letter.confirmation');
     Route::get('/letter/{letter}/spj', [LetterController::class, 'spj'])->name('letter.spj');

@@ -97,6 +97,7 @@
                                     <th>Hal</th>
                                     <th>Status</th>
                                     <th>Proposal</th>
+                                    <th>SK</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
@@ -116,7 +117,8 @@
                                     <th>Untuk</th>
                                     <th>Jenis Surat</th>
                                     <th>Status</th>
-                                    <th>Dokumen</th>
+                                    <th>Proposal</th>
+                                    <th>SK</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
@@ -263,7 +265,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Tanggal Diterima</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control" id="tanggal_diterima" name="tanggal_diterima" tabindex="6" required>
+                                    <input type="datetime-local" class="form-control" id="tanggal_diterima" name="tanggal_diterima" tabindex="6" required>
                                     <small class="text-danger" id="tanggal_diterima_error"></small>
                                 </div>
                             </div>
@@ -302,10 +304,21 @@
                             @foreach($disposisi as $pm)
                             <div class="row" style="margin-bottom: 5px;">
                                 <div class="col-sm-2" style="margin: auto;"><input type="checkbox" class="form-control disposisi-input" id="disposisi" value="{{ $pm->id }}" name="disposisi[]"></div>
-                                <div class="col-sm-10">{{ $pm->name }} <b id="order"></b></div>
+                                <div class="col-sm-10"><span id="disposisi_name">{{ $pm->name }}</span> <b id="order"></b></div>
                             </div>
                             @endforeach
+
+                            <div class="form-group row pt-4">
+                                <label class="col-sm-4 col-form-label">Perlu SK?</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="pihak_pembuat_sk_id" id="pihak_pembuat_sk_id">
+                                        <option value="">--Pilih Pihak Pembuat SK--</option>
+                                    </select>
+                                    <small><i>Kosongkan jika tidak diperlukan</i></small>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -381,6 +394,22 @@
                             <td id="disertai_dana"></td>
                         </tr>
                         <tr>
+                            <th>Perlu SK</th>
+                            <td class="text-center">:</td>
+                            <td id="perlu_sk"></td>
+                            <th class="text-right">Pihak Pembuat SK</th>
+                            <td class="text-center">:</td>
+                            <td id="pihak_pembuat_sk_id"></td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Selesai</th>
+                            <td class="text-center">:</td>
+                            <td id="tanggal_selesai"></td>
+                            <th class="text-right">Selesai Dalam Waktu</th>
+                            <td class="text-center">:</td>
+                            <td id="selesai_dalam_waktu"></td>
+                        </tr>
+                        <tr>
                             <th>Alasan Penolakan</th>
                             <td class="text-center">:</td>
                             <td id="alasan_penolakan" colspan="4"></td>
@@ -413,7 +442,7 @@
 <div class="modal fade" id="ModalDisposition" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="formDisposition" method="PUT">
+            <form id="formDisposition" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h4 class="modal-title" id="modal-title">Konfirmasi</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -440,6 +469,13 @@
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="position_id" id="position_id" readonly>
                             <small class="text-danger" id="position_id_error"></small>
+                        </div>
+                    </div>
+                    <div class="form-group row" hidden>
+                        <label class="col-sm-4 col-form-label">SK</label>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" name="sk_file" id="sk_file">
+                            <small class="text-danger" id="sk_file_error"></small>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -652,6 +688,10 @@
                 name: 'file.original_name'
             },
             {
+                data: 'sk.original_name',
+                name: 'sk.original_name'
+            },
+            {
                 data: 'action',
                 name: 'action',
                 searchable: false,
@@ -690,6 +730,10 @@
                 {
                     data: 'file.original_name',
                     name: 'file.original_name'
+                },
+                {
+                    data: 'sk.original_name',
+                    name: 'sk.original_name'
                 },
                 {
                     data: 'action',
@@ -735,17 +779,18 @@
 
                 modal.find('#modal-title').text('Edit Pengajuan');
                 $.get('{{ route("letter.store") }}/' + id, function(app) {
-                    modal.find('#letter_id').val(app.id)
-                    modal.find('#pemohon_id').val(app.pemohon_id).attr('disabled', true)
-                    modal.find('#nomor_agenda').val(app.nomor_agenda)
-                    modal.find('#tanggal_surat').val(app.tanggal_surat)
-                    modal.find('#nomor_surat').val(app.nomor_surat)
-                    modal.find('#asal_surat').val(app.asal_surat)
-                    modal.find('#hal').val(app.hal)
-                    modal.find('#tanggal_diterima').val(app.tanggal_diterima)
-                    modal.find('#untuk').val(app.untuk)
-                    modal.find('#disertai_dana').val(app.disertai_dana ? "1" : "0")
-                    modal.find('#proposal_file').html(`<a href="${app.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
+                    modal.find('#letter_id').val(app.letter.id)
+                    modal.find('#pemohon_id').val(app.letter.pemohon_id).attr('disabled', true)
+                    modal.find('#nomor_agenda').val(app.letter.nomor_agenda)
+                    modal.find('#tanggal_surat').val(app.letter.tanggal_surat)
+                    modal.find('#nomor_surat').val(app.letter.nomor_surat)
+                    modal.find('#asal_surat').val(app.letter.asal_surat)
+                    modal.find('#hal').val(app.letter.hal)
+                    modal.find('#tanggal_diterima').val(app.letter.tanggal_diterima)
+                    modal.find('#untuk').val(app.letter.untuk)
+                    modal.find('#disertai_dana').val(app.letter.disertai_dana ? "1" : "0")
+                    modal.find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
+                    modal.find('#pihak_pembuat_sk_id').val(app.letter.pihak_pembuat_sk_id)
 
                     // $('.disposisi-input').each(function(e) {
                     //     // Your code here
@@ -772,9 +817,9 @@
             let id = button.data('integrity')
 
             $.get('{{ route("letter.store") }}/' + id, function(app) {
-                let dateOfLetter = ''
-                if (app.tanggal_surat) {
-                    const dateOfLetterObj = new Date(app.tanggal_surat);
+                let dateOfLetter = '-'
+                if (app.letter.tanggal_surat) {
+                    const dateOfLetterObj = new Date(app.letter.tanggal_surat);
                     dateOfLetter = `
                     ${dateOfLetterObj.getDate().toString().padStart(2, '0')}
                     ${dateOfLetterObj.toLocaleString('id-ID', {month: 'long'})}
@@ -782,40 +827,56 @@
                 `;
                 }
 
-                let receivedDate = ''
-                if (app.tanggal_diterima) {
-                    const receivedDateObj = new Date(app.tanggal_diterima);
+                let receivedDate = '-'
+                if (app.letter.tanggal_diterima) {
+                    const receivedDateObj = new Date(app.letter.tanggal_diterima);
                     receivedDate = `
                         ${receivedDateObj.getDate().toString().padStart(2, '0')}
                         ${receivedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${receivedDateObj.getFullYear()}
+                        ${receivedDateObj.getHours().toString().padStart(2, '0')}:${receivedDateObj.getMinutes().toString().padStart(2, '0')}
+                    `;
+                }
+
+                let tanggalSelesai = '-'
+                if (app.letter.tanggal_selesai) {
+                    const tanggalSelesaiObj = new Date(app.letter.tanggal_selesai);
+                    tanggalSelesai = `
+                        ${tanggalSelesaiObj.getDate().toString().padStart(2, '0')}
+                        ${tanggalSelesaiObj.toLocaleString('id-ID', {month: 'long'})}
+                        ${tanggalSelesaiObj.getFullYear()}
+                        ${tanggalSelesaiObj.getHours().toString().padStart(2, '0')}:${tanggalSelesaiObj.getMinutes().toString().padStart(2, '0')}
                     `;
                 }
 
                 let jenisSurat = 'Surat Masuk'
-                if (app.disertai_dana == true) {
+                if (app.letter.disertai_dana == true) {
                     jenisSurat = 'Surat Pembayaran'
                 }
 
-                modal.find('#detailInformation').find('#kode').text(app.kode);
-                modal.find('#detailInformation').find('#nomor_agenda').text(app.nomor_agenda);
-                modal.find('#detailInformation').find('#pemohon_id').text(`${app.pemohon.name} (${app.pemohon.no_identity})`);
+                modal.find('#detailInformation').find('#kode').text(app.letter.kode);
+                modal.find('#detailInformation').find('#nomor_agenda').text(app.letter.nomor_agenda);
+                modal.find('#detailInformation').find('#pemohon_id').text(`${app.letter.pemohon.name} (${app.letter.pemohon.no_identity})`);
                 modal.find('#detailInformation').find('#tanggal_surat').text(dateOfLetter);
-                modal.find('#detailInformation').find('#nomor_surat').text(app.nomor_surat);
-                modal.find('#detailInformation').find('#asal_surat').text(app.asal_surat);
-                modal.find('#detailInformation').find('#hal').text(app.hal);
+                modal.find('#detailInformation').find('#nomor_surat').text(app.letter.nomor_surat);
+                modal.find('#detailInformation').find('#asal_surat').text(app.letter.asal_surat);
+                modal.find('#detailInformation').find('#hal').text(app.letter.hal);
                 modal.find('#detailInformation').find('#tanggal_diterima').text(receivedDate);
-                modal.find('#detailInformation').find('#untuk').text(app.untuk);
+                modal.find('#detailInformation').find('#untuk').text(app.letter.untuk);
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
-                modal.find('#detailInformation').find('#alasan_penolakan').text(app.alasan_penolakan);
-                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
-                modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.status === 'Selesai' ? 'badge-primary' : app.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.status}</span>`);
+                modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
+                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
+                modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
+                modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
+                modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')
+                modal.find('#detailInformation').find('#tanggal_selesai').text(tanggalSelesai);
+                modal.find('#detailInformation').find('#selesai_dalam_waktu').text(app?.selesai_dalam);
 
                 // disposition detail
                 modal.find('#detailDisposition').find('tbody').children().remove()
 
-                for (let index = 0; index < app.dispositions.length; index++) {
-                    const element = app.dispositions[index];
+                for (let index = 0; index < app.letter.dispositions.length; index++) {
+                    const element = app.letter.dispositions[index];
 
                     let recievedDate = ''
                     if (element.tanggal_diterima) {
@@ -825,7 +886,6 @@
                         ${recievedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${recievedDateObj.getFullYear()}
                         ${recievedDateObj.getHours().toString().padStart(2, '0')}:${recievedDateObj.getMinutes().toString().padStart(2, '0')}
-
                     `;
                     }
 
@@ -862,28 +922,44 @@
             let button = $(e.relatedTarget)
             let modal = $(this)
             let id = button.data('integrity')
-            $('#formDisposition').attr('action', "{{ url('/letter/') }}/" + id + '/disposition').attr('method', 'PUT')
+            $('#formDisposition').attr('action', "{{ url('/letter/') }}/" + id + '/disposition').attr('method', 'POST')
             $('#ModalDisposition').find('#letter_id').val(id)
+            $('#ModalDisposition').find('#position_id').closest('.form-group').attr('hidden', true);
+            $('#ModalDisposition').find('#sk_file').closest('.form-group').attr('hidden', true);
+        })
+
+        $('#ModalDisposition').on('hidden.bs.modal', function() {
+            $('#ModalDisposition').find('#status').val(null);
+            $('#ModalDisposition').find('#letter_id').val(null)
         })
 
         $('#ModalDisposition').find('#status').change(function() {
             const selectedValue = $(this).val();
+            const roleId = "{{ auth()->user()->role_id }}";
 
             if (selectedValue == "Setujui") {
-                $('#ModalDisposition').find('#position_id').closest('.form-group').removeAttr('hidden');
-
                 const id = $('#ModalDisposition').find('#letter_id').val()
-                $.get("{{ url('/letter/') }}/" + id + '/target-disposition', function(app) {
-                    $('#ModalDisposition').find('#position_id').val(app)
+                $.get("{{ url('/letter/') }}/" + id + '/target-disposition', function(res) {
+                    if (perlu_sk && roleId == res.pihak_pembuat_sk_role_id) {
+                        $('#ModalDisposition').find('#position_id').closest('.form-group').removeAttr('hidden');
+                        $('#ModalDisposition').find('#position_id').val(res.nextDisposition)
+                        $('#ModalDisposition').find('#sk_file').closest('.form-group').removeAttr('hidden');
+                        $('#ModalDisposition').find('#sk_file').attr('required', true);
+                    } else {
+                        $('#ModalDisposition').find('#position_id').closest('.form-group').removeAttr('hidden');
+                        $('#ModalDisposition').find('#position_id').val(res.nextDisposition)
+                    }
                 })
             } else {
                 $('#ModalDisposition').find('#position_id').closest('.form-group').attr('hidden', true);
+                $('#ModalDisposition').find('#sk_file').closest('.form-group').attr('hidden', true);
             }
         });
 
         $("#formDisposition").validate({
             messages: {
                 status: "Status tidak boleh kosong",
+                sk_file: "SK file tidak boleh kosong",
             },
             success: function(messages) {
                 $(messages).remove();
@@ -897,7 +973,9 @@
                 $.ajax({
                     url: $(form).attr('action'),
                     type: $(form).attr('method'),
-                    data: $(form).serialize(),
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
                     dataType: 'JSON',
                     success: function(res) {
                         $('#ModalDisposition').modal('hide')
@@ -1008,13 +1086,20 @@
             const checkbox = $(this);
             const row = checkbox.closest('.row');
             const display = row.find('#order');
+            const disposisiName = row.find('#disposisi_name');
+
+            // LIST SK
+            const formPengajuan = $('#ModalAddEdit').find('#pihak_pembuat_sk_id');
+            const option = `<option value="${checkbox.val()}">${disposisiName.text()}</option>`
 
             if (checkbox.is(':checked')) {
                 display.text(`(${selected.length+1})`);
                 selected.push(checkbox.val())
+                formPengajuan.append(option)
             } else {
                 display.text('');
                 selected = selected.filter(item => item !== checkbox.val());
+                formPengajuan.find(`option[value='${checkbox.val()}']`).remove();
             }
 
             setOrderDisposisi()

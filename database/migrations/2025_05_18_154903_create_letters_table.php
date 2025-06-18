@@ -22,15 +22,16 @@ class CreateLettersTable extends Migration
             $table->string('asal_surat')->nullable();
             $table->string('hal')->nullable();
             $table->foreignId('pemohon_id')->references('id')->on('t_user');
-            $table->date('tanggal_diterima')->nullable();
+            $table->timestamp('tanggal_diterima')->nullable();
             $table->string('untuk')->nullable();
             $table->string('status')->nullable();
             $table->foreignId('proposal_file')->nullable()->references('id')->on('t_media');
             $table->boolean('disertai_dana')->nullable();
             $table->text('alasan_penolakan')->nullable();
-            $table->date('tanggal_selesai')->nullable();
+            $table->timestamp('tanggal_selesai')->nullable();
             $table->boolean('perlu_sk')->default(false);
             $table->foreignId('pihak_pembuat_sk_id')->nullable()->references('id')->on('t_disposisi');
+            $table->foreignId('sk_file')->nullable()->references('id')->on('t_media');
             $table->timestamps();
         });
     }

@@ -32,12 +32,18 @@ class Letter extends Model
         'alasan_penolakan',
         'tanggal_selesai',
         'perlu_sk',
-        'pihak_pembuat_sk_id'
+        'pihak_pembuat_sk_id',
+        'sk_file'
     ];
 
     function pemohon()
     {
         return $this->belongsTo(User::class);
+    }
+
+    function pihak_pembuat_sk()
+    {
+        return $this->belongsTo(Disposisi::class, 'pihak_pembuat_sk_id', 'id');
     }
 
     function dispositions()
@@ -53,5 +59,10 @@ class Letter extends Model
     function file()
     {
         return $this->belongsTo(Media::class,  'proposal_file', 'id');
+    }
+
+    function sk()
+    {
+        return $this->belongsTo(Media::class,  'sk_file', 'id');
     }
 }

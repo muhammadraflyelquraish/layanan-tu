@@ -8,6 +8,7 @@ use App\Models\LetterDisposition;
 use App\Models\Media;
 use App\Models\Role;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,7 +29,7 @@ class LetterController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = Letter::with(['pemohon', 'spjs', 'file']);
+        $app = Letter::with(['pemohon', 'spjs', 'file', 'sk']);
         $app->where(function ($query) {
             $query->whereHas('spjs', null, '<', 1);
         });
@@ -90,7 +91,10 @@ class LetterController extends Controller
                 return $row->tanggal_surat ? date('d M Y', strtotime($row->tanggal_surat)) : '-';
             })
             ->editColumn('file.original_name', function ($row) {
-                return $row->file ? '<a href="' . $row->file->file_url . '" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>' : '-';
+                return $row->file ? '<a href="' . $row->file->file_url . '" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>' : '-';
+            })
+            ->editColumn('sk.original_name', function ($row) {
+                return $row->sk ? '<a href="' . $row->sk->file_url . '" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok SK</a>' : '-';
             })
             ->editColumn('disertai_dana', function ($row) {
                 return $row->disertai_dana ? "Surat Pembayaran" : "Surat Masuk";
@@ -110,7 +114,7 @@ class LetterController extends Controller
                     return '<span class="label label-warning">' . $row->status . '</span>';
                 }
             })
-            ->rawColumns(['action', 'status', 'pemohon.name', 'file.original_name'])
+            ->rawColumns(['action', 'status', 'pemohon.name', 'file.original_name', 'sk.original_name'])
             ->toJson();
     }
 
@@ -122,6 +126,7 @@ class LetterController extends Controller
 
                 $data = $request->all();
                 $data['proposal_file'] = $letter->proposal_file;
+                $data['perlu_sk'] = $request->pihak_pembuat_sk_id ? true : false;
 
                 if ($request->proposal_file) {
                     $file = $request->file('proposal_file');
@@ -196,6 +201,7 @@ class LetterController extends Controller
                     $data['disertai_dana'] = $request->disertai_dana == "1";
                     $data['proposal_file'] = $media->id;
                     $data['nomor_agenda'] = $nomorAgenda;
+                    $data['perlu_sk'] = $request->pihak_pembuat_sk_id ? true : false;
 
                     if (auth()->user()->role_id == 2) {
                         $data['pemohon_id'] = auth()->user()->id;
@@ -240,7 +246,19 @@ class LetterController extends Controller
 
     public function show(Letter $letter)
     {
-        return $letter->load('pemohon', 'file', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator', 'dispositions.disposition');
+        $letter = $letter->load('pemohon', 'file', 'pihak_pembuat_sk', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator', 'dispositions.disposition');
+
+        $selesaiDalam = '-';
+        if ($letter->tanggal_diterima && $letter->tanggal_selesai) {
+            $selesaiDalam = Carbon::parse($letter->tanggal_diterima)
+                ->diff(\Carbon\Carbon::parse($letter->tanggal_selesai))
+                ->format('%m bulan, %d hari, %h jam, %i menit');
+        }
+
+        return response()->json([
+            'letter' => $letter,
+            'selesai_dalam' => $selesaiDalam,
+        ]);
     }
 
     public function update(Request $request, Letter $letter): JsonResponse
@@ -336,8 +354,34 @@ class LetterController extends Controller
                         ]);
                     }
 
+                    $skfileId = null;
+                    if ($request->sk_file) {
+                        $file = $request->file('sk_file');
+                        if ($file->getSize() > 614400) {
+                            throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
+                        }
+                        $fileName = uniqid() . '_' . $file->getClientOriginalName();
+
+                        $disk = 'pdf';
+                        $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                        $url = Storage::disk($disk)->url($uploadedPath);
+
+                        $media = Media::create([
+                            "name" => $fileName,
+                            "original_name" => $file->getClientOriginalName(),
+                            "path" => $uploadedPath,
+                            "file_url" => $url,
+                        ]);
+
+                        $skfileId  = $media->id;
+                    }
+
                     // Update letter status
-                    $letter->update(['status' => $applicatoinStatus]);
+                    $letter->update([
+                        'status' => $applicatoinStatus,
+                        'tanggal_selesai' => $applicatoinStatus == 'Selesai' ? now() : null,
+                        'sk_file' => $skfileId
+                    ]);
                 } else {
                     $letter->update([
                         'status' => 'Ditolak',
@@ -362,16 +406,19 @@ class LetterController extends Controller
 
     public function targetDisposition(Letter $letter)
     {
-        $currentDisposition = LetterDisposition::where('letter_id', $letter->id)->where('status', 'Diproses')->first();
+        $currentDisposition = LetterDisposition::with('letter.pihak_pembuat_sk')->where('letter_id', $letter->id)->where('status', 'Diproses')->first();
         $nextDisposition = LetterDisposition::with('disposition')
             ->where("urutan", $currentDisposition->urutan + 1)
             ->where('letter_id', $letter->id)
             ->where("status", null)
             ->first();
-        if (!$nextDisposition) {
-            return "TU";
-        }
-        return $nextDisposition->disposition->name;
+        $nextDispositionName = "TU";
+
+        return response()->json([
+            "nextDisposition" => !$nextDisposition ? $nextDispositionName : $nextDisposition->disposition->name,
+            "perlu_sk" => $currentDisposition->letter->perlu_sk,
+            "pihak_pembuat_sk_role_id" => $currentDisposition->letter->pihak_pembuat_sk ? $currentDisposition->letter->pihak_pembuat_sk->approver_id : null,
+        ]);
     }
 
     public function confirmation(Request $request, Letter $letter)
