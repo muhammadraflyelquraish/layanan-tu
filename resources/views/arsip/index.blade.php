@@ -91,7 +91,8 @@
                                     <th>Untuk</th>
                                     <th>Jenis Surat</th>
                                     <th>Status</th>
-                                    <th>Dokumen</th>
+                                    <th>Proposal</th>
+                                    <th>SK</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
@@ -164,6 +165,22 @@
                             <th class="text-right">Jenis Surat</th>
                             <td class="text-center">:</td>
                             <td id="disertai_dana"></td>
+                        </tr>
+                        <tr>
+                            <th>Perlu SK</th>
+                            <td class="text-center">:</td>
+                            <td id="perlu_sk"></td>
+                            <th class="text-right">Pihak Pembuat SK</th>
+                            <td class="text-center">:</td>
+                            <td id="pihak_pembuat_sk_id"></td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Selesai</th>
+                            <td class="text-center">:</td>
+                            <td id="tanggal_selesai"></td>
+                            <th class="text-right">Selesai Dalam Waktu</th>
+                            <td class="text-center">:</td>
+                            <td id="selesai_dalam_waktu"></td>
                         </tr>
                         <tr>
                             <th>Alasan Penolakan</th>
@@ -437,6 +454,10 @@
                 name: 'file.original_name'
             },
             {
+                data: 'sk.original_name',
+                name: 'sk.original_name'
+            },
+            {
                 data: 'action',
                 name: 'action',
                 searchable: false,
@@ -480,17 +501,17 @@
 
                 modal.find('#modal-title').text('Edit Pengajuan');
                 $.get('{{ route("letter.store") }}/' + id, function(app) {
-                    modal.find('#letter_id').val(app.id)
-                    modal.find('#pemohon_id').val(app.pemohon_id).attr('disabled', true)
-                    modal.find('#nomor_agenda').val(app.nomor_agenda)
-                    modal.find('#tanggal_surat').val(app.tanggal_surat)
-                    modal.find('#nomor_surat').val(app.nomor_surat)
-                    modal.find('#asal_surat').val(app.asal_surat)
-                    modal.find('#hal').val(app.hal)
-                    modal.find('#tanggal_diterima').val(app.tanggal_diterima)
-                    modal.find('#untuk').val(app.untuk)
-                    modal.find('#disertai_dana').val(app.disertai_dana ? "1" : "0")
-                    modal.find('#proposal_file').html(`<a href="${app.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
+                    modal.find('#letter_id').val(app.letter.id)
+                    modal.find('#pemohon_id').val(app.letter.pemohon_id).attr('disabled', true)
+                    modal.find('#nomor_agenda').val(app.letter.nomor_agenda)
+                    modal.find('#tanggal_surat').val(app.letter.tanggal_surat)
+                    modal.find('#nomor_surat').val(app.letter.nomor_surat)
+                    modal.find('#asal_surat').val(app.letter.asal_surat)
+                    modal.find('#hal').val(app.letter.hal)
+                    modal.find('#tanggal_diterima').val(app.letter.tanggal_diterima)
+                    modal.find('#untuk').val(app.letter.untuk)
+                    modal.find('#disertai_dana').val(app.letter.disertai_dana ? "1" : "0")
+                    modal.find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
 
                     // $('.disposisi-input').each(function(e) {
                     //     // Your code here
@@ -517,9 +538,9 @@
             let id = button.data('integrity')
 
             $.get('{{ route("letter.store") }}/' + id, function(app) {
-                let dateOfLetter = ''
-                if (app.tanggal_surat) {
-                    const dateOfLetterObj = new Date(app.tanggal_surat);
+                let dateOfLetter = '-'
+                if (app.letter.tanggal_surat) {
+                    const dateOfLetterObj = new Date(app.letter.tanggal_surat);
                     dateOfLetter = `
                     ${dateOfLetterObj.getDate().toString().padStart(2, '0')}
                     ${dateOfLetterObj.toLocaleString('id-ID', {month: 'long'})}
@@ -527,40 +548,56 @@
                 `;
                 }
 
-                let receivedDate = ''
-                if (app.tanggal_diterima) {
-                    const receivedDateObj = new Date(app.tanggal_diterima);
+                let receivedDate = '-'
+                if (app.letter.tanggal_diterima) {
+                    const receivedDateObj = new Date(app.letter.tanggal_diterima);
                     receivedDate = `
                         ${receivedDateObj.getDate().toString().padStart(2, '0')}
                         ${receivedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${receivedDateObj.getFullYear()}
+                        ${receivedDateObj.getHours().toString().padStart(2, '0')}:${receivedDateObj.getMinutes().toString().padStart(2, '0')}
+                    `;
+                }
+
+                let tanggalSelesai = '-'
+                if (app.letter.tanggal_selesai) {
+                    const tanggalSelesaiObj = new Date(app.letter.tanggal_selesai);
+                    tanggalSelesai = `
+                        ${tanggalSelesaiObj.getDate().toString().padStart(2, '0')}
+                        ${tanggalSelesaiObj.toLocaleString('id-ID', {month: 'long'})}
+                        ${tanggalSelesaiObj.getFullYear()}
+                        ${tanggalSelesaiObj.getHours().toString().padStart(2, '0')}:${tanggalSelesaiObj.getMinutes().toString().padStart(2, '0')}
                     `;
                 }
 
                 let jenisSurat = 'Surat Masuk'
-                if (app.disertai_dana == true) {
+                if (app.letter.disertai_dana == true) {
                     jenisSurat = 'Surat Pembayaran'
                 }
 
-                modal.find('#detailInformation').find('#kode').text(app.kode);
-                modal.find('#detailInformation').find('#nomor_agenda').text(app.nomor_agenda);
-                modal.find('#detailInformation').find('#pemohon_id').text(`${app.pemohon.name} (${app.pemohon.no_identity})`);
+                modal.find('#detailInformation').find('#kode').text(app.letter.kode);
+                modal.find('#detailInformation').find('#nomor_agenda').text(app.letter.nomor_agenda);
+                modal.find('#detailInformation').find('#pemohon_id').text(`${app.letter.pemohon.name} (${app.letter.pemohon.no_identity})`);
                 modal.find('#detailInformation').find('#tanggal_surat').text(dateOfLetter);
-                modal.find('#detailInformation').find('#nomor_surat').text(app.nomor_surat);
-                modal.find('#detailInformation').find('#asal_surat').text(app.asal_surat);
-                modal.find('#detailInformation').find('#hal').text(app.hal);
+                modal.find('#detailInformation').find('#nomor_surat').text(app.letter.nomor_surat);
+                modal.find('#detailInformation').find('#asal_surat').text(app.letter.asal_surat);
+                modal.find('#detailInformation').find('#hal').text(app.letter.hal);
                 modal.find('#detailInformation').find('#tanggal_diterima').text(receivedDate);
-                modal.find('#detailInformation').find('#untuk').text(app.untuk);
+                modal.find('#detailInformation').find('#untuk').text(app.letter.untuk);
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
-                modal.find('#detailInformation').find('#alasan_penolakan').text(app.alasan_penolakan);
-                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
-                modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.status === 'Selesai' ? 'badge-primary' : app.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.status}</span>`);
+                modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
+                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
+                modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
+                modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')
+                modal.find('#detailInformation').find('#tanggal_selesai').text(tanggalSelesai);
+                modal.find('#detailInformation').find('#selesai_dalam_waktu').text(app?.selesai_dalam);
 
                 // disposition detail
                 modal.find('#detailDisposition').find('tbody').children().remove()
 
-                for (let index = 0; index < app.dispositions.length; index++) {
-                    const element = app.dispositions[index];
+                for (let index = 0; index < app.letter.dispositions.length; index++) {
+                    const element = app.letter.dispositions[index];
 
                     let recievedDate = ''
                     if (element.tanggal_diterima) {
@@ -570,7 +607,6 @@
                         ${recievedDateObj.toLocaleString('id-ID', {month: 'long'})}
                         ${recievedDateObj.getFullYear()}
                         ${recievedDateObj.getHours().toString().padStart(2, '0')}:${recievedDateObj.getMinutes().toString().padStart(2, '0')}
-
                     `;
                     }
 

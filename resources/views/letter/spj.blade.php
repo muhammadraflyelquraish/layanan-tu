@@ -17,25 +17,25 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-7">
+        <div class="col-lg-6">
             <div class="ibox ">
                 <div class="ibox-title">
                     <h5>Data SPJ</h5>
                 </div>
                 <div class="ibox-content">
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
                     <form action="{{ route('spj.store') }}" method="post" id="formRole" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
-
-                        @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
 
                         <input type="hidden" name="letter_id" id="letter_id" value="{{ $letter->id }}" class="form-control" required>
 
@@ -72,9 +72,11 @@
                                             <option value="{{ $id }}">{{ $nama }}</option>
                                             @endforeach
                                         </select>
+                                        <small class="text-danger" id="categories[]_error"></small>
                                     </td>
                                     <td>
                                         <input type="file" name="files[]" id="files" class="form-control" accept="application/pdf" required>
+                                        <small class="text-danger" id="files[]_error"></small>
                                     </td>
                                     <td></td>
                                 </tr>
@@ -84,8 +86,6 @@
                                     <td colspan="4"><button class="btn btn-default" id="add-document" type="button"><i class="fa fa-plus"></i> Tambah Dokumen</button></td>
                                 </tr>
                             </tfoot>
-                        </table>
-
                         </table>
 
                         <div class="hr-line-dashed"></div>
@@ -188,9 +188,11 @@
                             <option value="{{ $id }}">{{ $nama }}</option>
                             @endforeach
                         </select>
+                        <small class="text-danger" id="categories[]_error"></small>
                     </td>
                     <td>
                         <input type="file" name="files[]" id="files" accept="application/pdf" class="form-control" required>
+                        <small class="text-danger" id="files[]_error"></small>
                     </td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-danger" id="remove-document" type="button"><i class="fa fa-trash"></i></button>

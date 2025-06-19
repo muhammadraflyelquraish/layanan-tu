@@ -5,7 +5,7 @@
     <div class="wrapper wrapper-content">
         <div class="row">
             <div class="col-lg-3">
-                <a href="{{ route('letter.index') }}">
+                <a href="{{ route('arsip.index') }}">
                     <div class="ibox">
                         <div class="ibox-title" style="padding: 15px 15px 8px 15px;">
                             <h5>Total Surat</h5>

@@ -789,7 +789,7 @@
                     modal.find('#tanggal_diterima').val(app.letter.tanggal_diterima)
                     modal.find('#untuk').val(app.letter.untuk)
                     modal.find('#disertai_dana').val(app.letter.disertai_dana ? "1" : "0")
-                    modal.find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
+                    modal.find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
                     modal.find('#pihak_pembuat_sk_id').val(app.letter.pihak_pembuat_sk_id)
 
                     // $('.disposisi-input').each(function(e) {
@@ -865,7 +865,7 @@
                 modal.find('#detailInformation').find('#untuk').text(app.letter.untuk);
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
                 modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
-                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>`);
+                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
                 modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
                 modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
                 modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')

@@ -21,7 +21,7 @@ class ArsipController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = Letter::with(['pemohon', 'spjs', 'file']);
+        $app = Letter::with(['pemohon', 'spjs', 'file', 'sk']);
 
         if (auth()->user()->role_id === 2) {
             $app->where("t_letter.pemohon_id", auth()->user()->id);
@@ -61,7 +61,10 @@ class ArsipController extends Controller
                 return $row->tanggal_surat ? date('d M Y', strtotime($row->tanggal_surat)) : '-';
             })
             ->editColumn('file.original_name', function ($row) {
-                return $row->file ? '<a href="' . $row->file->file_url . '" target="_blank"><i class="fa fa-file-pdf-o"></i> Dokumen Pengajuan</a>' : '-';
+                return $row->file ? '<a href="' . $row->file->file_url . '" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>' : '-';
+            })
+            ->editColumn('sk.original_name', function ($row) {
+                return $row->sk ? '<a href="' . $row->sk->file_url . '" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok SK</a>' : '-';
             })
             ->editColumn('disertai_dana', function ($row) {
                 return $row->disertai_dana ? "Surat Pembayaran" : "Surat Masuk";
@@ -81,7 +84,7 @@ class ArsipController extends Controller
                     return '<span class="label label-warning">' . $row->status . '</span>';
                 }
             })
-            ->rawColumns(['action', 'status', 'pemohon.name', 'file.original_name'])
+            ->rawColumns(['action', 'status', 'pemohon.name', 'file.original_name', 'sk.original_name'])
             ->toJson();
     }
 
