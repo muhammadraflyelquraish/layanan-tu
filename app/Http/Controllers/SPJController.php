@@ -32,23 +32,27 @@ class SPJController extends Controller
             $app->where("t_spj.user_id", auth()->user()->id);
         }
 
-        $app->when(request('status'), function ($app) {
-            $app->where('t_spj.status', request('status'));
+        $app->when(request('status'), function ($query) {
+            $query->where('t_spj.status', request('status'));
         });
-        $app->when(request('pemohon_id'), function ($app) {
-            $app->where('t_spj.user_id', request('pemohon_id'));
+
+        $app->when(request('pemohon_id'), function ($query) {
+            $query->where('t_spj.user_id', request('pemohon_id'));
         });
-        $app->when(request('search'), function ($app) {
+
+        $app->when(request('search'), function ($query) {
             $searchTerm = "%" . request('search') . "%";
 
-            $app->where('t_spj.jenis', 'ilike', $searchTerm)
-                ->orWhereHas('letter', function ($q) use ($searchTerm) {
-                    $q->where('kode', 'ilike', $searchTerm);
-                })
-                ->orWhereHas('user', function ($q) use ($searchTerm) {
-                    $q->where('name', 'ilike', $searchTerm);
-                    $q->orWhere('no_identity', 'ilike', $searchTerm);
-                });
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(t_spj.jenis) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereHas('letter', function ($subQ) use ($searchTerm) {
+                        $subQ->whereRaw('LOWER(kode) LIKE ?', [strtolower($searchTerm)]);
+                    })
+                    ->orWhereHas('user', function ($subQ) use ($searchTerm) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
+                            ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)]);
+                    });
+            });
         });
 
         return DataTables::of($app)

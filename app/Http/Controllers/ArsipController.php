@@ -27,23 +27,28 @@ class ArsipController extends Controller
             $app->where("t_letter.pemohon_id", auth()->user()->id);
         }
 
-        $app->when(request('status'), function ($app) {
-            $app->where('t_letter.status', request('status'));
+        $app->when(request('status'), function ($query) {
+            $query->where('t_letter.status', request('status'));
         });
-        $app->when(request('pemohon_id'), function ($app) {
-            $app->where('t_letter.pemohon_id', request('pemohon_id'));
+
+        $app->when(request('pemohon_id'), function ($query) {
+            $query->where('t_letter.pemohon_id', request('pemohon_id'));
         });
-        $app->when(request('disertai_dana'), function ($app) {
-            $app->where('t_letter.disertai_dana', request('disertai_dana') == "Ya");
+
+        $app->when(request('disertai_dana'), function ($query) {
+            $query->where('t_letter.disertai_dana', request('disertai_dana') == "Ya");
         });
-        $app->when(request('search'), function ($app) {
+
+        $app->when(request('search'), function ($query) {
             $searchTerm = "%" . request('search') . "%";
 
-            $app->where('t_letter.kode', 'ilike', $searchTerm)
-                ->orWhereHas('pemohon', function ($q) use ($searchTerm) {
-                    $q->where('name', 'ilike', $searchTerm);
-                    $q->orWhere('no_identity', 'ilike', $searchTerm);
-                });
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(t_letter.kode) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereHas('pemohon', function ($subQ) use ($searchTerm) {
+                        $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
+                            ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)]);
+                    });
+            });
         });
 
         return DataTables::of($app)
