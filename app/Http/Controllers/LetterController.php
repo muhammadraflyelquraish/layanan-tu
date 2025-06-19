@@ -31,7 +31,7 @@ class LetterController extends Controller
     {
         $app = Letter::with(['pemohon', 'spjs', 'file', 'sk']);
 
-        if (auth()->user()->role_id === 2) {
+        if (auth()->user()->role_id == 2) {
             $app->where("t_letter.pemohon_id", auth()->user()->id);
         }
 
