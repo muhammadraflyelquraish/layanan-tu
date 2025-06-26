@@ -1,35 +1,30 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Edit Pengguna</h2>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <span>Managemen Akses</span>
-            </li>
-            <li class="breadcrumb-item">
-                <span><a href="{{ route('user.index') }}"><u>Pengguna</u></a></span>
-            </li>
-            <li class="breadcrumb-item active">
-                <strong>Edit</strong>
-            </li>
-        </ol>
-    </div>
-</div>
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
+
+            @if(session()->has('status'))
+            <div class="alert alert-success alert-dismissible">
+                {{ session('status') }}
+                <button type="button" class="close" style="font-weight: 500; line-height: 0.75;" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @endif
+
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>Data Pengguna</h5>
+                    <h5>Profile</h5>
                 </div>
+
                 <div class="ibox-content">
-                    <form action="{{ route('user.update', $user->id) }}" method="POST" id="formRole">
+                    <form action="{{ route('profile.update', $user->id) }}" method="POST" id="formRole">
                         @csrf
                         @method('PATCH')
 
+                        <h5>Informasi Pengguna</h5>
                         <div class="form-group">
                             <label>Nama lengkap</label>
                             <input type="text" class="form-control" name="name" value="{{ $user->name }}" required autofocus>
@@ -42,18 +37,15 @@
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
-                            <small class="text-danger" id="email_error">@if($errors->has('email')) {{ $errors->first('email') }} @endif</small>
+                            <input type="email" readonly class="form-control" value="{{ $user->email }}" required>
                         </div>
+
+                        <br>
+                        <h5>Ubah Password <br> <small>(Kosongkan jika tidak ingin mengubah password)</small></h5>
                         <div class="form-group">
-                            <label>Role</label>
-                            <select class="form-control" name="role_id" required>
-                                <option value="" selected disabled>Pilih Role</option>
-                                @foreach($roles as $id => $role)
-                                <option value="{{ $id }}" @if($user->role_id == $id) selected @endif>{{ $role }}</option>
-                                @endforeach
-                            </select>
-                            <small class="text-danger" id="role_id_error">@if($errors->has('password_confirmation')) {{ $errors->first('password_confirmation') }} @endif</small>
+                            <label>Password Lama</label>
+                            <input type="password" class="form-control" autocomplete="off" name="old_password">
+                            <small class="text-danger" id="old_password_error">@if($errors->has('old_password')) {{ $errors->first('old_password') }} @endif</small>
                         </div>
                         <div class="form-group">
                             <label>Password</label>
@@ -65,19 +57,10 @@
                             <input type="password" class="form-control" autocomplete="off" name="password_confirmation">
                             <small class="text-danger" id="password_confirmation_error">@if($errors->has('password_confirmation')) {{ $errors->first('password_confirmation') }} @endif</small>
                         </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select class="form-control" name="status" required>
-                                <option value="ACTIVE" @if($user->status=='ACTIVE') selected @endif>Aktif</option>
-                                <option value="INACTIVE" @if($user->status=='INACTIVE') selected @endif>Non Aktif</option>
-                            </select>
-                            <small class="text-danger" id="status_error">@if($errors->has('status')) {{ $errors->first('status') }} @endif</small>
-                        </div>
-
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
-                                <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
+                                <button class="btn btn-success float-right ladda-button ladda-button-demo" type="submit"><i class="fa fa-edit"></i> Update</button>
                             </div>
                         </div>
                     </form>
@@ -91,21 +74,35 @@
 @push('script')
 <script>
     $(function() {
+        //BASE
+        let ladda = $('.ladda-button-demo').ladda();
+
+        function LaddaStart() {
+            ladda.ladda('start');
+        }
+
+        function LaddaAndDrawTable() {
+            ladda.ladda('stop');
+        }
+
+        function sweetalert(title, msg, type, timer = 60000, confirmButton = true) {
+            swal({
+                title: title,
+                text: msg,
+                type: type,
+                timer: timer,
+                showConfirmButton: confirmButton
+            });
+        }
 
         $("#formRole").validate({
             rules: {
                 name: 'required',
                 no_identity: 'required',
-                email: 'required',
-                role_id: 'required',
-                status: 'required',
             },
             messages: {
                 name: "Nama lengkap tidak boleh kosong",
                 no_identity: "NIP/NIM/NIDN tidak boleh kosong",
-                email: "Email tidak boleh kosong",
-                role_id: 'Role tidak boleh kosong',
-                status: 'Status tidak boleh kosong',
             },
             success: function(messages) {
                 $(messages).remove();
@@ -115,7 +112,19 @@
                 $("#" + name + "_error").text(error.text());
             },
             submitHandler: function(form) {
-                form.submit()
+                swal({
+                    title: `Update Profile?`,
+                    text: 'Click "Ya" untuk melanjutkan',
+                    showCancelButton: true,
+                    confirmButtonColor: "#007bff",
+                    confirmButtonText: `Ya, Update`,
+                    closeOnConfirm: false
+                }, function() {
+                    LaddaStart()
+                    swal.close();
+                    form.submit()
+                    LaddaAndDrawTable()
+                });
             }
         });
 

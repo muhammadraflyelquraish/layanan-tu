@@ -60,16 +60,43 @@
                 </a>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>Kinerja Pelayanan</h5>
+                    </div>
+                    <a href="{{ route('spj.index') }}">
+                        <div class="ibox-content ibox-heading">
+                            <h3>Rating SPJ
+                                <div class="stat-percent text-primary"><i class="fa fa-star"></i> {{ $avgRating }}</div>
+                            </h3>
+                        </div>
+                    </a>
+                    <a href="{{ route('letter.index') }}">
+                        <div class="ibox-content">
+                            <div>
+                                <div class="float-right text-right">
+                                    <span class="font-bold"><i class="fa fa-clock-o"></i> {{ $avgPengajuan }}</span>
+                                </div>
+                                <h4>Rata-Rata Waktu Proses Pengajuan</h4>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="{{ route('spj.index') }}">
+                        <div class="ibox-content">
+                            <div>
+                                <div class="float-right text-right">
+                                    <span class="font-bold"><i class="fa fa-clock-o"></i> {{ $avgSpj }}</span>
+                                </div>
+                                <h4>Rata-Rata Waktu Proses SPJ</h4>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 @endsection
-
-
-
-@push('script')
-<script>
-    $(function() {
-
-    })
-</script>
-@endpush

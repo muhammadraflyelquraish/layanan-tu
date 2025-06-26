@@ -17,7 +17,8 @@ class CreateSPJDocumentsTable extends Migration
             $table->id();
             $table->foreignId('spj_id')->references('id')->on('t_spj');
             $table->foreignId('spj_category_id')->references('id')->on('t_spj_category');
-            $table->foreignId('spj_file')->references('id')->on('t_media');
+            $table->foreignId('file_id')->nullable()->references('id')->on('t_media');
+            $table->text('link')->nullable();
             $table->timestamps();
         });
     }

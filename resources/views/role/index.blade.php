@@ -17,8 +17,7 @@
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5><a class="btn btn-primary btn-sm" href="{{ route('role.create') }}"><i class="fa fa-plus-square mr-1"></i> Tambah Role</a></h5>
-                    <h4>Daftar Akses</h4>
+                    <h5><a class="btn btn-success btn-sm" href="{{ route('role.create') }}"><i class="fa fa-plus-square mr-1"></i> Tambah Role</a></h5>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -48,7 +47,7 @@
             processing: true,
             serverSide: true,
             order: [
-                [1, 'asc']
+                [3, 'asc']
             ],
             ajax: {
                 url: "{{ route('role.data') }}",
@@ -67,6 +66,12 @@
                 name: 'action',
                 searchable: false,
                 orderable: false
+            }, {
+                data: 'created_at',
+                name: 'created_at',
+                searchable: false,
+                orderable: true,
+                visible: false
             }],
             search: {
                 "regex": true

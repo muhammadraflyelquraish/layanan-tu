@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Disposisi;
 use App\Models\Role;
 use App\Models\RolePermission;
+use App\Models\SPJCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 1,
                     'LETTER' => 1,
                     'SPJ' => 1,
+                    'LABEL_SPJ' => 1,
                     'DISPOSISI' => 1,
                     'ARSIP' => 1,
                 ]
@@ -43,6 +45,7 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 1,
+                    'LABEL_SPJ' => 0,
                     'DISPOSISI' => 0,
                     'ARSIP' => 0,
                 ]
@@ -57,6 +60,7 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
                     'DISPOSISI' => 1,
                     'ARSIP' => 1,
                 ]
@@ -71,6 +75,7 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
                     'DISPOSISI' => 0,
                     'ARSIP' => 1,
                 ]
@@ -85,6 +90,7 @@ class DatabaseSeeder extends Seeder
                     'ROLE' => 0,
                     'LETTER' => 1,
                     'SPJ' => 1,
+                    'LABEL_SPJ' => 1,
                     'DISPOSISI' => 0,
                     'ARSIP' => 1,
                 ]
@@ -250,6 +256,121 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
+        $labelSPJS = [
+            [
+                "nama" => "SK KPA Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Amprahan Honor Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Daftar Hadir Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Bukti Lembar MCM *apabila dibayar melalui non tunai/MCM",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Lembar SPPR Aplikasi Bendara *non tunai/MCM",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Surat Undangan Menjadi Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Surat Undangan Kegiatan Kepada Peserta (Link Zoom)",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "CV Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "NPWP, dan Lembar Depan Rekening Bank",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Daftar Hadir Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Foto Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Jadwal/Susun Acara",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Materi/Handout Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Materi/Handout Narasumber",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Notulensi Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Proposal Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Laporan Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Rekaman (Dalam Bentuk CD) dan Melampirkan Link",
+                "jenis" => "LINK",
+            ],
+            [
+                "nama" => "Surat Pengajuan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Kwitansi Pembelian",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Nota Pembelian",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Surat Undangan Kegiatan Kepada Peserta",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Foto Pembelian",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Foto Kegiatan/Acara",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Daftar Hadir Peserta Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Proposal Kegiatan",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Notulensi Kegiatan (gambaran berjalannya kegiatan dari awal sampai akhir)",
+                "jenis" => "FILE",
+            ],
+            [
+                "nama" => "Laporan Kegiatan Beserta Jadwal Kegiatan",
+                "jenis" => "FILE",
+            ],
+        ];
+
         foreach ($role_permissions as $role) {
             Role::create([
                 "name" => $role['name'],
@@ -280,6 +401,13 @@ class DatabaseSeeder extends Seeder
                 "name" => $disposition['name'],
                 "approver_id" => $disposition['approver_id'],
                 "urutan" => $disposition['urutan'],
+            ]);
+        };
+
+        foreach ($labelSPJS as $labelSPJ) {
+            SPJCategory::create([
+                "nama" => $labelSPJ['nama'],
+                "jenis" => $labelSPJ['jenis'],
             ]);
         };
     }

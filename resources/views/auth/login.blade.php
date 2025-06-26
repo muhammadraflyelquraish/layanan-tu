@@ -55,7 +55,7 @@
                                 <div class="i-checks"><label> <input type="checkbox" name="remember"><i></i>&nbsp;&nbsp;Ingat saya? </label></div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary block full-width m-b ladda-button ladda-button-demo" data-style="zoom-in">Masuk</button>
+                        <button type="submit" class="btn btn-success block full-width m-b ladda-button ladda-button-demo" data-style="zoom-in">Masuk</button>
 
                         <a href="#">
                             <small>Saya lupa kata sandi?</small>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Portal Surat FST</title>
     <link href="{{ asset('build/assets') }}/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ asset('logo/uinxs.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {
@@ -62,6 +63,12 @@
             border: 1px solid transparent;
             background: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #4a90e2, #d1e3f6) border-box;
             animation: fadeInScale 0.8s ease-out;
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
         }
 
         @keyframes fadeInScale {
@@ -337,7 +344,7 @@
                     <i class="fas fa-sign-in-alt mr-2"></i> Masuk
                 </button>
 
-                <a href="#" class="btn-qr">
+                <a href="{{ route('qr.login') }}" class="btn-qr">
                     <i class="fas fa-qrcode mr-2"></i> Tracking Surat
                 </a>
 
@@ -352,7 +359,12 @@
                 </p>
                 @endif
             </form>
+
+            <div class="register-text">
+                <small>&copy; Layanan Tata Usaha - Fakultas Sains & Teknologi</small>
+            </div>
         </div>
+
     </div>
 </body>
 

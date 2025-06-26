@@ -52,7 +52,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Proposal</td>
+                                        <td>Pengajuan</td>
                                         <td class="text-center">
                                             <div class="i-checks"><input type="checkbox" name="letter_permitted"></div>
                                         </td>
@@ -61,6 +61,12 @@
                                         <td>SPJ</td>
                                         <td class="text-center">
                                             <div class="i-checks"><input type="checkbox" name="spj_permitted"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Label SPJ</td>
+                                        <td class="text-center">
+                                            <div class="i-checks"><input type="checkbox" name="label_spj_permitted"></div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -94,7 +100,7 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
-                                <button class="btn btn-primary float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
+                                <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
                             </div>
                         </div>
                     </form>

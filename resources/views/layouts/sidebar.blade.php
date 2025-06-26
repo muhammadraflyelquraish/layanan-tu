@@ -8,10 +8,15 @@
                     @else
                     <img alt="image" class="rounded-circle" src="{{ asset('build/assets') }}/img/default-profile.png" width="48" height="48" />
                     @endif
-                    <div class="dropdown-toggle">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="block m-t-xs font-bold text-white">Hai, {{ substr(Auth::user()->name, 0, 20) }}..</span>
-                        <span class="text-muted text-xs block">{{ Auth::user()->role->name }}</span>
-                    </div>
+                        <span class="text-muted text-xs block">{{ Auth::user()->role->name }} <b class="caret"></b></span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" id="logout">Logout</a></li>
+                    </ul>
                 </div>
                 <div class="logo-element">
                     TU
@@ -27,7 +32,10 @@
             @endif
 
             @if ($permissions['LETTER'])
-            <li class="{{( request()->routeIs('letter.index')) ? 'active' : '' }}">
+            <li class="{{( 
+                request()->routeIs('letter.index') OR
+                request()->routeIs('letter.spj')
+                ) ? 'active' : '' }}">
                 <a href="{{ route('letter.index') }}"><i class="fa fa-book"></i> <span class="nav-label">Pengajuan</span></a>
             </li>
             @endif
@@ -43,6 +51,17 @@
                 request()->routeIs('spj.rating')
                 ) ? 'active' : '' }}">
                 <a href="{{ route('spj.index') }}"><i class="fa fa-book"></i> <span class="nav-label">SPJ</span></a>
+            </li>
+            @endif
+
+            @if ($permissions['LABEL_SPJ'])
+            <li class="{{( 
+                request()->routeIs('label-spj.index') OR
+                request()->routeIs('label-spj.create') OR
+                request()->routeIs('label-spj.edit') OR
+                request()->routeIs('label-spj.show')
+                ) ? 'active' : '' }}">
+                <a href="{{ route('label-spj.index') }}"><i class="fa fa-table"></i> <span class="nav-label">Label SPJ</span></a>
             </li>
             @endif
 
@@ -120,9 +139,9 @@
             </li>
             @endif -->
 
-            <li class="special_link">
+            <!-- <li class="special_link">
                 <a href="javascript:void(0)" id="logout"><i class="fa fa-sign-out"></i> <span class="nav-label">Keluar</span></a>
-            </li>
+            </li> -->
         </ul>
 
     </div>

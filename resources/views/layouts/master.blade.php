@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <title>Website Pelayanan - Sistem Monitoring SPJ</title>
+    <title>Layanan Tata Usaha - Portal Surat FST</title>
 
     <link href="{{ asset('build/assets') }}/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('build/assets') }}/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -19,6 +19,10 @@
 
     <link href="{{ asset('build/assets') }}/css/animate.css" rel="stylesheet">
     <link href="{{ asset('build/assets') }}/css/style.css" rel="stylesheet">
+
+    <link href="{{ asset('build/assets') }}/css/plugins/select2/select2.min.css" rel="stylesheet">
+    <link href="{{ asset('build/assets') }}/css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
+    <link rel="icon" href="{{ asset('logo/uinxs.png') }}" type="image/png">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
@@ -41,12 +45,12 @@
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-minimalize minimalize-styl-2 btn btn-primary-toggle"><i class="fa fa-bars"></i></button>
+                        <button type="button" class="navbar-minimalize minimalize-styl-2 btn btn-secondary"><i class="fa fa-bars"></i></button>
                         <span class="nav minimalize-styl-2 text-muted"><b>Tanggal</b> :&nbsp;<span id="lifeTime"></span></span>
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message"><b>Sistem Informasi Pelayanan Tata Usaha </b> - Fakultas Sains & Teknologi<br></span>
+                            <span class="m-r-sm text-muted welcome-message">Layanan Tata Usaha - Fakultas Sains & Teknologi</span>
                         </li>
                     </ul>
                 </nav>
@@ -59,7 +63,7 @@
                     <?= date('Y') ?>
                 </div>
                 <div>
-                    &copy; Sistem Informasi Pelayanan Tata Usaha</a>
+                    &copy; Layanan Tata Usaha - Fakultas Sains & Teknologi</a>
                 </div>
             </div>
         </div>

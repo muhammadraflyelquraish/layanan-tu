@@ -26,7 +26,7 @@ class SPJController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = SPJ::with(['user', 'ratings']);
+        $app = SPJ::with(['user', 'ratings'])->orderBy('created_at', 'desc');
 
         if (auth()->user()->role_id == 2) {
             $app->where("t_spj.user_id", auth()->user()->id);
@@ -68,25 +68,25 @@ class SPJController extends Controller
                     $button .= '<a href="' . route('spj.edit', $row->id) . '" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>';
                 }
 
-                if ($row->status == "Disetujui" && $row->ratings->count() == 0 && auth()->user()->role_id == 2) {
+                if ($row->status == "Disetujui" && auth()->user()->role_id == 2) {
                     $button .= '<button type="button" data-toggle="modal" data-id="' . $row->id . '" data-target="#modalRating" class="btn btn-sm btn-info"><i class="fa fa-star"></i></button>';
                 }
 
-                $button .= '<a href="' . route('spj.show', $row->id) . '" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
+                $button .= '<a href="' . route('spj.show', $row->id) . '" class="btn btn-sm btn-success"><i class="fa fa-eye"></i></a>';
                 $button .= '</div>';
                 return $button;
             })
             ->editColumn('letter', function ($row) {
-                return '' . $row->letter->kode . ' <br> <small>(' . $row->letter->untuk . ')</small>';
+                return '' . $row->letter->kode . ' <br> <small>Nomor Agenda: ' . $row->letter->nomor_agenda . '</small>';
             })
             ->editColumn('user.name', function ($row) {
                 return '' . $row->user->name . ' <br> <small>(' . $row->user->no_identity . ')</small>';
             })
             ->editColumn('tanggal_proses', function ($row) {
-                return $row->tanggal_proses ? date('d M Y', strtotime($row->tanggal_proses)) : '-';
+                return $row->tanggal_proses ? date('d M Y - H:i', strtotime($row->tanggal_proses)) : '-';
             })
             ->editColumn('tanggal_selesai', function ($row) {
-                return $row->tanggal_selesai ? date('d M Y', strtotime($row->tanggal_selesai)) : '-';
+                return $row->tanggal_selesai ? date('d M Y - H:i', strtotime($row->tanggal_selesai)) : '-';
             })
             ->editColumn('status', function ($row) {
                 if ($row->status == 'Disetujui') {
@@ -100,10 +100,11 @@ class SPJController extends Controller
             ->editColumn('rating', function ($row) {
                 $rating = '';
                 if (isset($row->ratings[0])) {
-                    for ($i = 1; $i <= 5; $i++) {
-                        $rating .= "<span data-value=\"" . $i . "\" class=\"star\" style=\"" . ($i <= $row->ratings[0]->rating ? 'color: #f5b301' : '') . "\">&#9733;</span>";
-                    }
-                    $rating .= "<br> <small>\"" . $row->ratings[0]->catatan . "\"</small>";
+                    $rating = $row->ratings[0]->rating;
+                    // for ($i = 1; $i <= 5; $i++) {
+                    //     $rating .= "<span data-value=\"" . $i . "\" class=\"star\" style=\"" . ($i <= $row->ratings[0]->rating ? 'color: #f5b301' : '') . "\">&#9733;</span>";
+                    // }
+                    // $rating .= '<br> <small>' . $row->ratings[0]->catatan . '</small>';
                 }
                 return $rating ? $rating : '-';
             })
@@ -114,12 +115,17 @@ class SPJController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'letter_id' => 'required|string',
-            'jenis' => 'required|string',
-            'categories' => 'required|array',
-            'files' => 'required|array'
-        ]);
+        try {
+            $request->validate([
+                'letter_id' => 'required|string',
+                'jenis' => 'required|string',
+                'categories' => 'required|array',
+                'files' => 'array',
+                'links' => 'array',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 400);
+        }
 
         try {
             DB::transaction(function () use ($request) {
@@ -134,53 +140,65 @@ class SPJController extends Controller
                 ]);
 
                 $uploadedFiles = $request->file('files');
-                foreach ($uploadedFiles as $i => $file) {
-                    if ($file->getSize() > 614400) {
-                        throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
+
+                foreach ($request->categories as $i => $category) {
+                    // Link
+                    $link = isset($request->links[$i]) ? $request->links[$i] : null;
+
+                    // Dokumen
+                    $mediaId = null;
+                    if (isset($uploadedFiles[$i])) {
+                        $file = $uploadedFiles[$i];
+
+                        if ($file->getSize() > 5000000) {
+                            throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 5MB.");
+                        }
+
+                        $fileName = uniqid() . '_' . $file->getClientOriginalName();
+
+                        $disk = 'pdf';
+                        $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                        $url = Storage::disk($disk)->url($uploadedPath);
+
+                        $media = Media::create([
+                            "name" => $fileName,
+                            "original_name" => $file->getClientOriginalName(),
+                            "path" => $uploadedPath,
+                            "file_url" => $url,
+                        ]);
+                        $mediaId = $media->id;
                     }
-
-                    $fileName = uniqid() . '_' . $file->getClientOriginalName();
-
-                    $disk = 'pdf';
-                    $uploadedPath = Storage::disk($disk)->put($disk, $file);
-                    $url = Storage::disk($disk)->url($uploadedPath);
-
-                    $media = Media::create([
-                        "name" => $fileName,
-                        "original_name" => $file->getClientOriginalName(),
-                        "path" => $uploadedPath,
-                        "file_url" => $url,
-                    ]);
 
                     SPJDocument::create([
                         "spj_id" => $spj->id,
-                        "spj_category_id" => $request['categories'][$i],
-                        "spj_file" => $media->id,
+                        "spj_category_id" => $category,
+                        "file_id" => $mediaId,
+                        "link" => $link
                     ]);
                 }
             });
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['file' => $e->getMessage()])->withInput();
+            return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        return redirect()->route('letter.index')->with('success', 'SPJ berhasil ditambahkan.');
+        return response()->json(['msg' => 'SPJ berhasil ditambahkan.'], 201);
     }
 
     public function show(SPJ $spj)
     {
-        $spj = $spj->load(['letter', 'user', 'documents', 'histories']);
+        $spj = $spj->load(['letter', 'user', 'documents', 'histories', 'ratings']);
         return view('spj.detail', compact('spj'));
     }
 
     public function approvalView(SPJ $spj)
     {
-        $spj = $spj->load(['letter', 'user', 'documents', 'histories']);
+        $spj = $spj->load(['letter', 'user', 'documents', 'histories', 'ratings']);
         return view('spj.approval', compact('spj'));
     }
 
     public function edit(SPJ $spj)
     {
-        $spj = $spj->load(['letter', 'user', 'documents', 'histories']);
+        $spj = $spj->load(['letter', 'user', 'documents', 'histories', 'ratings']);
         return view('spj.edit', compact('spj'));
     }
 
@@ -189,7 +207,7 @@ class SPJController extends Controller
         DB::transaction(function () use ($spj, $request) {
             $status = $request->type == 'revisi' ? 'Revisi' : 'Disetujui';
             $tanggalSelesai = $request->type == 'setuju' ? now() : null;
-            $catatan =  $request->type == 'revisi' ? $request->catatan : 'Mohon kirimkan hard file ke divisi Keuangan';
+            $catatan = $request->type == 'revisi' ? $request->catatan : 'Mohon kirimkan hard file ke Divisi Keuangan' . ($request->catatan != '' ? ', ' . $request->catatan : '');
 
             $spj->update([
                 'status' => $status,
@@ -225,66 +243,80 @@ class SPJController extends Controller
                 $updatedSpjDocumentIds = [];
 
                 foreach ($spjDocumentCategories as $i => $categoryId) {
-                    if (!isset($uploadedFiles[$i])) {
-                        array_push($updatedSpjDocumentIds, $spjDocumentIds[$i]);
-                        continue;
-                    }
-
-                    if (isset($uploadedFiles[$i]) && !isset($spjDocumentIds[$i])) {
-                        $file = $uploadedFiles[$i];
-                        if ($file->getSize() > 614400) {
-                            throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
-                        }
-
-                        $fileName = uniqid() . '_' . $file->getClientOriginalName();
-
-                        $disk = 'pdf';
-                        $uploadedPath = Storage::disk($disk)->put($disk, $file);
-                        $url = Storage::disk($disk)->url($uploadedPath);
-
-                        $media = Media::create([
-                            "name" => $fileName,
-                            "original_name" => $file->getClientOriginalName(),
-                            "path" => $uploadedPath,
-                            "file_url" => $url,
-                        ]);
-
-                        $spjDocument = SPJDocument::create([
-                            "spj_id" => $spj->id,
-                            "spj_category_id" => $spjDocumentCategories[$i],
-                            "spj_file" => $media->id,
-                        ]);
-                        array_push($updatedSpjDocumentIds, $spjDocument->id);
-                        continue;
-                    }
-
-                    if (isset($uploadedFiles[$i]) && isset($spjDocumentIds[$i])) {
+                    if (isset($spjDocumentIds[$i])) {
                         $spjDocument = SPJDocument::find($spjDocumentIds[$i]);
 
-                        $file = $uploadedFiles[$i];
-                        if ($file->getSize() > 614400) {
-                            throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
+                        // Link
+                        $link = isset($request->links[$i]) ? $request->links[$i] : null;
+
+                        // Media
+                        $mediaId = $spjDocument->file_id;
+                        if (isset($uploadedFiles[$i])) {
+                            $file = $uploadedFiles[$i];
+
+                            if ($file->getSize() > 5000000) {
+                                throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 5MB.");
+                            }
+
+                            $fileName = uniqid() . '_' . $file->getClientOriginalName();
+
+                            $disk = 'pdf';
+                            $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                            $url = Storage::disk($disk)->url($uploadedPath);
+
+                            $media = Media::create([
+                                "name" => $fileName,
+                                "original_name" => $file->getClientOriginalName(),
+                                "path" => $uploadedPath,
+                                "file_url" => $url,
+                            ]);
+                            $mediaId = $media->id;
                         }
-
-                        $fileName = uniqid() . '_' . $file->getClientOriginalName();
-
-                        $disk = 'pdf';
-                        $uploadedPath = Storage::disk($disk)->put($disk, $file);
-                        $url = Storage::disk($disk)->url($uploadedPath);
-
-                        $media = Media::create([
-                            "name" => $fileName,
-                            "original_name" => $file->getClientOriginalName(),
-                            "path" => $uploadedPath,
-                            "file_url" => $url,
-                        ]);
 
                         $spjDocument->update([
                             "spj_id" => $spj->id,
                             "spj_category_id" => $categoryId,
-                            "spj_file" => $media->id,
+                            "file_id" => $mediaId,
+                            "link" => $link
                         ]);
                         array_push($updatedSpjDocumentIds, $spjDocument->id);
+                        continue;
+                    } else {
+                        // Link
+                        $link = isset($request->links[$i]) ? $request->links[$i] : null;
+
+                        // Dokumen
+                        $mediaId = null;
+                        if (isset($uploadedFiles[$i])) {
+                            $file = $uploadedFiles[$i];
+
+                            if ($file->getSize() > 5000000) {
+                                throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 5MB.");
+                            }
+
+                            $fileName = uniqid() . '_' . $file->getClientOriginalName();
+
+                            $disk = 'pdf';
+                            $uploadedPath = Storage::disk($disk)->put($disk, $file);
+                            $url = Storage::disk($disk)->url($uploadedPath);
+
+                            $media = Media::create([
+                                "name" => $fileName,
+                                "original_name" => $file->getClientOriginalName(),
+                                "path" => $uploadedPath,
+                                "file_url" => $url,
+                            ]);
+                            $mediaId = $media->id;
+                        }
+
+                        $spjDocument = SPJDocument::create([
+                            "spj_id" => $spj->id,
+                            "spj_category_id" => $categoryId,
+                            "file_id" => $mediaId,
+                            "link" => $link
+                        ]);
+                        array_push($updatedSpjDocumentIds, $spjDocument->id);
+                        continue;
                     }
                 }
 
@@ -292,20 +324,34 @@ class SPJController extends Controller
                 SPJDocument::where('spj_id', $spj->id)->whereNotIn('id', $updatedSpjDocumentIds)->delete();
             });
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['file' => $e->getMessage()])->withInput();
+            return response()->json(['error' => $e->getMessage()], 400);
         }
 
-        return redirect()->route('spj.index')->with('success', 'Data SPJ berhasil diubah.');
+        return response()->json(['msg' => 'SPJ berhasil diubah.'], 201);
+    }
+
+    public function getRating(SPJ $spj)
+    {
+        $rating = SPJRating::where('spj_id', $spj->id)->where('user_id', request()->user()->id)->first();
+        return response()->json(['data' => $rating], 200);
     }
 
     public function rating(Request $request)
     {
-        SPJRating::create([
-            'spj_id' => $request->spj_id,
-            'user_id' => $request->user()->id,
-            'rating' => (int)$request->rating,
-            'catatan' => $request->catatan,
-        ]);
-        return redirect()->route('spj.index')->with('success', 'Rating SPJ berhasil simpan.');
+        $rating = SPJRating::where('spj_id', $request->spj_id)->where('user_id', $request->user()->id)->first();
+        if ($rating) {
+            $rating->update([
+                'rating' => (int)$request->rating,
+                'catatan' => $request->catatan,
+            ]);
+        } else {
+            SPJRating::create([
+                'spj_id' => $request->spj_id,
+                'user_id' => $request->user()->id,
+                'rating' => (int)$request->rating,
+                'catatan' => $request->catatan,
+            ]);
+        }
+        return redirect()->route('spj.index')->with('success', 'Rating berhasil ditetapkan.');
     }
 }

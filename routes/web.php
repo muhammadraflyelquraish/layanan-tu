@@ -4,11 +4,14 @@ use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DisposisiController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\LabelSPJController;
 use App\Http\Controllers\LetterController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QRController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SPJCategoryController;
 use App\Http\Controllers\SPJController;
+use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +30,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::get('login-qr', [QRController::class, 'generate'])->name('qr.login');
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
@@ -53,8 +57,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/spj/data', [SPJController::class, 'data'])->name('spj.data');
     Route::get('/spj/{spj}/approval', [SPJController::class, 'approvalView'])->name('spj.approval.view');
     Route::put('/spj/{spj}/revisi', [SPJController::class, 'revisi'])->name('spj.revisi');
+    Route::get('/spj/{spj}/rating', [SPJController::class, 'getRating'])->name('spj.get.rating');
     Route::post('/spj/rating', [SPJController::class, 'rating'])->name('spj.rating');
     Route::resource('/spj', SPJController::class);
+
+    // Label SPJ
+    Route::get('/label-spj/data', [LabelSPJController::class, 'data'])->name('label-spj.data');
+    Route::resource('/label-spj', LabelSPJController::class);
+
+    // Tracking
+    Route::get('/tracking/data', [TrackingController::class, 'data'])->name('tracking.data');
+    Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index');
 
     // Disposisi
     Route::get('/disposisi/data', [DisposisiController::class, 'data'])->name('disposisi.data');

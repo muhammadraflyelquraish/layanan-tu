@@ -63,7 +63,7 @@
                             <small class="text-danger" id="password_confirmation_error">@if($errors->has('password_confirmation')) {{ $errors->first('password_confirmation') }} @endif</small>
                         </div>
 
-                        <button type="submit" class="btn btn-primary block full-width m-b ladda-button ladda-button-demo" data-style="zoom-in">Daftar</button>
+                        <button type="submit" class="btn btn-success block full-width m-b ladda-button ladda-button-demo" data-style="zoom-in">Daftar</button>
 
                         <p class="m-t text-center"><a href="{{ route('login') }}">Saya telah menjadi anggota?</a></p>
                     </form>

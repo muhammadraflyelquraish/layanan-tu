@@ -16,6 +16,8 @@ class CreateSPJCategoriesTable extends Migration
         Schema::create('t_spj_category', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->enum('jenis', ['FILE', 'LINK', 'FILE_LINK'])->nullable();
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }

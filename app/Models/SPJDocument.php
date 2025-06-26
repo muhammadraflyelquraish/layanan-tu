@@ -19,12 +19,13 @@ class SPJDocument extends Model
     protected $fillable = [
         'spj_id',
         'spj_category_id',
-        'spj_file'
+        'file_id',
+        'link'
     ];
 
     function file()
     {
-        return $this->belongsTo(Media::class,  'spj_file', 'id');
+        return $this->belongsTo(Media::class,  'file_id', 'id');
     }
 
     function category()

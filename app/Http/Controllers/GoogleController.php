@@ -15,6 +15,10 @@ class GoogleController extends Controller
 {
     function redirectToGoogle(Request $request)
     {
+        if ($request->get('from') === 'qr') {
+            session(['login_source' => 'qr']);
+        }
+
         return Socialite::driver('google')->redirect();
     }
 
@@ -42,7 +46,11 @@ class GoogleController extends Controller
 
             Auth::login($user, true);
 
-            return redirect()->route('letter.index');
+            $source = session()->pull('login_source');
+
+            return $source === 'qr'
+                ? redirect()->route('tracking')
+                : redirect()->route('letter.index');
         } catch (\Exception $e) {
             return redirect()->route('login')->with('email', 'Login google failed');
         }

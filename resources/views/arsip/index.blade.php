@@ -21,28 +21,30 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Search</label>
-                                <input name="search" id="search" class="form-control" placeholder="Kode/Pemohon/Surat...">
+                                <input name="search" id="search" class="form-control" placeholder="Cari Pengajuan..">
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Pemohon</label>
-                                <select name="pemohon_id" id="pemohon_id" class="form-control">
-                                    <option value="">--Filter Pemohon--</option>
+                                <select name="pemohon_id" id="pemohon_id" class="form-control select2-pemohon">
+                                    <option value=""></option>
                                     @foreach($pemohon as $pm)
-                                    <option value="{{ $pm->id }}">{{ $pm->name }} ({{$pm->no_identity}})</option>
+                                    <option value="{{ $pm->id }}">
+                                        {{ $pm->name }} <br> <small>({{$pm->email}})</small>
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Status</label>
-                                <select name="status" id="status" class="form-control">
-                                    <option value="">--Filter Status--</option>
+                                <select name="status" id="status" class="form-control select2-status">
+                                    <option value=""></option>
                                     <option value="Diproses">Diproses</option>
                                     <option value="Selesai">Selesai</option>
                                     @foreach(App\Models\Disposisi::pluck('name', 'id') as $id => $name)
@@ -51,18 +53,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Jenis Surat</label>
-                                <select name="disertai_dana" id="disertai_dana" class="form-control">
-                                    <option value="">--Filter Jenis Surat--</option>
+                                <select name="disertai_dana" id="disertai_dana" class="form-control select2-jenis-surat">
+                                    <option value=""></option>
                                     <option value="Ya">Surat Pembayaran</option>
                                     <option value="Tidak">Surat Masuk</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-success" style="margin-top: 26px;" id="applyFilter" type="button">Filter</button>
+                        <div class="col-md-3">
+                            <button class="btn btn-success" id="applyFilter" type="button"><i class="fa fa-filter"></i> Filter</button>
                         </div>
                     </div>
                 </div>
@@ -85,7 +87,6 @@
                                     <th>Kode Pengajuan</th>
                                     <th>Pemohon</th>
                                     <th>Tanggal Diterima</th>
-                                    <th>Nomor Surat</th>
                                     <th>Asal Surat</th>
                                     <th>Hal</th>
                                     <th>Untuk</th>
@@ -130,55 +131,55 @@
                             <th>Nomor Agenda</th>
                             <td class="text-center">:</td>
                             <td id="nomor_agenda"></td>
-                            <th class="text-right">Diterima Tanggal</th>
+                            <th class="text-right">Tanggal Diterima</th>
                             <td class="text-center">:</td>
                             <td id="tanggal_diterima"></td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal Surat</th>
-                            <td class="text-center">:</td>
-                            <td id="tanggal_surat"></td>
-                            <th class="text-right">Untuk</th>
-                            <td class="text-center">:</td>
-                            <td id="untuk"></td>
                         </tr>
                         <tr>
                             <th>Nomor Surat</th>
                             <td class="text-center">:</td>
                             <td id="nomor_surat"></td>
-                            <th class="text-right">Status</th>
+                            <th class="text-right">Tanggal Surat</th>
                             <td class="text-center">:</td>
-                            <td id="status"></td>
+                            <td id="tanggal_surat"></td>
                         </tr>
                         <tr>
                             <th>Asal Surat</th>
                             <td class="text-center">:</td>
                             <td id="asal_surat"></td>
-                            <th class="text-right">File</th>
+                            <th class="text-right">Status</th>
                             <td class="text-center">:</td>
-                            <td id="proposal_file"></td>
+                            <td id="status"></td>
                         </tr>
                         <tr>
-                            <th>Hal</th>
+                            <th>Untuk</th>
                             <td class="text-center">:</td>
-                            <td id="hal"></td>
+                            <td id="untuk"></td>
                             <th class="text-right">Jenis Surat</th>
                             <td class="text-center">:</td>
                             <td id="disertai_dana"></td>
                         </tr>
                         <tr>
-                            <th>Perlu SK</th>
+                            <th>Hal</th>
                             <td class="text-center">:</td>
-                            <td id="perlu_sk"></td>
-                            <th class="text-right">Pihak Pembuat SK</th>
+                            <td id="hal"></td>
+                            <th class="text-right">File</th>
+                            <td class="text-center">:</td>
+                            <td id="proposal_file"></td>
+                        </tr>
+                        <tr>
+                            <th>Pihak Pembuat SK</th>
                             <td class="text-center">:</td>
                             <td id="pihak_pembuat_sk_id"></td>
+                            <th class="text-right">SK</th>
+                            <td class="text-center">:</td>
+                            <td id="sk"></td>
                         </tr>
                         <tr>
                             <th>Tanggal Selesai</th>
                             <td class="text-center">:</td>
                             <td id="tanggal_selesai"></td>
-                            <th class="text-right">Selesai Dalam Waktu</th>
+                            <th class="text-right">Selesai Dalam</th>
                             <td class="text-center">:</td>
                             <td id="selesai_dalam_waktu"></td>
                         </tr>
@@ -253,7 +254,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
-                    <button type="submit" class="btn btn-primary ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
+                    <button type="submit" class="btn btn-success ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
                 </div>
             </form>
         </div>
@@ -285,7 +286,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
-                    <button type="submit" class="btn btn-primary ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
+                    <button type="submit" class="btn btn-success ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="8"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
                 </div>
             </form>
         </div>
@@ -297,6 +298,24 @@
 @push('script')
 <script>
     $(document).ready(function() {
+        $('.select2-pemohon').select2({
+            placeholder: "Filter Pemohon..",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('.select2-status').select2({
+            placeholder: "Filter Status..",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('.select2-jenis-surat').select2({
+            placeholder: "Filter Jenis Surat..",
+            allowClear: true,
+            width: '100%'
+        });
+
         //BASE
         let ladda = $('.ladda-button-demo').ladda();
 
@@ -426,10 +445,6 @@
                 name: 'tanggal_diterima'
             },
             {
-                data: 'nomor_surat',
-                name: 'nomor_surat'
-            },
-            {
                 data: 'asal_surat',
                 name: 'asal_surat'
             },
@@ -468,9 +483,9 @@
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
-            order: [
-                [1, 'desc']
-            ],
+            // order: [
+            //     [2, 'desc']
+            // ],
             ajax: {
                 url: "{{ route('arsip.data') }}",
                 type: "GET",
@@ -510,7 +525,7 @@
                     modal.find('#hal').val(app.letter.hal)
                     modal.find('#tanggal_diterima').val(app.letter.tanggal_diterima)
                     modal.find('#untuk').val(app.letter.untuk)
-                    modal.find('#disertai_dana').val(app.letter.disertai_dana ? "1" : "0")
+                    modal.find('#disertai_dana').val(app.letter.disertai_dana == false || app.letter.disertai_dana == '0' ? '0' : '1')
                     modal.find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
 
                     // $('.disposisi-input').each(function(e) {
@@ -575,9 +590,9 @@
                     jenisSurat = 'Surat Pembayaran'
                 }
 
-                modal.find('#detailInformation').find('#kode').text(app.letter.kode);
+                modal.find('#detailInformation').find('#kode').html(`${app.letter.kode} <br> <small>Nomor Agenda: ${app.letter.nomor_agenda}</small>`);
                 modal.find('#detailInformation').find('#nomor_agenda').text(app.letter.nomor_agenda);
-                modal.find('#detailInformation').find('#pemohon_id').text(`${app.letter.pemohon.name} (${app.letter.pemohon.no_identity})`);
+                modal.find('#detailInformation').find('#pemohon_id').html(`${app.letter.pemohon.name} <br> <small>${app.letter.pemohon.email}</small>`);
                 modal.find('#detailInformation').find('#tanggal_surat').text(dateOfLetter);
                 modal.find('#detailInformation').find('#nomor_surat').text(app.letter.nomor_surat);
                 modal.find('#detailInformation').find('#asal_surat').text(app.letter.asal_surat);
@@ -587,8 +602,9 @@
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
                 modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
                 modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                modal.find('#detailInformation').find('#sk').html(app.letter?.sk ? `<a href="${app.letter?.sk.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok SK</a>` : '-');
                 modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
-                modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
+                // modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
                 modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')
                 modal.find('#detailInformation').find('#tanggal_selesai').text(tanggalSelesai);
                 modal.find('#detailInformation').find('#selesai_dalam_waktu').text(app?.selesai_dalam);

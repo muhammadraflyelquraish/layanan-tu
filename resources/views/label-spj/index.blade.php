@@ -3,10 +3,10 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Disposisi</h2>
+        <h2>Label SPJ</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item active">
-                <strong>Disposisi</strong>
+                <strong>Label SPJ</strong>
             </li>
         </ol>
     </div>
@@ -17,7 +17,7 @@
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5><button class="btn btn-success btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEdit"><i class="fa fa-plus-square mr-1"></i> Buat Disposisi</button></h5>
+                    <h5><button class="btn btn-success btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEdit"><i class="fa fa-plus-square mr-1"></i> Buat Label SPJ</button></h5>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -25,9 +25,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" width="1px">No</th>
-                                    <th>Nama</th>
-                                    <th>Approver</th>
-                                    <th>Urutan</th>
+                                    <th>Label</th>
+                                    <th>Jenis Evidence</th>
+                                    <th>Keterangan</th>
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                             </thead>
@@ -53,32 +53,28 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Nama</label>
+                        <label class="col-sm-4 col-form-label">Label</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="name" name="name" tabindex="2" required>
-                            <small class="text-danger" id="name_error"></small>
+                            <input type="text" class="form-control" id="nama" name="nama" tabindex="1" required>
+                            <small class="text-danger" id="nama_error"></small>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Approver</label>
+                        <label class="col-sm-4 col-form-label">Jenis Evidence</label>
                         <div class="col-sm-8">
-                            <select class="form-control" name="approver_id" id="approver_id" required>
-                                <option value="" selected disabled>Pilih approver</option>
-                                @foreach($approver as $pm)
-                                @php
-                                $approverId = $pm->id;
-                                @endphp
-                                <option value="{{ $approverId }}" @selected(old('approver_id')==$approverId)>{{ $pm->name }}</option>
-                                @endforeach
+                            <select class="form-control" id="jenis" name="jenis" tabindex="2" required>
+                                <option value="FILE">File</option>
+                                <option value="LINK">Link</option>
+                                <option value="FILE_LINK">File & Link</option>
                             </select>
-                            <small class="text-danger" id="approver_id_error"></small>
+                            <small class="text-danger" id="jenis_error"></small>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Urutan</label>
+                        <label class="col-sm-4 col-form-label">Keterangan</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" id="urutan" name="urutan" tabindex="2" required>
-                            <small class="text-danger" id="urutan_error"></small>
+                            <textarea class="form-control" id="keterangan" name="keterangan" tabindex="3" rows="2"></textarea>
+                            <small class="text-danger" id="keterangan_error"></small>
                         </div>
                     </div>
                 </div>
@@ -122,8 +118,6 @@
         $("#formAddEdit").validate({
             messages: {
                 name: "Nama tidak boleh kosong",
-                approver_id: "Approver tidak boleh kosong",
-                urutan: "Urutan tidak boleh kosong"
             },
             success: function(messages) {
                 $(messages).remove();
@@ -157,10 +151,10 @@
             processing: true,
             serverSide: true,
             order: [
-                [3, 'asc']
+                [5, 'desc']
             ],
             ajax: {
-                url: "{{ route('disposisi.data') }}",
+                url: "{{ route('label-spj.data') }}",
                 type: "GET",
             },
             columns: [{
@@ -171,22 +165,29 @@
                     className: 'text-center'
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'nama',
+                    name: 'nama'
                 },
                 {
-                    data: 'approver.name',
-                    name: 'approver.name'
+                    data: 'jenis',
+                    name: 'jenis'
                 },
                 {
-                    data: 'urutan',
-                    name: 'urutan'
+                    data: 'keterangan',
+                    name: 'keterangan'
                 },
                 {
                     data: 'action',
                     name: 'action',
                     searchable: false,
                     orderable: false
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at',
+                    searchable: false,
+                    orderable: true,
+                    visible: false
                 }
             ],
             search: {
@@ -200,18 +201,17 @@
             if (button.data('mode') == 'edit') {
                 let id = button.data('integrity')
                 let closeTr = button.closest('tr')
-                $('#formAddEdit').attr('action', '{{ route("disposisi.store") }}/' + id).attr('method', 'PUT')
+                $('#formAddEdit').attr('action', '{{ route("label-spj.store") }}/' + id).attr('method', 'PUT')
 
-                modal.find('#modal-title').text('Edit Disposisi');
-                $.get('{{ route("disposisi.store") }}/' + id, function(app) {
-                    modal.find('#name').val(app.name)
-                    modal.find('#approver_id').val(app.approver.id)
-                    modal.find('#urutan').val(app.urutan)
-                    modal.find('#approver_id').select2()
+                modal.find('#modal-title').text('Edit Label SPJ');
+                $.get('{{ route("label-spj.store") }}/' + id, function(app) {
+                    modal.find('#nama').val(app.nama)
+                    modal.find('#jenis').val(app.jenis)
+                    modal.find('#keterangan').val(app.keterangan)
                 })
             } else {
-                $('#formAddEdit').trigger('reset').attr('action', '{{ route("disposisi.store") }}').attr('method', 'POST')
-                modal.find('#modal-title').text('Buat Disposisi');
+                $('#formAddEdit').trigger('reset').attr('action', '{{ route("label-spj.store") }}').attr('method', 'POST')
+                modal.find('#modal-title').text('Buat Label SPJ');
                 modal.find('#approver_id').select2()
             }
         })
@@ -230,7 +230,7 @@
             }, function() {
                 swal.close()
                 $.ajax({
-                    url: "{{ route('disposisi.store') }}/" + id,
+                    url: "{{ route('label-spj.store') }}/" + id,
                     type: "DELETE",
                     dataType: 'json',
                     success: function(response) {

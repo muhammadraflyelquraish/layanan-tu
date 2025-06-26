@@ -21,7 +21,7 @@ class ArsipController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = Letter::with(['pemohon', 'spjs', 'file', 'sk']);
+        $app = Letter::with(['pemohon', 'spjs', 'file', 'sk'])->orderBy('created_at', 'desc');
 
         if (auth()->user()->role_id === 2) {
             $app->where("t_letter.pemohon_id", auth()->user()->id);
@@ -55,7 +55,7 @@ class ArsipController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
-                $button .= '<button class="btn btn-sm btn-primary" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#ModalDetail"><i class="fa fa-eye"></i></button>';
+                $button .= '<button class="btn btn-sm btn-success" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#ModalDetail"><i class="fa fa-eye"></i></button>';
                 if (auth()->user()->role->name == 'Admin') {
                     $button .= '<button class="btn btn-sm btn-danger" id="delete" data-integrity="' . $row->id . '"><i class="fa fa-trash"></i></button>';
                 }
@@ -75,10 +75,13 @@ class ArsipController extends Controller
                 return $row->disertai_dana ? "Surat Pembayaran" : "Surat Masuk";
             })
             ->editColumn('tanggal_diterima', function ($row) {
-                return $row->tanggal_diterima ? date('d M Y', strtotime($row->tanggal_diterima)) : '-';
+                return $row->tanggal_diterima ? date('d M Y - H:i', strtotime($row->tanggal_diterima)) : '-';
             })
             ->editColumn('pemohon.name', function ($row) {
-                return '' . $row->pemohon->name . ' <br> <small>(' . $row->pemohon->no_identity . ')</small>';
+                return '' . $row->pemohon->name . ' <br> <small>' . $row->pemohon->email . '</small>';
+            })
+            ->editColumn('kode', function ($row) {
+                return '' . $row->kode . ' <br> <small>Nomor Agenda: ' . $row->nomor_agenda . '</small>';
             })
             ->editColumn('status', function ($row) {
                 if ($row->status == 'Selesai') {
@@ -89,13 +92,13 @@ class ArsipController extends Controller
                     return '<span class="label label-warning">' . $row->status . '</span>';
                 }
             })
-            ->rawColumns(['action', 'status', 'pemohon.name', 'file.original_name', 'sk.original_name'])
+            ->rawColumns(['action', 'status', 'kode', 'pemohon.name', 'file.original_name', 'sk.original_name'])
             ->toJson();
     }
 
     public function show(Letter $letter)
     {
-        return $letter->load('pemohon', 'file', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator', 'dispositions.disposition');
+        return $letter->load('pemohon', 'file', 'sk', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator', 'dispositions.disposition');
     }
 
     public function destroy(Letter $letter): JsonResponse

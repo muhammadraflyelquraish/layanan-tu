@@ -85,8 +85,8 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'no_identity' => ['required', 'string', 'max:255', 'unique:' . User::class . ',no_identity,' . $user->id],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
-            'password' => ['confirmed'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'role_id' => ['required', 'string'],
             'status' => ['required', 'string', 'in:ACTIVE,INACTIVE'],
         ]);

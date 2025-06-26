@@ -22,6 +22,9 @@
 
 <script src="{{ asset('build/assets') }}/js/plugins/iCheck/icheck.min.js"></script>
 
+<script src="{{ asset('build/assets') }}/js/plugins/chosen/chosen.jquery.js"></script>
+
+<script src="{{ asset('build/assets') }}/js/plugins/select2/select2.full.min.js"></script>
 <script>
     $(document).ready(function() {
         //Ajax CSRF TOKEN Declare

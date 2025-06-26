@@ -1335,7 +1335,7 @@ ul.nav-second-level {
 }
 
 .nav>li.active {
-  border-left: 4px solid #1d7bbe;
+  border-left: 4px solid #1c84c6;
   background: #293846;
 }
 
@@ -1496,12 +1496,12 @@ body.mini-navbar .navbar-default .nav>li>.nav-second-level li a {
 }
 
 .navbar-default .special_link a {
-  background: #0b6bbf;
+  background: #1ab394;
   color: white;
 }
 
 .navbar-default .special_link a:hover {
-  background: #0c5ea5 !important;
+  background: #17987e !important;
   color: white;
 }
 
@@ -1956,7 +1956,7 @@ button:focus {
 }
 
 .btn-primary.btn-outline {
-  color: #007bff;
+  color: #1ab394;
 }
 
 .btn-success.btn-outline {
@@ -1993,37 +1993,31 @@ button:focus {
 
 .btn-primary {
   color: #fff;
-  background-color: #0379ce;
-  border-color: #0379ce;
-}
-
-.btn-primary-toggle {
-  color: #fff;
-  background-color: #8b8e90;
-  border-color: #8b8e90;
+  background-color: #1ab394;
+  border-color: #1ab394;
 }
 
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.focus {
-  background-color: #0379ce;
-  border-color: #0379ce;
+  background-color: #18a689;
+  border-color: #18a689;
   color: #FFFFFF;
 }
 
 .btn-primary.disabled,
 .btn-primary:disabled {
   color: #fff;
-  background-color: #0379ce;
-  border-color: #0379ce;
+  background-color: #18a689;
+  border-color: #18a689;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active,
 .btn-primary:not(:disabled):not(.disabled).active,
 .show>.btn-primary.dropdown-toggle {
   color: #fff;
-  background-color: #0379ce;
-  border-color: #0379ce;
+  background-color: #18a689;
+  border-color: #18a689;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus,
@@ -2662,8 +2656,8 @@ button.dim:active:before {
 }
 
 .page-item.active .page-link {
-  background-color: #0379ce;
-  border-color: #0379ce;
+  background-color: #1c84c6;
+  border-color: #1c84c6;
 }
 
 .page-link:focus {
@@ -2675,8 +2669,8 @@ button.dim:active:before {
 }
 
 .pagination .footable-page.active a {
-  background-color: #0379ce;
-  border-color: #0379ce;
+  background-color: #1ab394;
+  border-color: #1ab394;
   color: white;
 }
 
@@ -3455,12 +3449,12 @@ select.form-control:not([size]):not([multiple]) {
 
 .form-control:focus,
 .single-line:focus {
-  border-color: #5ea8f7;
+  border-color: #1ab394;
 }
 
 .has-success .form-control,
 .has-success .form-control:focus {
-  border-color: #5ea8f7;
+  border-color: #1ab394;
 }
 
 .has-warning .form-control,

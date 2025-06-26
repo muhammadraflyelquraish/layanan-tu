@@ -20,7 +20,7 @@
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5><a class="btn btn-primary btn-sm" href="{{ route('user.create') }}"><i class="fa fa-plus-square mr-1"></i> Tambah Pengguna</a></h5>
+                    <h5><a class="btn btn-success btn-sm" href="{{ route('user.create') }}"><i class="fa fa-plus-square mr-1"></i> Tambah Pengguna</a></h5>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -108,7 +108,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-rectangle-o mr-1"></i>Tutup [Esc]</button>
-                    <button type="submit" class="btn btn-primary ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="5"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
+                    <button type="submit" class="btn btn-success ladda-button ladda-button-demo" data-style="zoom-in" id="submit" tabindex="5"><i class="fa fa-check-square mr-1"></i>Simpan [Enter]</button>
                 </div>
             </form>
         </div>
@@ -124,7 +124,7 @@
             processing: true,
             serverSide: true,
             order: [
-                [1, 'asc']
+                [6, 'asc']
             ],
             ajax: {
                 url: "{{ route('user.data') }}",
@@ -152,6 +152,12 @@
                 name: 'action',
                 searchable: false,
                 orderable: false
+            }, {
+                data: 'created_at',
+                name: 'created_at',
+                searchable: false,
+                orderable: true,
+                visible: false
             }],
             search: {
                 "regex": true

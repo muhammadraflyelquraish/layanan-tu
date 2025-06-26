@@ -18,5 +18,7 @@ class SPJCategory extends Model
      */
     protected $fillable = [
         'nama',
+        'jenis',
+        'keterangan'
     ];
 }

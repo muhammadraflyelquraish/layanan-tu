@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Portal Surat FST</title>
     <link href="{{ asset('build/assets') }}/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ asset('logo/uinxs.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {

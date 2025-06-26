@@ -48,6 +48,6 @@ class SPJ extends Model
 
     function histories()
     {
-        return $this->hasMany(SPJHistory::class, 'spj_id', 'id')->orderBy('created_at', 'asc');
+        return $this->hasMany(SPJHistory::class, 'spj_id', 'id')->orderBy('created_at', 'desc');
     }
 }

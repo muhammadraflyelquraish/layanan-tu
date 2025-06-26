@@ -48,8 +48,9 @@
                                     @php
                                     $permissions = [
                                     'DASHBOARD' => 'Beranda',
-                                    'LETTER' => 'Proposal',
+                                    'LETTER' => 'Pengajuan',
                                     'SPJ' => 'SPJ',
+                                    'LABEL_SPJ' => 'Label SPJ',
                                     'DISPOSISI' => 'Disposisi',
                                     'ARSIP' => 'Arsip',
                                     'USER' => 'Pengguna',
@@ -72,7 +73,7 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
-                                <button class="btn btn-primary float-right" type="submit"><i class="fa fa-save"></i> Ubah</button>
+                                <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Ubah</button>
                             </div>
                         </div>
                     </form>
