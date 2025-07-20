@@ -9,7 +9,7 @@
                     <img alt="image" class="rounded-circle" src="{{ asset('build/assets') }}/img/default-profile.png" width="48" height="48" />
                     @endif
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="block m-t-xs font-bold text-white">Hai, {{ substr(Auth::user()->name, 0, 20) }}..</span>
+                        <span class="block m-t-xs font-bold text-white">Hai, {{ substr(Auth::user()->name, 0, 15) }}..</span>
                         <span class="text-muted text-xs block">{{ Auth::user()->role->name }} <b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">

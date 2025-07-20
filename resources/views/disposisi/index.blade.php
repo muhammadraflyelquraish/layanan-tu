@@ -62,7 +62,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Approver</label>
                         <div class="col-sm-8">
-                            <select class="form-control" name="approver_id" id="approver_id" required>
+                            <select class="form-control" name="approver_id" id="approver_id">
                                 <option value="" selected disabled>Pilih approver</option>
                                 @foreach($approver as $pm)
                                 @php
@@ -207,12 +207,10 @@
                     modal.find('#name').val(app.name)
                     modal.find('#approver_id').val(app.approver.id)
                     modal.find('#urutan').val(app.urutan)
-                    modal.find('#approver_id').select2()
                 })
             } else {
                 $('#formAddEdit').trigger('reset').attr('action', '{{ route("disposisi.store") }}').attr('method', 'POST')
                 modal.find('#modal-title').text('Buat Disposisi');
-                modal.find('#approver_id').select2()
             }
         })
 
