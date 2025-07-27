@@ -26,7 +26,7 @@ class SPJController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = SPJ::with(['user', 'ratings'])->orderBy('created_at', 'desc');
+        $app = SPJ::with(['user', 'ratings']);
 
         if (auth()->user()->role_id == 2) {
             $app->where("t_spj.user_id", auth()->user()->id);
@@ -45,13 +45,17 @@ class SPJController extends Controller
 
             $query->where(function ($q) use ($searchTerm) {
                 $q->whereRaw('LOWER(t_spj.jenis) LIKE ?', [strtolower($searchTerm)])
+
                     ->orWhereHas('letter', function ($subQ) use ($searchTerm) {
-                        $subQ->whereRaw('LOWER(kode) LIKE ?', [strtolower($searchTerm)]);
+                        $subQ->whereRaw('LOWER(kode) LIKE ?', [strtolower($searchTerm)])
+                            ->orWhereRaw('LOWER(nomor_agenda) LIKE ?', [strtolower($searchTerm)]);
                     })
                     ->orWhereHas('user', function ($subQ) use ($searchTerm) {
                         $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
                             ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)]);
-                    });
+                    })
+                    ->orWhereRaw('LOWER(t_spj.jenis) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_spj.catatan) LIKE ?', [strtolower($searchTerm)]);
             });
         });
 

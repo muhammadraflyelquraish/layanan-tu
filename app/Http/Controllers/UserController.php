@@ -23,9 +23,14 @@ class UserController extends Controller
 
     public function data(): JsonResponse
     {
-        $user = User::with('role')->orderBy('created_at', 'desc');
+        $user = User::select('t_user.*', 't_role.name as role_name')
+            ->leftJoin('t_role', 't_user.role_id', '=', 't_role.id');
+
         return DataTables::of($user)
             ->addIndexColumn()
+            ->addColumn('role.name', function ($row) {
+                return $row->role_name;
+            })
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
                 $button .= '<a class="btn btn-sm btn-warning" href="' .  route('user.edit', $row->id) . '"><i class="fa fa-edit"></i></a>';

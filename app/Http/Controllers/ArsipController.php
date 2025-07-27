@@ -21,7 +21,7 @@ class ArsipController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = Letter::with(['pemohon', 'spjs', 'file', 'sk'])->orderBy('created_at', 'desc');
+        $app = Letter::query()->with(['pemohon', 'spjs', 'file', 'sk']);
 
         if (auth()->user()->role_id === 2) {
             $app->where("t_letter.pemohon_id", auth()->user()->id);
@@ -47,7 +47,12 @@ class ArsipController extends Controller
                     ->orWhereHas('pemohon', function ($subQ) use ($searchTerm) {
                         $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
                             ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)]);
-                    });
+                    })
+                    ->orWhereRaw('LOWER(t_letter.nomor_agenda) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_letter.nomor_surat) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_letter.asal_surat) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_letter.hal) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_letter.untuk) LIKE ?', [strtolower($searchTerm)]);
             });
         });
 

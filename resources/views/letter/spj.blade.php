@@ -143,7 +143,6 @@
                     return
                 }
             });
-
             if (isValid) {
                 swal({
                     title: `Submit?`,
@@ -151,37 +150,42 @@
                     showCancelButton: true,
                     confirmButtonColor: "#007bff",
                     confirmButtonText: `Ya, Submit`,
-                    closeOnConfirm: false
-                }, function() {
-                    LaddaStart()
-                    let form = $("#formSpj")
-                    $.ajax({
-                        url: $(form).attr('action'),
-                        type: $(form).attr('method'),
-                        data: new FormData(form[0]),
-                        contentType: false,
-                        processData: false,
-                        dataType: 'JSON',
-                        success: function(response) {
-                            LaddaAndDrawTable()
-                            sweetalert('Berhasil', response.msg, null, 500, false)
-                            $(form)[0].reset();
-                            setTimeout(function() {
-                                window.location.href = "{{ route('spj.index') }}";
-                            }, 500);
-                        },
-                        error: function(xhr, status, err) {
-                            let errorMessage = 'Terjadi kesalahan';
-                            if (xhr.responseJSON && xhr.responseJSON.error) {
-                                errorMessage = xhr.responseJSON.error;
-                            }
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        LaddaStart();
+                        let form = $("#formSpj");
+                        $.ajax({
+                            url: $(form).attr('action'),
+                            type: $(form).attr('method'),
+                            data: new FormData(form[0]),
+                            contentType: false,
+                            processData: false,
+                            dataType: 'JSON',
+                            success: function(response) {
+                                LaddaAndDrawTable();
+                                sweetalert('Berhasil', response.msg, null, 500, false);
+                                $(form)[0].reset();
+                                setTimeout(function() {
+                                    window.location.href = "{{ route('spj.index') }}";
+                                }, 500);
+                            },
+                            error: function(xhr, status, err) {
+                                let errorMessage = 'Terjadi kesalahan';
+                                if (xhr.responseJSON && xhr.responseJSON.error) {
+                                    errorMessage = xhr.responseJSON.error;
+                                }
 
-                            LaddaAndDrawTable();
-                            sweetalert('Data tidak valid', errorMessage, 'info');
-                        }
-                    })
+                                LaddaAndDrawTable();
+                                sweetalert('Data tidak valid', errorMessage, 'info');
+                            }
+                        });
+                    }
+                    // If canceled, nothing else happens and modal already closed
                 });
             }
+
         });
 
         $('.select2').select2({

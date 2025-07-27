@@ -297,9 +297,9 @@
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
-            // order: [
-            //     [1, 'desc']
-            // ],
+            order: [
+                [1, 'desc']
+            ],
             ajax: {
                 url: "{{ route('spj.data') }}",
                 type: "GET",

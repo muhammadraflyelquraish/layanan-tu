@@ -438,7 +438,9 @@
             },
             {
                 data: 'pemohon.name',
-                name: 'pemohon.name'
+                name: 'pemohon.name',
+                searchable: false,
+                orderable: false
             },
             {
                 data: 'tanggal_diterima',
@@ -462,15 +464,21 @@
             },
             {
                 data: 'status',
-                name: 'status'
+                name: 'status',
+                searchable: false,
+                orderable: false
             },
             {
                 data: 'file.original_name',
-                name: 'file.original_name'
+                name: 'file.original_name',
+                searchable: false,
+                orderable: false
             },
             {
                 data: 'sk.original_name',
-                name: 'sk.original_name'
+                name: 'sk.original_name',
+                searchable: false,
+                orderable: false
             },
             {
                 data: 'action',

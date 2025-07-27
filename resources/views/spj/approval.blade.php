@@ -217,7 +217,8 @@
                 showCancelButton: true,
                 confirmButtonColor: "#007bff",
                 confirmButtonText: `Ya, ${message}`,
-                closeOnConfirm: false
+                closeOnConfirm: true,
+                closeOnCancel: true
             }, function() {
                 LaddaStart()
                 swal.close();

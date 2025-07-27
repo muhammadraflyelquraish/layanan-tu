@@ -247,7 +247,8 @@
                     showCancelButton: true,
                     confirmButtonColor: "#007bff",
                     confirmButtonText: `Ya, Simpan`,
-                    closeOnConfirm: false
+                    closeOnConfirm: true,
+                    closeOnCancel: true
                 }, function() {
                     LaddaStart()
                     let form = $("#formSpj")
