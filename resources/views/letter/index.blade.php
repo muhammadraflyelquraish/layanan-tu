@@ -685,9 +685,7 @@
             },
             {
                 data: 'pemohon.name',
-                name: 'pemohon.name',
-                searchable: false,
-                orderable: false
+                name: 'pemohon.name'
             },
             {
                 data: 'tanggal_diterima',
@@ -711,9 +709,7 @@
             },
             {
                 data: 'status',
-                name: 'status',
-                searchable: false,
-                orderable: false
+                name: 'status'
             },
             {
                 data: 'file.original_name',

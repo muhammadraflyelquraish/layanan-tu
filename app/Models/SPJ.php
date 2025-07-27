@@ -24,6 +24,8 @@ class SPJ extends Model
         'tanggal_proses',
         'tanggal_selesai',
         'catatan',
+        'rating',
+        'pesan',
     ];
 
     function letter()

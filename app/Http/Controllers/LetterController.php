@@ -30,7 +30,9 @@ class LetterController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = Letter::query()->with(['pemohon', 'spjs', 'file', 'sk']);
+        $app = Letter::query()->with(['pemohon', 'spjs', 'file', 'sk'])
+            ->leftJoin('t_user as u', 'u.id', '=', 't_letter.pemohon_id')
+            ->select('t_letter.*',  'u.name as user_name', 'u.email as user_email');
 
         if (auth()->user()->role_id == 2) {
             $app->where("t_letter.pemohon_id", auth()->user()->id);
@@ -45,7 +47,7 @@ class LetterController extends Controller
             //             ->whereDoesntHave('spjs');
             //     });
             // });
-            $app->whereNotIn('status', ['Selesai', 'Ditolak']);
+            $app->whereNotIn('t_letter.status', ['Selesai', 'Ditolak']);
         }
 
         $app->when(request('status'), function ($query) {
@@ -67,7 +69,8 @@ class LetterController extends Controller
                 $q->whereRaw('LOWER(t_letter.kode) LIKE ?', [strtolower($searchTerm)])
                     ->orWhereHas('pemohon', function ($subQ) use ($searchTerm) {
                         $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
-                            ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)]);
+                            ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)])
+                            ->orWhereRaw('LOWER(email) LIKE ?', [strtolower($searchTerm)]);
                     })
                     ->orWhereRaw('LOWER(t_letter.nomor_agenda) LIKE ?', [strtolower($searchTerm)])
                     ->orWhereRaw('LOWER(t_letter.nomor_surat) LIKE ?', [strtolower($searchTerm)])

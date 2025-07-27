@@ -26,7 +26,19 @@ class SPJController extends Controller
 
     public function data(): JsonResponse
     {
-        $app = SPJ::with(['user', 'ratings']);
+        $latestRatings = DB::table('t_spj_rating as r1')
+            ->select('r1.spj_id', 'r1.rating')
+            ->whereRaw('r1.created_at = (SELECT MAX(r2.created_at) FROM t_spj_rating r2 WHERE r2.spj_id = r1.spj_id)')
+            ->groupBy('r1.spj_id', 'r1.rating');
+
+        $app = SPJ::with(['user', 'letter'])
+            ->leftJoin('t_letter as l', 'l.id', '=', 't_spj.letter_id')
+            ->leftJoin('t_user as u', 'u.id', '=', 't_spj.user_id')
+            ->leftJoinSub($latestRatings, 'latest_rating', function ($join) {
+                $join->on('latest_rating.spj_id', '=', 't_spj.id');
+            })
+            ->select('t_spj.*', 'l.kode as letter_kode', 'u.name as user_name', 'latest_rating.rating as rating_value');
+
 
         if (auth()->user()->role_id == 2) {
             $app->where("t_spj.user_id", auth()->user()->id);
@@ -52,7 +64,8 @@ class SPJController extends Controller
                     })
                     ->orWhereHas('user', function ($subQ) use ($searchTerm) {
                         $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
-                            ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)]);
+                            ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)])
+                            ->orWhereRaw('LOWER(email) LIKE ?', [strtolower($searchTerm)]);
                     })
                     ->orWhereRaw('LOWER(t_spj.jenis) LIKE ?', [strtolower($searchTerm)])
                     ->orWhereRaw('LOWER(t_spj.catatan) LIKE ?', [strtolower($searchTerm)]);
@@ -81,10 +94,10 @@ class SPJController extends Controller
                 return $button;
             })
             ->editColumn('letter', function ($row) {
-                return '' . $row->letter->kode . ' <br> <small>Nomor Agenda: ' . $row->letter->nomor_agenda . '</small>';
+                return '' . $row->letter_kode . ' <br> <small>Nomor Agenda: ' . $row->letter->nomor_agenda . '</small>';
             })
             ->editColumn('user.name', function ($row) {
-                return '' . $row->user->name . ' <br> <small>(' . $row->user->no_identity . ')</small>';
+                return '' . $row->user->name . ' <br> <small>(' . $row->user->email . ')</small>';
             })
             ->editColumn('tanggal_proses', function ($row) {
                 return $row->tanggal_proses ? date('d M Y - H:i', strtotime($row->tanggal_proses)) : '-';
@@ -101,19 +114,33 @@ class SPJController extends Controller
                     return '<span class="label label-warning">' . $row->status . '</span>';
                 }
             })
+            // ->editColumn('rating', function ($row) {
+            //     $rating = '';
+            //     if (isset($row->ratings[0])) {
+            //         $rating = $row->ratings[0]->rating;
+            //         // for ($i = 1; $i <= 5; $i++) {
+            //         //     $rating .= "<span data-value=\"" . $i . "\" class=\"star\" style=\"" . ($i <= $row->ratings[0]->rating ? 'color: #f5b301' : '') . "\">&#9733;</span>";
+            //         // }
+            //         // $rating .= '<br> <small>' . $row->ratings[0]->catatan . '</small>';
+            //     }
+            //     return $rating ? $rating : '-';
+            // })
+            // ->editColumn('rating', function ($row) {
+            //     $firstRating = $row->ratings->first(); // safer than $ratings[0]
+
+            //     if ($firstRating) {
+            //         return $firstRating->rating;
+            //     }
+
+            //     return '-';
+            // })
             ->editColumn('rating', function ($row) {
-                $rating = '';
-                if (isset($row->ratings[0])) {
-                    $rating = $row->ratings[0]->rating;
-                    // for ($i = 1; $i <= 5; $i++) {
-                    //     $rating .= "<span data-value=\"" . $i . "\" class=\"star\" style=\"" . ($i <= $row->ratings[0]->rating ? 'color: #f5b301' : '') . "\">&#9733;</span>";
-                    // }
-                    // $rating .= '<br> <small>' . $row->ratings[0]->catatan . '</small>';
-                }
-                return $rating ? $rating : '-';
+                return $row->rating_value ?? '-';
             })
             ->rawColumns(['action', 'status', 'letter', 'user.name', 'rating'])
             ->addColumns(['letter', 'rating'])
+            ->orderColumn('letter', 'letter_kode $1')
+            ->orderColumn('rating', 'rating_value $1')
             ->toJson();
     }
 

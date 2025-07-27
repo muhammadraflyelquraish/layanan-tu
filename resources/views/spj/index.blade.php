@@ -46,7 +46,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Search</label>
-                                <input name="search" id="search" class="form-control" placeholder="Cari SPJ..">
+                                <input name="search" id="search" class="form-control" placeholder="Cari Surat Pertanggungjawaban..">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -74,7 +74,11 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <button class="btn btn-success" style="margin-top: 26px;" id="applyFilter" type="button"><i class="fa fa-filter"></i> Filter</button>
+                            <!-- buffer -->
+                        </div>
+                        <div class="col-md-3">
+                            <!-- <button class="btn btn-success" style="margin-top: 26px;" id="applyFilter" type="button"><i class="fa fa-filter"></i> Filter</button> -->
+                            <button class="btn btn-success" id="applyFilter" type="button"><i class="fa fa-filter"></i> Filter</button>
                         </div>
                     </div>
                 </div>
@@ -297,9 +301,9 @@
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
-            order: [
-                [1, 'desc']
-            ],
+            // order: [
+            //     [1, 'desc']
+            // ],
             ajax: {
                 url: "{{ route('spj.data') }}",
                 type: "GET",
