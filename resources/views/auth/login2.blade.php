@@ -307,7 +307,7 @@
         <!-- Form Login -->
         <div class="login-card">
             <div class="login-logo">
-                <img src="{{ asset('logo/fst.png') }}" alt="Logo">
+                <img src="{{ asset('logo/fst.jpg') }}" alt="Logo">
             </div>
 
             <p class="login-title">Selamat Datang di Portal Surat FST</p>
