@@ -324,6 +324,11 @@ class LetterController extends Controller
 
     public function show(Letter $letter)
     {
+        // check the user is not pemohon
+        if (auth()->user()->role_id == 2 && $letter->pemohon_id != auth()->user()->id) {
+            return response()->json([]);
+        }
+
         $letter = $letter->load('pemohon', 'file', 'sk', 'pihak_pembuat_sk', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator', 'dispositions.disposition');
 
         $selesaiDalam = '-';
@@ -530,6 +535,11 @@ class LetterController extends Controller
 
     public function spj(Letter $letter): View
     {
+        // check the user is not pemohon
+        if (auth()->user()->role_id == 2 && $letter->pemohon_id != auth()->user()->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('letter.spj', compact('letter'));
     }
 }

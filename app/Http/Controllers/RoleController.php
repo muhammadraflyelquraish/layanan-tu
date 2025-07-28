@@ -28,7 +28,10 @@ class RoleController extends Controller
 
                 if ($row->name != "Admin") {
                     $button .= '<a class="btn btn-sm btn-warning" href="' .  route('role.edit', $row->id) . '"><i class="fa fa-edit"></i></a>';
-                    // $button .= '<button class="btn btn-sm btn-danger" id="delete" data-integrity="' . $row->id . '"><i class="fa fa-trash"></i></button>';
+
+                    if ($row->is_allow_deleted) {
+                        $button .= '<button class="btn btn-sm btn-danger" id="delete" data-integrity="' . $row->id . '"><i class="fa fa-trash"></i></button>';
+                    }
                 }
                 $button .= '</div>';
                 return $button;
@@ -137,8 +140,11 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         try {
-            $role->permissions()->delete();
-            $role->delete();
+            if ($role->is_allow_deleted) {
+                $role->permissions()->delete();
+                $role->delete();
+            }
+
             return response()->json(['res' => 'success'], 204);
         } catch (\Exception $e) {
             return response()->json(['res' => 'error', 'msg' => $e->getMessage()], 400);

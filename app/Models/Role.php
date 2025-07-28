@@ -19,6 +19,7 @@ class Role extends Model
     protected $fillable = [
         'name',
         'is_disposition',
+        'is_allow_deleted',
     ];
 
     function permissions()

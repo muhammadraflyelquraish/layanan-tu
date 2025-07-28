@@ -487,9 +487,9 @@
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
-            // order: [
-            //     [2, 'desc']
-            // ],
+            order: [
+                [1, 'desc']
+            ],
             ajax: {
                 url: "{{ route('arsip.data') }}",
                 type: "GET",

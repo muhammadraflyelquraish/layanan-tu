@@ -354,6 +354,7 @@
 
             $.get("{{ url('/spj/') }}/" + id + '/rating', function(app) {
                 modal.find('#catatan').text(app.data.catatan)
+                modal.find('#ratingInput').val(app.data.rating)
                 $("#starRating .star").each(function() {
                     $(this).toggleClass("hovered", $(this).attr("data-value") <= app.data.rating);
                 });

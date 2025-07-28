@@ -77,7 +77,10 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
-                                <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
+                                <div class="btn-group pull-right">
+                                    <a href="{{ route('role.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
+                                    <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Ubah</button>
+                                </div>
                             </div>
                         </div>
                     </form>

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
+use App\Models\UserLayanan;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,6 +32,38 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+        // find user from main user
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            // find user from layanan
+            $userLayanan = UserLayanan::query()
+                ->where('email', $request->email)
+                ->whereNotNull('email_verified_at')
+                ->first();
+            if (!$userLayanan) {
+                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.']);
+            }
+
+            if (!Hash::check($request->password, $userLayanan->password)) {
+                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.']);
+            }
+
+            $newUser = User::create([
+                'name' => $userLayanan->name,
+                'no_identity' => $userLayanan->nim_nip_nidn,
+                'email' => $userLayanan->email,
+                'password' => $userLayanan->password,
+                'role_id' => 2,
+                'status' => "ACTIVE",
+                'user_type' => "LAYANAN",
+                'email_verified' => true,
+            ]);
+
+            if (!$newUser) {
+                return redirect()->route('login')->withErrors(['email' => 'Internal server error.']);
+            }
+        }
+
         $request->authenticate();
 
         $request->session()->regenerate();

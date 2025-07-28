@@ -217,6 +217,11 @@ class SPJController extends Controller
 
     public function show(SPJ $spj)
     {
+        // check the user is not pemohon
+        if (auth()->user()->role_id == 2 && $spj->user_id != auth()->user()->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $spj = $spj->load(['letter', 'user', 'documents', 'histories', 'ratings']);
         return view('spj.detail', compact('spj'));
     }
@@ -235,6 +240,11 @@ class SPJController extends Controller
 
     public function update(SPJ $spj, Request $request)
     {
+        // skip if status already approved
+        if (auth()->user()->role_id == 2 && $spj->status == 'Disetujui') {
+            return response()->json(['error' => 'SPJ sudah disetujui'], 400);
+        }
+
         DB::transaction(function () use ($spj, $request) {
             $status = $request->type == 'revisi' ? 'Revisi' : 'Disetujui';
             $tanggalSelesai = $request->type == 'setuju' ? now() : null;
@@ -260,6 +270,11 @@ class SPJController extends Controller
     public function revisi(SPJ $spj, Request $request)
     {
         try {
+            // skip if status already approved
+            if (auth()->user()->role_id == 2 && $spj->status == 'Disetujui') {
+                return response()->json(['error' => 'SPJ sudah disetujui'], 400);
+            }
+
             DB::transaction(function () use ($request, $spj) {
                 $spj->update([
                     "jenis" => $request->jenis,

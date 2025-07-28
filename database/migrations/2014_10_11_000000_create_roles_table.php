@@ -17,6 +17,7 @@ class CreateRolesTable extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('is_disposition')->default(false);
+            $table->boolean('is_allow_deleted')->default(true);
             $table->timestamps();
         });
     }

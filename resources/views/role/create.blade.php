@@ -98,9 +98,13 @@
                         </div>
 
                         <div class="hr-line-dashed"></div>
+
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
-                                <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
+                                <div class="btn-group pull-right">
+                                    <a href="{{ route('role.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
+                                    <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Simpan</button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -116,6 +120,11 @@
     $(function() {
 
         $("#formRole").validate({
+            rules: {
+                name: {
+                    required: true
+                }
+            },
             messages: {
                 name: "Nama role tidak boleh kosong",
             },
@@ -130,6 +139,23 @@
                 form.submit()
             }
         });
+
+        // $("#formRole").on('submit', function(e) {
+        //     e.preventDefault();
+        //     swal({
+        //         title: `Simpan Role?`,
+        //         text: 'Click "Ya" untuk melanjutkan',
+        //         showCancelButton: true,
+        //         confirmButtonColor: "#007bff",
+        //         confirmButtonText: `Ya, Simpan`,
+        //         closeOnConfirm: true,
+        //         closeOnCancel: true
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $("#formRole").submit(); // Submit the form if confirmed
+        //         }
+        //     });
+        // });
 
     })
 </script>

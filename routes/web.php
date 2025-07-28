@@ -13,6 +13,7 @@ use App\Http\Controllers\SPJCategoryController;
 use App\Http\Controllers\SPJController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsureAccessIsValid;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +35,7 @@ Route::get('login-qr', [QRController::class, 'generate'])->name('qr.login');
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', EnsureAccessIsValid::class)->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/role/data', [RoleController::class, 'data'])->name('role.data');

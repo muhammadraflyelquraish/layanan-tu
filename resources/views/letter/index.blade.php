@@ -433,7 +433,9 @@
                                 <th>Tanggal Diterima</th>
                                 <th>Tanggal Proses</th>
                                 <th>Diverfikasi Oleh</th>
+                                @if (auth()->user()->role_id != 2)
                                 <th>Catatan</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -981,7 +983,9 @@
                             <td>${recievedDate || '-'}</td>
                             <td>${approvedDate || '-'}</td>
                             <td>${element?.verifikator?.name || '-'}</td>
+                            @if (auth()->user()->role_id != 2)
                             <td>${element.keterangan || '-'}</td>
+                            @endif
                         </tr>
                     `);
                 }

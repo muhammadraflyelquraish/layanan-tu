@@ -43,6 +43,10 @@
 <script>
     $(document).ready(function() {
 
+        if ("{{ session('success') }}") {
+            sweetalert("Berhasil!", `{{ session('success') }}.`, null, 1000, false)
+        }
+
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
@@ -118,7 +122,7 @@
                     dataType: 'json',
                     success: function(response) {
                         LaddaAndDrawTable()
-                        sweetalert("Terhapus!", `Data "${name}" berhasil dihapus.`, null, 500, false)
+                        sweetalert("Terhapus!", `Data "${name}" berhasil dihapus.`, null, 1000, false)
                     },
                     error: function(response) {
                         LaddaAndDrawTable()

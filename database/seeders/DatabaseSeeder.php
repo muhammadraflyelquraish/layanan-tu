@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             [
                 "name" => "Admin",
                 "is_disposition" => false,
+                "is_allow_deleted" => false,
                 "role_id" => 1,
                 "permission" => [
                     'DASHBOARD' => 1,
@@ -39,6 +40,7 @@ class DatabaseSeeder extends Seeder
                 "name" => "Pemohon",
                 "role_id" => 2,
                 "is_disposition" => false,
+                "is_allow_deleted" => false,
                 "permission" => [
                     'DASHBOARD' => 0,
                     'USER' => 0,
@@ -54,6 +56,7 @@ class DatabaseSeeder extends Seeder
                 "name" => "TU",
                 "role_id" => 3,
                 "is_disposition" => true,
+                "is_allow_deleted" => false,
                 "permission" => [
                     'DASHBOARD' => 1,
                     'USER' => 0,
@@ -69,6 +72,7 @@ class DatabaseSeeder extends Seeder
                 "name" => "Dekan",
                 "role_id" => 4,
                 "is_disposition" => true,
+                "is_allow_deleted" => false,
                 "permission" => [
                     'DASHBOARD' => 1,
                     'USER' => 0,
@@ -84,6 +88,7 @@ class DatabaseSeeder extends Seeder
                 "name" => "Keuangan",
                 "role_id" => 5,
                 "is_disposition" => true,
+                "is_allow_deleted" => false,
                 "permission" => [
                     'DASHBOARD' => 1,
                     'USER' => 0,
@@ -94,7 +99,215 @@ class DatabaseSeeder extends Seeder
                     'DISPOSISI' => 0,
                     'ARSIP' => 1,
                 ]
-            ]
+            ],
+            [
+                "name" => "Prodi Teknik Informatika",
+                "role_id" => 6,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Agribisnis",
+                "role_id" => 7,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Sistem Informasi",
+                "role_id" => 8,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Matematika",
+                "role_id" => 9,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Matematika",
+                "role_id" => 10,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Fisika",
+                "role_id" => 11,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Kimia",
+                "role_id" => 12,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Biologi",
+                "role_id" => 13,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Prodi Teknik Pertambangan",
+                "role_id" => 14,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "PLT",
+                "role_id" => 15,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Akademik",
+                "role_id" => 16,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Umum",
+                "role_id" => 17,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
+            [
+                "name" => "Perpus",
+                "role_id" => 18,
+                "is_disposition" => true,
+                "is_allow_deleted" => false,
+                "permission" => [
+                    'DASHBOARD' => 1,
+                    'USER' => 0,
+                    'ROLE' => 0,
+                    'LETTER' => 1,
+                    'SPJ' => 0,
+                    'LABEL_SPJ' => 0,
+                    'DISPOSISI' => 0,
+                    'ARSIP' => 1,
+                ]
+            ],
         ];
 
         $users = [
@@ -375,6 +588,7 @@ class DatabaseSeeder extends Seeder
             Role::create([
                 "name" => $role['name'],
                 "is_disposition" => $role['is_disposition'],
+                "is_allow_deleted" => $role['is_allow_deleted'],
             ]);
             foreach ($role['permission'] as $permission => $is_permitted) {
                 RolePermission::create([

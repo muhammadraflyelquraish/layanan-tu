@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->enum('status', ['ACTIVE', 'INACTIVE']);
             $table->text('avatar')->nullable();
             $table->text('avatar_original')->nullable();
-            $table->enum('user_type', ['REGISTER', 'GOOGLE'])->default('REGISTER');
+            $table->enum('user_type', ['REGISTER', 'GOOGLE', 'LAYANAN'])->default('REGISTER');
             $table->rememberToken();
             $table->timestamps();
         });
