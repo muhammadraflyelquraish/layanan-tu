@@ -13,12 +13,8 @@ use Illuminate\Support\Str;
 
 class GoogleController extends Controller
 {
-    function redirectToGoogle(Request $request)
+    function redirectToGoogle()
     {
-        if ($request->get('from') === 'qr') {
-            session(['login_source' => 'qr']);
-        }
-
         return Socialite::driver('google')->redirect();
     }
 
@@ -47,10 +43,13 @@ class GoogleController extends Controller
             Auth::login($user, true);
 
             $source = session()->pull('login_source');
-
-            return $source === 'qr'
-                ? redirect()->route('tracking')
-                : redirect()->route('letter.index');
+            if ($user->role_id == 2) {
+                return $source === 'tracking'
+                    ? redirect()->route('tracking.index')
+                    : redirect()->route('letter.index');
+            } else {
+                return redirect()->route('letter.index');
+            }
         } catch (\Exception $e) {
             return redirect()->route('login')->with('email', 'Login google failed');
         }

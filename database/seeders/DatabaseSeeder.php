@@ -165,7 +165,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Matematika",
+                "name" => "Prodi Fisika",
                 "role_id" => 10,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -181,7 +181,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Fisika",
+                "name" => "Prodi Kimia",
                 "role_id" => 11,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -197,7 +197,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Kimia",
+                "name" => "Prodi Biologi",
                 "role_id" => 12,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -213,7 +213,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Biologi",
+                "name" => "Prodi Teknik Pertambangan",
                 "role_id" => 13,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -229,7 +229,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Teknik Pertambangan",
+                "name" => "PLT",
                 "role_id" => 14,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -245,7 +245,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "PLT",
+                "name" => "Akademik",
                 "role_id" => 15,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -261,7 +261,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Akademik",
+                "name" => "Umum",
                 "role_id" => 16,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -277,7 +277,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Umum",
+                "name" => "Perpus",
                 "role_id" => 17,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -292,87 +292,38 @@ class DatabaseSeeder extends Seeder
                     'ARSIP' => 1,
                 ]
             ],
-            [
-                "name" => "Perpus",
-                "role_id" => 18,
-                "is_disposition" => true,
-                "is_allow_deleted" => false,
-                "permission" => [
-                    'DASHBOARD' => 1,
-                    'USER' => 0,
-                    'ROLE' => 0,
-                    'LETTER' => 1,
-                    'SPJ' => 0,
-                    'LABEL_SPJ' => 0,
-                    'DISPOSISI' => 0,
-                    'ARSIP' => 1,
-                ]
-            ],
         ];
 
         $users = [
             [
                 "role_id" => 1,
-                "name" => "Rafly El",
+                "name" => "Admin TU",
                 "email" => "admin@gmail.com",
-                "no_identity" => "112109100001"
+                "no_identity" => "0000000000001"
             ],
             [
                 "role_id" => 2,
-                "name" => "Joko",
+                "name" => "Gibral Anugrah",
                 "email" => "pemohon@gmail.com",
-                "no_identity" => "112109100002"
+                "no_identity" => "0000000000002"
             ],
             [
                 "role_id" => 3,
-                "name" => "Susi",
+                "name" => "Susi Sundari",
                 "email" => "tu@gmail.com",
-                "no_identity" => "112109100003"
+                "no_identity" => "0000000000003"
             ],
             [
                 "role_id" => 4,
-                "name" => "Alwi",
+                "name" => "Alwi Khasani",
                 "email" => "dekan@gmail.com",
-                "no_identity" => "112109100004"
+                "no_identity" => "0000000000004"
             ],
             [
                 "role_id" => 5,
-                "name" => "Nia",
+                "name" => "Nia Sumianingsih",
                 "email" => "keuangan@gmail.com",
-                "no_identity" => "112109100005"
-            ]
-        ];
-
-        $users = [
-            [
-                "role_id" => 1,
-                "name" => "Rafly El",
-                "email" => "admin@gmail.com",
-                "no_identity" => "112109100001"
-            ],
-            [
-                "role_id" => 2,
-                "name" => "Joko",
-                "email" => "pemohon@gmail.com",
-                "no_identity" => "112109100002"
-            ],
-            [
-                "role_id" => 3,
-                "name" => "Susi",
-                "email" => "tu@gmail.com",
-                "no_identity" => "112109100003"
-            ],
-            [
-                "role_id" => 4,
-                "name" => "Alwi",
-                "email" => "dekan@gmail.com",
-                "no_identity" => "112109100004"
-            ],
-            [
-                "role_id" => 5,
-                "name" => "Nia",
-                "email" => "keuangan@gmail.com",
-                "no_identity" => "112109100005"
+                "no_identity" => "0000000000005"
             ]
         ];
 
@@ -409,62 +360,62 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "Prodi Teknik Informatika",
-                "approver_id" => 3,
+                "approver_id" => 6,
                 "urutan" => 7,
             ],
             [
                 "name" => "Prodi Agribisnis",
-                "approver_id" => 3,
+                "approver_id" => 7,
                 "urutan" => 8,
             ],
             [
                 "name" => "Prodi Sistem Informasi",
-                "approver_id" => 3,
+                "approver_id" => 8,
                 "urutan" => 9,
             ],
             [
                 "name" => "Prodi Matematika",
-                "approver_id" => 3,
+                "approver_id" => 9,
                 "urutan" => 10,
             ],
             [
                 "name" => "Prodi Fisika",
-                "approver_id" => 3,
+                "approver_id" => 10,
                 "urutan" => 11,
             ],
             [
                 "name" => "Prodi Kimia",
-                "approver_id" => 3,
+                "approver_id" => 11,
                 "urutan" => 12,
             ],
             [
                 "name" => "Prodi Biologi",
-                "approver_id" => 3,
+                "approver_id" => 12,
                 "urutan" => 13,
             ],
             [
                 "name" => "Prodi Teknik Pertambangan",
-                "approver_id" => 3,
+                "approver_id" => 13,
                 "urutan" => 14,
             ],
             [
                 "name" => "PLT",
-                "approver_id" => 3,
+                "approver_id" => 14,
                 "urutan" => 15,
             ],
             [
                 "name" => "Akademik",
-                "approver_id" => 3,
+                "approver_id" => 15,
                 "urutan" => 16,
             ],
             [
                 "name" => "Umum",
-                "approver_id" => 3,
+                "approver_id" => 16,
                 "urutan" => 17,
             ],
             [
                 "name" => "Perpus",
-                "approver_id" => 3,
+                "approver_id" => 17,
                 "urutan" => 18,
             ],
         ];
@@ -604,7 +555,7 @@ class DatabaseSeeder extends Seeder
                 "name" => $user['name'],
                 "no_identity" => $user['no_identity'],
                 "email" => $user['email'],
-                "password" => Hash::make("Admin1++"),
+                "password" => Hash::make("tugogo+"),
                 "role_id" => $user['role_id'],
                 "status" => "ACTIVE"
             ]);

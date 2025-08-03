@@ -21,6 +21,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
+        session(['login_source' => request('type')]);
         return view('auth.login2');
     }
 
@@ -41,11 +42,11 @@ class AuthenticatedSessionController extends Controller
                 ->whereNotNull('email_verified_at')
                 ->first();
             if (!$userLayanan) {
-                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.']);
+                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
             }
 
             if (!Hash::check($request->password, $userLayanan->password)) {
-                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.']);
+                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
             }
 
             $newUser = User::create([
@@ -73,11 +74,16 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('login')->withErrors(['email' => 'Your account is inactive.']);
         }
 
-        if (auth()->user()->role_id == 2) {
-            return redirect()->route('letter.index');
+        $source = session()->pull('login_source');
+        if ($source == 'tracking') {
+            return auth()->user()->role_id == 2
+                ? redirect()->route('tracking.index')
+                : redirect()->route('letter.index');
         }
 
-        return redirect()->route('dashboard');
+        return auth()->user()->role_id == 2
+            ? redirect()->route('letter.index')
+            : redirect()->route('dashboard');
     }
 
     /**

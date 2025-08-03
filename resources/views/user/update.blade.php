@@ -78,7 +78,7 @@
                         <div class="form-group row">
                             <div class="col-sm-12 col-sm-offset-2">
                                 <div class="btn-group pull-right">
-                                    <a href="{{ route('role.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
+                                    <a href="{{ route('user.index') }}" class="btn btn-default float-right"><i class="fa fa-arrow-left"></i> Kembali</a>
                                     <button class="btn btn-success float-right" type="submit"><i class="fa fa-save"></i> Ubah</button>
                                 </div>
                             </div>

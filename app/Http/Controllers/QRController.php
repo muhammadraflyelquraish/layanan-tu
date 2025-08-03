@@ -8,8 +8,8 @@ class QRController extends Controller
 {
     public function generate()
     {
-        $googleLoginUrl = route('auth.google', ['from' => 'qr']);
-        $qrCode = QrCode::size(300)->generate($googleLoginUrl);
+        $loginUrl = url('/login?type=tracking');
+        $qrCode = QrCode::size(300)->generate($loginUrl);
         return view('auth.qr-login', compact('qrCode'));
     }
 }
