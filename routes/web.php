@@ -49,6 +49,8 @@ Route::middleware('auth', EnsureAccessIsValid::class)->group(function () {
     Route::get('/letter/{letter}/target-disposition', [LetterController::class, 'targetDisposition'])->name('letter.target.disposition');
     Route::put('/letter/{letter}/confirmation', [LetterController::class, 'confirmation'])->name('letter.confirmation');
     Route::get('/letter/{letter}/spj', [LetterController::class, 'spj'])->name('letter.spj');
+    Route::get('/letter/{letter}/rating', [LetterController::class, 'getRating'])->name('letter.get.rating');
+    Route::post('/letter/rating', [LetterController::class, 'rating'])->name('letter.rating');
     Route::resource('/letter', LetterController::class);
 
     // SPJ Category
@@ -82,6 +84,9 @@ Route::middleware('auth', EnsureAccessIsValid::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Change Role
+    Route::get('/profile-role', [ProfileController::class, 'changeRole'])->name('profile.role');
 });
 
 require __DIR__ . '/auth.php';

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPJ Rating Modal Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid black;
+            padding-left: 10px;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* List Title */
+        .list-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Table Controls */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .show-entries {
+            font-size: 14px;
+        }
+
+        .search-box {
+            border: 2px solid black;
+            padding: 5px 10px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .sort-icon {
+            position: absolute;
+            right: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 8px;
+        }
+
+        .data-table td {
+            vertical-align: middle;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+            width: 40px;
+        }
+
+        .code-cell {
+            font-family: monospace;
+            width: 100px;
+        }
+
+        .sub-text {
+            font-size: 9px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .title-cell {
+            width: 200px;
+        }
+
+        .date-cell {
+            width: 120px;
+        }
+
+        .notes-cell {
+            width: 250px;
+        }
+
+        .status-badge {
+            border: 1px solid black;
+            padding: 2px 6px;
+            font-size: 9px;
+            text-align: center;
+            width: fit-content;
+        }
+
+        .status-disetujui {
+            background: #e0e0e0;
+        }
+
+        .rating-cell {
+            text-align: center;
+            width: 80px;
+        }
+
+        .rating-number {
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .action-btn {
+            border: 1px solid black;
+            padding: 2px 6px;
+            font-size: 9px;
+            margin: 1px;
+            background: white;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 2px;
+        }
+
+        /* Pagination */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .showing-info {
+            font-size: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            border: 1px solid black;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .page-btn.active {
+            background: black;
+            color: white;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(128, 128, 128, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal Content */
+        .modal {
+            background: white;
+            border: 3px solid black;
+            padding: 30px;
+            width: 400px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .star {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            background: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .star.filled {
+            background: black;
+            color: white;
+        }
+
+        .rating-text {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .comment-section {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .comment-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            border: 2px solid black;
+            padding: 10px;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            border: 2px solid black;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            background: white;
+            cursor: pointer;
+        }
+
+        .modal-btn-primary {
+            background: black;
+            color: white;
+        }
+
+        /* Dimmed background content */
+        .content-dimmed {
+            opacity: 0.3;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar content-dimmed">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Joko..</h3>
+                    <p>Pemohon</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item active"><a href="#">▢ SPJ</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content content-dimmed">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 10 Juli 2025 - 00:16:20
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Surat Pertanggungjawaban</div>
+            <div class="breadcrumb">SPJ</div>
+
+            <div class="list-title">Daftar Surat Pertanggungjawaban</div>
+
+            <div class="table-controls">
+                <div class="show-entries">
+                    Show <select style="border: 1px solid black; padding: 2px;">
+                        <option>10</option>
+                    </select> entries
+                </div>
+                <div>
+                    Search: <input type="text" class="search-box">
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="row-number">No <span class="sort-icon">▲▼</span></th>
+                        <th>Pengajuan <span class="sort-icon">▲▼</span></th>
+                        <th>Judul <span class="sort-icon">▲▼</span></th>
+                        <th>Tanggal Proses <span class="sort-icon">▲▼</span></th>
+                        <th>Tanggal Selesai <span class="sort-icon">▲▼</span></th>
+                        <th>Catatan <span class="sort-icon">▲▼</span></th>
+                        <th>Status <span class="sort-icon">▲▼</span></th>
+                        <th>Rating <span class="sort-icon">▲▼</span></th>
+                        <th>Aksi <span class="sort-icon">▲▼</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-number">1</td>
+                        <td class="code-cell">
+                            P202506011
+                            <div class="sub-text">Nomor Agenda: 10</div>
+                        </td>
+                        <td class="title-cell">Pembayaran Stadium General</td>
+                        <td class="date-cell">10 Jul 2025 - 00:13</td>
+                        <td class="date-cell">10 Jul 2025 - 00:15</td>
+                        <td class="notes-cell">Mohon kirimkan hard file ke Divisi Keuangan</td>
+                        <td><span class="status-badge status-disetujui">Disetujui</span></td>
+                        <td class="rating-cell">-</td>
+                        <td>
+                            <div class="action-group">
+                                <button class="action-btn">☆</button>
+                                <button class="action-btn">⎗</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">2</td>
+                        <td class="code-cell">
+                            P202506002
+                            <div class="sub-text">Nomor Agenda: 2</div>
+                        </td>
+                        <td class="title-cell">Laporan Keuangan SG Build Your Personal Brand</td>
+                        <td class="date-cell">23 Jun 2025 - 03:10</td>
+                        <td class="date-cell">26 Jun 2025 - 07:57</td>
+                        <td class="notes-cell">Mohon kirimkan hard file ke Divisi Keuangan, sertakan akte kelahiran</td>
+                        <td><span class="status-badge status-disetujui">Disetujui</span></td>
+                        <td class="rating-cell">-</td>
+                        <td>
+                            <div class="action-group">
+                                <button class="action-btn">☆</button>
+                                <button class="action-btn">⎗</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">3</td>
+                        <td class="code-cell">
+                            P202506001
+                            <div class="sub-text">Nomor Agenda: 1</div>
+                        </td>
+                        <td class="title-cell">Laporan Keuangan SG Build Your Personal Brand 2</td>
+                        <td class="date-cell">23 Jun 2025 - 00:57</td>
+                        <td class="date-cell">23 Jun 2025 - 03:06</td>
+                        <td class="notes-cell">Mohon kirimkan hard file ke divisi Keuangan</td>
+                        <td><span class="status-badge status-disetujui">Disetujui</span></td>
+                        <td class="rating-cell">
+                            <span class="rating-number">5</span>
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <button class="action-btn">☆</button>
+                                <button class="action-btn">⎗</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">4</td>
+                        <td class="code-cell">
+                            P202506003
+                            <div class="sub-text">Nomor Agenda: 3</div>
+                        </td>
+                        <td class="title-cell">Laporan Keuangan SG Build Your Personal Brand</td>
+                        <td class="date-cell">22 Jun 2025 - 23:26</td>
+                        <td class="date-cell">23 Jun 2025 - 03:06</td>
+                        <td class="notes-cell">Mohon kirimkan hard file ke divisi Keuangan</td>
+                        <td><span class="status-badge status-disetujui">Disetujui</span></td>
+                        <td class="rating-cell">
+                            <span class="rating-number">5</span>
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <button class="action-btn">☆</button>
+                                <button class="action-btn">⎗</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination-info">
+                <div class="showing-info">Showing 1 to 4 of 4 entries</div>
+                <div class="pagination">
+                    <button class="page-btn">Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+
+        <!-- Rating Modal -->
+        <div class="modal-overlay">
+            <div class="modal">
+                <div class="modal-title">Bagaimana pengalaman kamu menggunakan layanan ini?</div>
+
+                <div class="rating-stars">
+                    <div class="star">☆</div>
+                    <div class="star">☆</div>
+                    <div class="star">☆</div>
+                    <div class="star">☆</div>
+                    <div class="star">☆</div>
+                </div>
+
+                <div class="rating-text">Tulis pengalaman kamu disini yaa..</div>
+
+                <div class="comment-section">
+                    <textarea class="comment-textarea" placeholder="Tulis pengalaman kamu disini yaa.."></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-primary">Rating</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

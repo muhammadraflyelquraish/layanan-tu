@@ -52,6 +52,36 @@
                         <li>
                             <span class="m-r-sm text-muted welcome-message">Layanan Tata Usaha - Fakultas Sains & Teknologi</span>
                         </li>
+                        @if(count(auth()->user()->roles) > 1)
+                        <li class="dropdown show">
+                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="true">
+                                <i class="fa fa-users"></i> <span class="label label-warning">{{ count(auth()->user()->roles) }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-messages">
+                                <li>
+                                    <div class="dropdown-messages-box">
+                                        <div class="media-body">
+                                            <strong>Login Sebagai:</strong><br>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-divider"></li>
+
+                                @foreach(auth()->user()->roles as $key => $role)
+                                <li>
+                                    <a href="{{ route('profile.role', ['user_role_id' => $role->id]) }}">
+                                        <div class="dropdown-messages-box">
+                                            <div class="media-body">
+                                                {{ $loop->iteration }}. {{ $role->role->name }}{{ isset($role->prodi) ? ' - '.$role->prodi->name : '' }} <strong>{{ auth()->user()->role_id == $role->role->id ? '(Aktif)' : '' }}</strong> <br>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="dropdown-divider"></li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        @endif
                     </ul>
                 </nav>
             </div>

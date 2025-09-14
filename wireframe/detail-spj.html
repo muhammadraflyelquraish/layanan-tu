@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPJ Detail Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid black;
+            padding-left: 10px;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .breadcrumb a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        /* Content Layout */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        /* Main Data Section */
+        .data-section {
+            border: 2px solid black;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            font-weight: bold;
+            width: 150px;
+            flex-shrink: 0;
+        }
+
+        .info-separator {
+            margin: 0 10px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .info-email {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            border: 1px solid black;
+            padding: 2px 8px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        /* Attachments Table */
+        .attachments-section {
+            margin-top: 30px;
+        }
+
+        .attachment-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .attachment-table th,
+        .attachment-table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .attachment-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .attachment-table td {
+            font-size: 12px;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+            width: 50px;
+        }
+
+        .file-link {
+            text-decoration: underline;
+            color: black;
+        }
+
+        .tautan-link {
+            text-decoration: underline;
+            color: black;
+        }
+
+        /* History Sidebar */
+        .history-section {
+            border: 2px solid black;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .history-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .history-date {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .history-user {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .history-role {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .history-badge {
+            border: 1px solid black;
+            padding: 2px 6px;
+            font-size: 10px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .history-note {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            border: 2px solid black;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            background: white;
+        }
+
+        .btn-back {
+            background: #f0f0f0;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Nia Kurniawati Nings..</h3>
+                    <p>Keuangan</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#">▢ Beranda</a></li>
+                <li class="nav-item"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item active"><a href="#">▢ SPJ</a></li>
+                <li class="nav-item"><a href="#">▢ Label SPJ</a></li>
+                <li class="nav-item"><a href="#">▢ Arsip</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 10 Juli 2025 - 00:15:56
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Detail Surat Pertanggungjawaban</div>
+            <div class="breadcrumb">
+                <a href="#">SPJ</a>
+                <span class="breadcrumb-separator">/</span>
+                <span>Detail</span>
+            </div>
+
+            <div class="content-layout">
+                <!-- Main Data Section -->
+                <div class="data-section">
+                    <div class="section-title">Data Surat Pertanggungjawaban</div>
+
+                    <div class="info-section">
+                        <div class="info-title">Informasi</div>
+                        <div class="info-grid">
+                            <div>
+                                <div class="info-item">
+                                    <span class="info-label">Judul</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">Pembayaran Stadium General</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Pemohon</span>
+                                    <span class="info-separator">:</span>
+                                    <div class="info-value">
+                                        Joko
+                                        <div class="info-email">pemohon@gmail.com</div>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Diproses</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">10 Jul 2025 - 00:13</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Selesai</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">10 Jul 2025 - 00:15</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Selesai Dalam</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">0 hari, 0 jam, 2 menit</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Catatan</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">Mohon kirimkan hard file ke Divisi Keuangan</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Rating</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">-</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="info-item">
+                                    <span class="info-label">Pengajuan</span>
+                                    <span class="info-separator">:</span>
+                                    <div class="info-value">
+                                        P202506011
+                                        <div class="info-email">Nomor Agenda: 10</div>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Status</span>
+                                    <span class="info-separator">:</span>
+                                    <span class="info-value">
+                                        <span class="status-badge">Disetujui</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attachments Section -->
+                    <div class="attachments-section">
+                        <div class="info-title">Lampiran</div>
+                        <table class="attachment-table">
+                            <thead>
+                                <tr>
+                                    <th class="row-number">No</th>
+                                    <th>Label</th>
+                                    <th>File <span style="font-size: 10px;">(Maksimal: 5MB)</span></th>
+                                    <th>Tautan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="row-number">1</td>
+                                    <td>Bukti Lembar MCM *apabila dibayar melalui non tunal/MCM</td>
+                                    <td><span class="file-link">▢ Dokumen</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-number">2</td>
+                                    <td>SK KPA Narasumber</td>
+                                    <td><span class="file-link">▢ Dokumen</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-number">3</td>
+                                    <td>Lembar SPPR Aplikasi Bendara *non tunal/MCM</td>
+                                    <td><span class="file-link">▢ Dokumen</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td class="row-number">4</td>
+                                    <td>Rekaman (Dalam Bentuk CD) dan Melampirkan Link</td>
+                                    <td>-</td>
+                                    <td><span class="tautan-link">▢ Tautan</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- History Sidebar -->
+                <div class="history-section">
+                    <div class="history-title">History Approval</div>
+
+                    <div class="history-item">
+                        <div class="history-date">10 Jul 2025 - 00:15</div>
+                        <div class="history-user">▢ Nia Kurniawati Ningsih</div>
+                        <div class="history-role">(Keuangan)</div>
+                        <div class="history-badge">Disetujui</div>
+                        <div class="history-note">Catatan: Mohon kirimkan hard file ke Divisi Keuangan</div>
+                    </div>
+
+                    <div class="history-item">
+                        <div class="history-date">10 Jul 2025 - 00:14</div>
+                        <div class="history-user">▢ Nia Kurniawati Ningsih</div>
+                        <div class="history-role">(Keuangan)</div>
+                        <div class="history-badge">Revisi</div>
+                        <div class="history-note">Catatan: revisi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-back">◀ Kembali</button>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -110,7 +110,7 @@
                                         <select name="categories[]" id="categories" class="form-control select2" required>
                                             <option selected value="">Pilih Lampiran..</option>
                                             @foreach(App\Models\SPJCategory::pluck('nama', 'id') as $id => $nama)
-                                            <option value="{{ $id }}" @if($document->spj_category_id == $id) selected @endif >{{ $nama }}</option>
+                                            <option value="{{ $id }}" @if($document->spj_label_id == $id) selected @endif >{{ $nama }}</option>
                                             @endforeach
                                         </select>
                                     </td>

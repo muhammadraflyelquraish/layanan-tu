@@ -37,7 +37,7 @@
                         @csrf
                         @method('POST')
 
-                        <input type="hidden" name="letter_id" id="letter_id" value="{{ $letter->id }}" class="form-control" required>
+                        <input type="hidden" name="surat_id" id="surat_id" value="{{ $letter->id }}" class="form-control" required>
 
                         <div class="form-group">
                             <label>Judul</label>

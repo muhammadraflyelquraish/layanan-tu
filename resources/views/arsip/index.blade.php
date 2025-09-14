@@ -55,11 +55,12 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>Jenis Surat</label>
-                                <select name="disertai_dana" id="disertai_dana" class="form-control select2-jenis-surat">
+                                <label>Prodi</label>
+                                <select name="prodi_id" id="prodi_id" class="form-control select2-prodi">
                                     <option value=""></option>
-                                    <option value="Ya">Surat Pembayaran</option>
-                                    <option value="Tidak">Surat Masuk</option>
+                                    @foreach($prodi as $pr)
+                                    <option value="{{ $pr->id }}">{{ $pr->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -86,7 +87,7 @@
                                     <th class="text-center" width="1px">No</th>
                                     <th>Kode Pengajuan</th>
                                     <th>Pemohon</th>
-                                    <th>Tanggal Diterima</th>
+                                    <!-- <th>Tanggal Diterima</th> -->
                                     <th>Asal Surat</th>
                                     <th>Hal</th>
                                     <th>Untuk</th>
@@ -165,12 +166,12 @@
                             <td id="hal"></td>
                             <th class="text-right">File</th>
                             <td class="text-center">:</td>
-                            <td id="proposal_file"></td>
+                            <td id="proposal_id"></td>
                         </tr>
                         <tr>
                             <th>Pihak Pembuat SK</th>
                             <td class="text-center">:</td>
-                            <td id="pihak_pembuat_sk_id"></td>
+                            <td id="pembuat_sk_id"></td>
                             <th class="text-right">SK</th>
                             <td class="text-center">:</td>
                             <td id="sk"></td>
@@ -182,6 +183,11 @@
                             <th class="text-right">Selesai Dalam</th>
                             <td class="text-center">:</td>
                             <td id="selesai_dalam_waktu"></td>
+                        </tr>
+                        <tr>
+                            <th>Rating</th>
+                            <td class="text-center">:</td>
+                            <td id="rating" colspan="4"></td>
                         </tr>
                         <tr>
                             <th>Alasan Penolakan</th>
@@ -225,7 +231,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <input type="hidden" class="form-control" name="letter_id" id="letter_id">
+                    <input type="hidden" class="form-control" name="surat_id" id="surat_id">
 
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Status</label>
@@ -312,6 +318,12 @@
 
         $('.select2-jenis-surat').select2({
             placeholder: "Filter Jenis Surat..",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('.select2-prodi').select2({
+            placeholder: "Filter Prodi..",
             allowClear: true,
             width: '100%'
         });
@@ -440,10 +452,10 @@
                 data: 'pemohon.name',
                 name: 'pemohon.name'
             },
-            {
-                data: 'tanggal_diterima',
-                name: 'tanggal_diterima'
-            },
+            // {
+            //     data: 'tanggal_diterima',
+            //     name: 'tanggal_diterima'
+            // },
             {
                 data: 'asal_surat',
                 name: 'asal_surat'
@@ -498,6 +510,7 @@
                     d.pemohon_id = $('select[name="pemohon_id"]').val()
                     d.status = $('select[name="status"]').val()
                     d.disertai_dana = $('select[name="disertai_dana"]').val()
+                    d.prodi_id = $('select[name="prodi_id"]').val()
                 }
             },
             columns: columns,
@@ -520,7 +533,7 @@
 
                 modal.find('#modal-title').text('Edit Pengajuan');
                 $.get('{{ route("letter.store") }}/' + id, function(app) {
-                    modal.find('#letter_id').val(app.letter.id)
+                    modal.find('#surat_id').val(app.letter.id)
                     modal.find('#pemohon_id').val(app.letter.pemohon_id).attr('disabled', true)
                     modal.find('#nomor_agenda').val(app.letter.nomor_agenda)
                     modal.find('#tanggal_surat').val(app.letter.tanggal_surat)
@@ -530,7 +543,7 @@
                     modal.find('#tanggal_diterima').val(app.letter.tanggal_diterima)
                     modal.find('#untuk').val(app.letter.untuk)
                     modal.find('#disertai_dana').val(app.letter.disertai_dana == false || app.letter.disertai_dana == '0' ? '0' : '1')
-                    modal.find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                    modal.find('#proposal_id').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
 
                     // $('.disposisi-input').each(function(e) {
                     //     // Your code here
@@ -605,13 +618,28 @@
                 modal.find('#detailInformation').find('#untuk').text(app.letter.untuk);
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
                 modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
-                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                modal.find('#detailInformation').find('#proposal_id').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
                 modal.find('#detailInformation').find('#sk').html(app.letter?.sk ? `<a href="${app.letter?.sk.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok SK</a>` : '-');
                 modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
                 // modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
-                modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')
+                modal.find('#detailInformation').find('#pembuat_sk_id').text(app?.letter?.pembuat_sk?.name ?? '-')
                 modal.find('#detailInformation').find('#tanggal_selesai').text(tanggalSelesai);
                 modal.find('#detailInformation').find('#selesai_dalam_waktu').text(app?.selesai_dalam);
+
+                let ratingHtml = '';
+                if (app.letter.ratings?.length) {
+                    const ratingValue = app.letter.ratings[0].rating;
+                    const ratingNote = app.letter.ratings[0].catatan ?? '-';
+                    let stars = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const starColor = i <= ratingValue ? 'color: #f5b301' : '';
+                        stars += `<span data-value="${i}" class="star" style="${starColor}">&#9733;</span>`;
+                    }
+                    ratingHtml = `${stars} <br> <small>catatan: ${ratingNote}</small>`;
+                } else {
+                    ratingHtml = '-';
+                }
+                modal.find('#detailInformation').find('#rating').html(ratingHtml);
 
                 // disposition detail
                 modal.find('#detailDisposition').find('tbody').children().remove()
@@ -664,7 +692,7 @@
             let modal = $(this)
             let id = button.data('integrity')
             $('#formDisposition').attr('action', "{{ url('/letter/') }}/" + id + '/disposition').attr('method', 'PUT')
-            $('#ModalDisposition').find('#letter_id').val(id)
+            $('#ModalDisposition').find('#surat_id').val(id)
         })
 
         $('#ModalDisposition').find('#status').change(function() {
@@ -673,7 +701,7 @@
             if (selectedValue == "Setujui") {
                 $('#ModalDisposition').find('#position_id').closest('.form-group').removeAttr('hidden');
 
-                const id = $('#ModalDisposition').find('#letter_id').val()
+                const id = $('#ModalDisposition').find('#surat_id').val()
                 $.get("{{ url('/letter/') }}/" + id + '/target-disposition', function(app) {
                     $('#ModalDisposition').find('#position_id').val(app)
                 })

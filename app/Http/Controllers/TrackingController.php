@@ -19,7 +19,7 @@ class TrackingController extends Controller
         $app = Letter::with(['pemohon', 'spjs', 'file', 'sk'])->orderBy('created_at', 'desc');
 
         if (auth()->user()->role_id == 2) {
-            $app->where("t_letter.pemohon_id", auth()->user()->id);
+            $app->where("t_surat.pemohon_id", auth()->user()->id);
         }
 
         $app->where(function ($query) {

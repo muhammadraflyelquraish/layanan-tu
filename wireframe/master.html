@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengguna Management Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid black;
+            padding-left: 10px;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .breadcrumb a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-btn {
+            border: 2px solid black;
+            background: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .show-entries {
+            font-size: 14px;
+        }
+
+        .search-box {
+            border: 2px solid black;
+            padding: 5px 10px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .sort-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+        }
+
+        .data-table td {
+            font-size: 12px;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+            width: 50px;
+        }
+
+        .name-cell {
+            width: 200px;
+        }
+
+        .id-cell {
+            width: 150px;
+            font-family: monospace;
+        }
+
+        .email-cell {
+            width: 250px;
+        }
+
+        .role-cell {
+            width: 120px;
+        }
+
+        .action-cell {
+            width: 100px;
+            text-align: center;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            border: 1px solid black;
+            padding: 4px 8px;
+            font-size: 10px;
+            background: white;
+        }
+
+        .edit-btn {
+            background: #f0f0f0;
+        }
+
+        .delete-btn {
+            background: #e0e0e0;
+        }
+
+        /* Pagination */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .showing-info {
+            font-size: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            border: 1px solid black;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .page-btn.active {
+            background: black;
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Rafly El..</h3>
+                    <p>Admin</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#">▢ Beranda</a></li>
+                <li class="nav-item"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item"><a href="#">▢ SPJ</a></li>
+                <li class="nav-item"><a href="#">▢ Label SPJ</a></li>
+                <li class="nav-item"><a href="#">▢ Disposisi</a></li>
+                <li class="nav-item"><a href="#">▢ Arsip</a></li>
+                <li class="nav-item active"><a href="#">▢ Pengguna</a></li>
+                <li class="nav-item"><a href="#">▢ Akses</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 10 Juli 2025 - 00:19:23
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Pengguna</div>
+            <div class="breadcrumb">
+                <a href="#">Managemen Akses</a>
+                <span class="breadcrumb-separator">/</span>
+                <span>Pengguna</span>
+            </div>
+
+            <div class="action-bar">
+                <button class="add-btn">▢ Tambah Pengguna</button>
+
+                <div class="table-controls">
+                    <div class="show-entries">
+                        Show <select style="border: 1px solid black; padding: 2px;">
+                            <option>10</option>
+                        </select> entries
+                    </div>
+                    <div>
+                        Search: <input type="text" class="search-box">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="row-number">No <span class="sort-icon">▲▼</span></th>
+                        <th class="name-cell">Nama <span class="sort-icon">▲▼</span></th>
+                        <th class="id-cell">NIM/NIP/NIDN <span class="sort-icon">▲▼</span></th>
+                        <th class="email-cell">Email <span class="sort-icon">▲▼</span></th>
+                        <th class="role-cell">Role <span class="sort-icon">▲▼</span></th>
+                        <th class="action-cell">Aksi <span class="sort-icon">▲▼</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-number">1</td>
+                        <td class="name-cell">Muhammad Rafly El Quraish</td>
+                        <td class="id-cell">-</td>
+                        <td class="email-cell">elquraish.muhammadrafly@gmail.com</td>
+                        <td class="role-cell">Pemohon</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">2</td>
+                        <td class="name-cell">Oreom Aulp</td>
+                        <td class="id-cell">-</td>
+                        <td class="email-cell">oreomaulp@gmail.com</td>
+                        <td class="role-cell">Pemohon</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">3</td>
+                        <td class="name-cell">Saepul Aripiyanto</td>
+                        <td class="id-cell">1241590188501924</td>
+                        <td class="email-cell">saepul.aripiyanto@uinjkt.ac.id</td>
+                        <td class="role-cell">Pemohon</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">4</td>
+                        <td class="name-cell">Nia Kurniawati Ningsih</td>
+                        <td class="id-cell">112109100005</td>
+                        <td class="email-cell">keuangan@gmail.com</td>
+                        <td class="role-cell">Keuangan</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">5</td>
+                        <td class="name-cell">Joko</td>
+                        <td class="id-cell">112109100002</td>
+                        <td class="email-cell">pemohon@gmail.com</td>
+                        <td class="role-cell">Pemohon</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">6</td>
+                        <td class="name-cell">Alwi</td>
+                        <td class="id-cell">112109100004</td>
+                        <td class="email-cell">dekan@gmail.com</td>
+                        <td class="role-cell">Dekan</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">7</td>
+                        <td class="name-cell">Rafly El</td>
+                        <td class="id-cell">112109100001</td>
+                        <td class="email-cell">admin@gmail.com</td>
+                        <td class="role-cell">Admin</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">8</td>
+                        <td class="name-cell">Susi</td>
+                        <td class="id-cell">112109100003</td>
+                        <td class="email-cell">tu@gmail.com</td>
+                        <td class="role-cell">TU</td>
+                        <td class="action-cell">
+                            <div class="action-group">
+                                <button class="action-btn edit-btn">✎</button>
+                                <button class="action-btn delete-btn">🗑</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination-info">
+                <div class="showing-info">Showing 1 to 8 of 8 entries</div>
+                <div class="pagination">
+                    <button class="page-btn">Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

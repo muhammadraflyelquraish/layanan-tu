@@ -36,54 +36,66 @@ class AuthenticatedSessionController extends Controller
         // find user from main user
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            // find user from layanan
-            $userLayanan = UserLayanan::query()
-                ->where('email', $request->email)
-                ->whereNotNull('email_verified_at')
-                ->first();
-            if (!$userLayanan) {
-                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
-            }
+            // // find user from layanan
+            // $userLayanan = UserLayanan::query()
+            //     ->where('email', $request->email)
+            //     ->whereNotNull('email_verified_at')
+            //     ->first();
+            // if (!$userLayanan) {
+            //     return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
+            // }
 
-            if (!Hash::check($request->password, $userLayanan->password)) {
-                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
-            }
+            // if (!Hash::check($request->password, $userLayanan->password)) {
+            //     return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
+            // }
 
-            $newUser = User::create([
-                'name' => $userLayanan->name,
-                'no_identity' => $userLayanan->nim_nip_nidn,
-                'email' => $userLayanan->email,
-                'password' => $userLayanan->password,
-                'role_id' => 2,
-                'status' => "ACTIVE",
-                'user_type' => "LAYANAN",
-                'email_verified' => true,
-            ]);
+            // $newUser = User::create([
+            //     'name' => $userLayanan->name,
+            //     'no_identity' => $userLayanan->nim_nip_nidn,
+            //     'email' => $userLayanan->email,
+            //     'password' => $userLayanan->password,
+            //     'role_id' => 2,
+            //     'status' => "ACTIVE",
+            //     'user_type' => "LAYANAN",
+            //     'email_verified' => true,
+            // ]);
 
-            if (!$newUser) {
-                return redirect()->route('login')->withErrors(['email' => 'Internal server error.']);
-            }
+            // if (!$newUser) {
+            return redirect()->route('login')->withErrors(['email' => 'Internal server error.']);
+            // }
+        }
+
+        if (count($user->roles) == 0) {
+            return redirect()->route('login')->withErrors(['email' => 'Invalid permission, please contact admin.']);
+        }
+
+        if ($user->status == 'INACTIVE') {
+            return redirect()->route('login')->withErrors(['email' => 'Your account is inactive.']);
         }
 
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        if (auth()->user()->status == 'INACTIVE') {
-            Auth::logout();
-            return redirect()->route('login')->withErrors(['email' => 'Your account is inactive.']);
+        // set default role
+        if ($user->role_id == null || $user->prodi_id == null) {
+            $user->role_id = $user->roles[0]->role_id;
+            $user->prodi_id = $user->roles[0]->prodi_id;
+            $user->save();
         }
 
         $source = session()->pull('login_source');
         if ($source == 'tracking') {
-            return auth()->user()->role_id == 2
+            return $user->role_id == 2
                 ? redirect()->route('tracking.index')
                 : redirect()->route('letter.index');
         }
 
-        return auth()->user()->role_id == 2
-            ? redirect()->route('letter.index')
-            : redirect()->route('dashboard');
+        return redirect()->route('letter.index');
+
+        // return $user->role_id == 2
+        //     ? redirect()->route('letter.index')
+        //     : redirect()->route('dashboard');
     }
 
     /**

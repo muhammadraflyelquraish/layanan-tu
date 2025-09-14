@@ -10,7 +10,7 @@
                     @endif
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                         <span class="block m-t-xs font-bold text-white">Hai, {{ substr(Auth::user()->name, 0, 15) }}..</span>
-                        <span class="text-muted text-xs block">{{ Auth::user()->role->name }} <b class="caret"></b></span>
+                        <span class="text-muted text-xs block">{{ Auth::user()->role->name }} {{ Auth::user()->prodi ? '('. Auth::user()->prodi->name . ')' : '' }} <b class="caret"></b></span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
                         <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>

@@ -13,7 +13,7 @@ class CreateSPJCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('t_spj_category', function (Blueprint $table) {
+        Schema::create('t_spj_label', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->enum('jenis', ['FILE', 'LINK', 'FILE_LINK'])->nullable();
@@ -29,6 +29,6 @@ class CreateSPJCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_spj_category');
+        Schema::dropIfExists('t_spj_label');
     }
 }

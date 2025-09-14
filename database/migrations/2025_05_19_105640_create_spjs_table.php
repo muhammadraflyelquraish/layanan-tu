@@ -15,7 +15,7 @@ class CreateSPJSTable extends Migration
     {
         Schema::create('t_spj', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('letter_id')->references('id')->on('t_letter');
+            $table->foreignId('surat_id')->references('id')->on('t_surat');
             $table->foreignId('user_id')->references('id')->on('t_user');
             $table->string('jenis')->nullable();
             $table->string('status')->nullable();

@@ -25,11 +25,12 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'prodi_id',
         'status',
         'avatar',
         'avatar_original',
         'user_type',
-        'email_verified'
+        'email_verified',
     ];
 
     /**
@@ -54,6 +55,16 @@ class User extends Authenticatable
 
     function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'prodi_id');
+    }
+
+    function roles()
+    {
+        return $this->hasMany(UserRole::class, 'user_id', 'id')->orderBy("created_at", "desc");
     }
 }

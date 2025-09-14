@@ -9,7 +9,7 @@ class LetterDisposition extends Model
 {
     use HasFactory;
 
-    protected $table = 't_letter_disposition';
+    protected $table = 't_surat_disposisi';
 
     /**
      * The attributes that are mass assignable.
@@ -17,26 +17,21 @@ class LetterDisposition extends Model
      * @var array
      */
     protected $fillable = [
-        'letter_id',
-        'position_id',
+        'surat_id',
         'disposisi_id',
         'tanggal_diterima',
         'tanggal_diproses',
-        'verifikator_id',
         'keterangan',
         'status',
-        'urutan'
+        'urutan',
+        'verifikator_id',
+        'verifikator_role_id',
     ];
 
 
-    function letter()
+    function surat()
     {
-        return $this->belongsTo(Letter::class);
-    }
-
-    function position()
-    {
-        return $this->belongsTo(Role::class, 'position_id');
+        return $this->belongsTo(Letter::class, 'surat_id');
     }
 
     function disposition()
@@ -47,5 +42,10 @@ class LetterDisposition extends Model
     function verifikator()
     {
         return $this->belongsTo(User::class, 'verifikator_id');
+    }
+
+    function verifikatorRole()
+    {
+        return $this->belongsTo(Role::class, 'verifikator_role_id');
     }
 }

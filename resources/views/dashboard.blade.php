@@ -66,10 +66,17 @@
                     <div class="ibox-title">
                         <h5>Kinerja Pelayanan</h5>
                     </div>
+                    <a href="{{ route('letter.index') }}">
+                        <div class="ibox-content ibox-heading">
+                            <h3>Rating Pengajuan
+                                <div class="stat-percent text-primary"><i class="fa fa-star"></i> {{ $avgRatingPengajuan }}</div>
+                            </h3>
+                        </div>
+                    </a>
                     <a href="{{ route('spj.index') }}">
                         <div class="ibox-content ibox-heading">
                             <h3>Rating SPJ
-                                <div class="stat-percent text-primary"><i class="fa fa-star"></i> {{ $avgRating }}</div>
+                                <div class="stat-percent text-primary"><i class="fa fa-star"></i> {{ $avgRatingSpj }}</div>
                             </h3>
                         </div>
                     </a>

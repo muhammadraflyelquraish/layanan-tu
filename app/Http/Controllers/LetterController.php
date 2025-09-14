@@ -6,7 +6,8 @@ use App\Models\Disposisi;
 use App\Models\Letter;
 use App\Models\LetterDisposition;
 use App\Models\Media;
-use App\Models\Role;
+use App\Models\Prodi;
+use App\Models\SPJRating;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -22,20 +23,36 @@ class LetterController extends Controller
 {
     public function index(): View
     {
-        $pemohon = User::where("role_id", 2)->get();
+        // User Login
+        $userLogin = auth()->user();
+
+        $pemohon = User::where("role_id", "!=", 3)->get();
         $disposisi = Disposisi::orderBy("urutan", "asc")->get();
         $nomorAgenda = Letter::whereYear('created_at', now()->year)->count() + 1;
-        return view('letter.index', compact('pemohon', 'disposisi', 'nomorAgenda'));
+
+        $prodi = Prodi::query();
+        if ($userLogin->role_id == 7 || $userLogin->role_id == 8) {
+            $prodi->where("id", $userLogin->prodi_id);
+        }
+        $prodi = $prodi->get();
+
+        return view('letter.index', compact('pemohon', 'disposisi', 'nomorAgenda', 'prodi'));
     }
 
     public function data(): JsonResponse
     {
-        $app = Letter::query()->with(['pemohon', 'spjs', 'file', 'sk'])
-            ->leftJoin('t_user as u', 'u.id', '=', 't_letter.pemohon_id')
-            ->select('t_letter.*',  'u.name as user_name', 'u.email as user_email');
+        // User Login
+        $userLogin = auth()->user();
 
-        if (auth()->user()->role_id == 2) {
-            $app->where("t_letter.pemohon_id", auth()->user()->id);
+        $app = Letter::query()->with(['pemohon', 'spjs', 'file', 'sk', 'prodi'])
+            ->leftJoin('t_user as u', 'u.id', '=', 't_surat.pemohon_id')
+            ->select('t_surat.*',  'u.name as user_name', 'u.email as user_email');
+
+        if ($userLogin->role_id == 2 || $userLogin->role_id == 6) { // Role (Pemohon, Dosen)
+            $app->where("t_surat.pemohon_id", $userLogin->id);
+        } else if ($userLogin->role_id == 7 || $userLogin->role_id == 8) { // Role (Prodi, Sek Prodi)
+            $app->where("t_surat.prodi_id", $userLogin->prodi_id);
+            $app->whereNotIn('t_surat.status', ['Selesai', 'Ditolak']);
         } else {
             // $app->where(function ($query) {
             //     $query->where(function ($q) {
@@ -47,69 +64,97 @@ class LetterController extends Controller
             //             ->whereDoesntHave('spjs');
             //     });
             // });
-            $app->whereNotIn('t_letter.status', ['Selesai', 'Ditolak']);
+            $app->whereNotIn('t_surat.status', ['Selesai', 'Ditolak']);
         }
 
         $app->when(request('status'), function ($query) {
-            $query->where('t_letter.status', request('status'));
+            $query->where('t_surat.status', request('status'));
         });
 
         $app->when(request('pemohon_id'), function ($query) {
-            $query->where('t_letter.pemohon_id', request('pemohon_id'));
+            $query->where('t_surat.pemohon_id', request('pemohon_id'));
         });
 
         $app->when(request('disertai_dana'), function ($query) {
-            $query->where('t_letter.disertai_dana', request('disertai_dana') == "Ya");
+            $query->where('t_surat.disertai_dana', request('disertai_dana') == "Ya");
+        });
+
+        $app->when(request('prodi_id'), function ($query) {
+            $query->where('t_surat.prodi_id', request('prodi_id'));
         });
 
         $app->when(request('search'), function ($query) {
             $searchTerm = "%" . request('search') . "%";
 
             $query->where(function ($q) use ($searchTerm) {
-                $q->whereRaw('LOWER(t_letter.kode) LIKE ?', [strtolower($searchTerm)])
+                $q->whereRaw('LOWER(t_surat.kode) LIKE ?', [strtolower($searchTerm)])
                     ->orWhereHas('pemohon', function ($subQ) use ($searchTerm) {
                         $subQ->whereRaw('LOWER(name) LIKE ?', [strtolower($searchTerm)])
                             ->orWhereRaw('LOWER(no_identity) LIKE ?', [strtolower($searchTerm)])
                             ->orWhereRaw('LOWER(email) LIKE ?', [strtolower($searchTerm)]);
                     })
-                    ->orWhereRaw('LOWER(t_letter.nomor_agenda) LIKE ?', [strtolower($searchTerm)])
-                    ->orWhereRaw('LOWER(t_letter.nomor_surat) LIKE ?', [strtolower($searchTerm)])
-                    ->orWhereRaw('LOWER(t_letter.asal_surat) LIKE ?', [strtolower($searchTerm)])
-                    ->orWhereRaw('LOWER(t_letter.hal) LIKE ?', [strtolower($searchTerm)])
-                    ->orWhereRaw('LOWER(t_letter.untuk) LIKE ?', [strtolower($searchTerm)]);
+                    ->orWhereRaw('LOWER(t_surat.nomor_agenda) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_surat.nomor_surat) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_surat.asal_surat) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_surat.hal) LIKE ?', [strtolower($searchTerm)])
+                    ->orWhereRaw('LOWER(t_surat.untuk) LIKE ?', [strtolower($searchTerm)]);
             });
         });
+
 
         return DataTables::of($app)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
-                $appHistory = LetterDisposition::where('letter_id', $row->id)->where('status', 'Diproses')->first();
-
                 $button = '<div class="btn-group pull-right">';
 
-                if ($row->status != 'Selesai' && $appHistory && $appHistory->position_id == auth()->user()->role_id) {
-                    $button .= '<button class="btn btn-sm btn-info" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#ModalDisposition"><i class="fa fa-arrow-right"></i></button>';
+                // User Login
+                $userLogin = auth()->user();
+
+                // Find Disposisi Diproses
+                $letterDisposition = LetterDisposition::with('disposition.approvers')->where('surat_id', $row->id)->where('status', 'Diproses')->first();
+
+                // Included Role Approvers
+                $approverRoleIds = [];
+                if (isset($letterDisposition->disposition)) {
+                    foreach ($letterDisposition->disposition->approvers as $dis) {
+                        array_push($approverRoleIds, $dis->role_id);
+                    }
                 }
 
-                if ($row->spjs->count() == 0 && $row->status == 'Selesai' && $row->disertai_dana && $row->pemohon_id == auth()->user()->id) {
-                    $button .= '<a href="' . route('letter.spj', $row->id) . '" class="btn btn-sm btn-info" id="spj" data-integrity="' . $row->id . '"><i class="fa fa-book"></i> <small>SPJ</small></a>';
-                }
-
-                if (auth()->user()->role->name == 'Admin' || auth()->user()->role->name == 'TU') {
+                // Button Edit (Admin, TU)
+                if ($userLogin->role_id == 1 || $userLogin->role_id == 3) {
                     if ($row->status != 'Selesai' && $row->status != 'Ditolak') {
                         $button .= '<button class="btn btn-sm btn-warning" data-mode="edit" data-integrity="' . $row->id . '" data-toggle="modal" data-target="#ModalAddEdit"><i class="fa fa-edit"></i></button>';
                     }
                 }
 
-                if (auth()->user()->role->name == 'Pemohon' && $row->tanggal_diterima == null) {
-                    if ($row->status == 'Diproses') {
-                        $button .= '<button class="btn btn-sm btn-warning" data-mode="edit" data-integrity="' . $row->id . '" data-toggle="modal" data-target="#ModalAddEditPemohon"><i class="fa fa-edit"></i></button>';
-                    }
+                // Button Edit Pemohon
+                if ($userLogin->role_id == 2 && $row->tanggal_diterima == null && $row->status == 'Diproses') {
+                    $button .= '<button class="btn btn-sm btn-warning" data-mode="edit" data-integrity="' . $row->id . '" data-toggle="modal" data-target="#ModalAddEditPemohon"><i class="fa fa-edit"></i></button>';
                 }
 
+                // Button Disposisi (Included approverRoleIds)
+                if ($row->status != 'Selesai' && $letterDisposition && in_array($userLogin->role_id, $approverRoleIds)) {
+                    $button .= '<button class="btn btn-sm btn-info" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#ModalDisposition"><i class="fa fa-arrow-right"></i></button>';
+                } else if ($userLogin->role_id == 3 && $letterDisposition->disposisi_id == null) {
+                    $button .= '<button class="btn btn-sm btn-info" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#ModalDisposition"><i class="fa fa-arrow-right"></i></button>';
+                }
+
+                // Button Add SPJ
+                if ($row->spjs->count() == 0 && $row->status == 'Selesai' && $row->disertai_dana && $row->pemohon_id == $userLogin->id) {
+                    $button .= '<a href="' . route('letter.spj', $row->id) . '" class="btn btn-sm btn-info" id="spj" data-integrity="' . $row->id . '"><i class="fa fa-book"></i> <small>SPJ</small></a>';
+                }
+
+                // Button Rating
+                if ($row->status == "Selesai" && $row->pemohon_id == $userLogin->id) {
+                    $button .= '<button type="button" data-toggle="modal" data-id="' . $row->id . '" data-target="#modalRating" class="btn btn-sm btn-info"><i class="fa fa-star"></i></button>';
+                }
+
+                // Button Detail
                 $button .= '<button class="btn btn-sm btn-success" data-toggle="modal" data-integrity="' . $row->id . '" data-target="#ModalDetail"><i class="fa fa-eye"></i></button>';
 
-                if (auth()->user()->role->name == 'Admin') {
+                // Button Delete (Admin)
+                if ($userLogin->role_id == 1) {
                     $button .= '<button class="btn btn-sm btn-danger" id="delete" data-integrity="' . $row->id . '"><i class="fa fa-trash"></i></button>';
                 }
 
@@ -132,7 +177,7 @@ class LetterController extends Controller
                 return $row->tanggal_diterima ? date('d M Y - H:i', strtotime($row->tanggal_diterima)) : '-';
             })
             ->editColumn('pemohon.name', function ($row) {
-                return '' . $row->pemohon->name . ' <br> <small>' . $row->pemohon->email . '</small>';
+                return $row->pemohon->name . ' <br> <small>' . $row->pemohon->email . '</small>' . ' <br> <small>' . ($row->prodi ? 'Prodi: ' . $row->prodi->name : '') . '</small>';
             })
             ->editColumn('kode', function ($row) {
                 return '' . $row->kode . ' <br> <small>Nomor Agenda: ' . $row->nomor_agenda . '</small>';
@@ -153,16 +198,16 @@ class LetterController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            if ($request->letter_id) {
-                $letter = Letter::with('dispositions')->find($request->letter_id);
+            if ($request->surat_id) {
+                $letter = Letter::with('dispositions')->find($request->surat_id);
 
                 DB::transaction(function () use ($letter, $request) {
                     $data = $request->all();
-                    $data['proposal_file'] = $letter->proposal_file;
-                    $data['perlu_sk'] = $request->pihak_pembuat_sk_id ? true : false;
+                    $data['proposal_id'] = $letter->proposal_id;
+                    $data['perlu_sk'] = $request->pembuat_sk_id ? true : false;
 
-                    if ($request->proposal_file) {
-                        $file = $request->file('proposal_file');
+                    if ($request->proposal_id) {
+                        $file = $request->file('proposal_id');
                         if ($file->getSize() > 1048576) {
                             throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 1MB.");
                         }
@@ -179,11 +224,11 @@ class LetterController extends Controller
                             "file_url" => $url,
                         ]);
 
-                        $data['proposal_file'] = $media->id;
+                        $data['proposal_id'] = $media->id;
                     }
 
                     if ($letter->dispositions()->count() > 0 && $request->tanggal_diterima != date('Y-m-d', strtotime($letter->dispositions[0]->tanggal_diterima))) {
-                        LetterDisposition::where('letter_id', $letter->id)->where('urutan', 0)->update(['tanggal_diterima' => $request->tanggal_diterima]);
+                        LetterDisposition::where('surat_id', $letter->id)->where('urutan', 0)->update(['tanggal_diterima' => $request->tanggal_diterima]);
                     }
 
                     if (isset($request->disposisi_order)) {
@@ -198,28 +243,30 @@ class LetterController extends Controller
                                 throw new Exception("Disposisi tidak ditemukan");
                             }
 
-                            $existingLetterDisposition = LetterDisposition::where('letter_id', $letter->id)->where('disposisi_id', $disposisi->id)->where('urutan', $urutan)->first();
+                            $existingLetterDisposition = LetterDisposition::where('surat_id', $letter->id)->where('disposisi_id', $disposisi->id)->where('urutan', $urutan)->first();
                             if ($existingLetterDisposition) {
                                 array_push($unRemovedDisposition, $existingLetterDisposition->id);
                                 continue;
                             }
 
-                            $movedLetterDisposition = LetterDisposition::where('letter_id', $letter->id)->where('disposisi_id', $disposisi->id)->where('urutan', '!=', $urutan)->first();
+                            $movedLetterDisposition = LetterDisposition::where('surat_id', $letter->id)->where('disposisi_id', $disposisi->id)->where('urutan', '!=', $urutan)->first();
                             if ($movedLetterDisposition) {
                                 $movedLetterDisposition->update([
                                     'status' => null,
                                     'tanggal_diterima' => null,
                                     'tanggal_diproses' => null,
                                     'verifikator_id' => null,
+                                    'verifikator_role_id' => null,
                                     'keterangan' => null,
                                     'urutan' => $urutan,
                                 ]);
                                 array_push($unRemovedDisposition, $movedLetterDisposition->id);
 
-                                LetterDisposition::where('letter_id', $letter->id)->where('urutan', 0)->update([
+                                LetterDisposition::where('surat_id', $letter->id)->where('urutan', 0)->update([
                                     'status' => 'Diproses',
                                     'tanggal_diproses' => null,
                                     'verifikator_id' => null,
+                                    'verifikator_role_id' => null,
                                     'keterangan' => null,
                                 ]);
                                 $letter->update(['status' => 'Diproses']);
@@ -227,8 +274,7 @@ class LetterController extends Controller
                                 continue;
                             } else {
                                 $letterDisposition = LetterDisposition::create([
-                                    'letter_id' => $letter->id,
-                                    'position_id' => $disposisi->approver_id,
+                                    'surat_id' => $letter->id,
                                     'disposisi_id' => $disposisi->id,
                                     'tanggal_diterima' => null,
                                     'status' => null,
@@ -241,7 +287,7 @@ class LetterController extends Controller
 
                         // Remove disposition
                         if (count($unRemovedDisposition) > 0) {
-                            LetterDisposition::where('letter_id', $letter->id)->where('disposisi_id', '!=', null)->whereNotIn('id', $unRemovedDisposition)->delete();
+                            LetterDisposition::where('surat_id', $letter->id)->where('disposisi_id', '!=', null)->whereNotIn('id', $unRemovedDisposition)->delete();
                         }
                     }
 
@@ -256,7 +302,7 @@ class LetterController extends Controller
                     $latestLetter = Letter::query()->latest()->first();
                     $code = $latestLetter ? sprintf('P' . date('Ym') . '%03s', substr($latestLetter->kode, 7) + 1) : 'P' . date('Ym') . '001';
 
-                    $file = $request->file('proposal_file');
+                    $file = $request->file('proposal_id');
                     if ($file->getSize() > 1048576) {
                         throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 1MB.");
                     }
@@ -277,22 +323,21 @@ class LetterController extends Controller
                     $data['kode'] = $code;
                     $data['status'] = 'Diproses';
                     $data['disertai_dana'] = $request->disertai_dana == "1";
-                    $data['proposal_file'] = $media->id;
+                    $data['proposal_id'] = $media->id;
                     $data['nomor_agenda'] = $nomorAgenda;
-                    $data['perlu_sk'] = $request->pihak_pembuat_sk_id ? true : false;
-
-                    if (auth()->user()->role_id == 2) {
+                    $data['perlu_sk'] = $request->pembuat_sk_id ? true : false;
+                    $data['role_id'] = auth()->user()->role_id;
+                    $data['prodi_id'] = auth()->user()->prodi_id;
+                    if (auth()->user()->role_id != 3) {
                         $data['pemohon_id'] = auth()->user()->id;
                     }
 
                     $app = Letter::create($data);
 
                     // Create disposition history
-                    $disposition = Role::where('id', 3)->first();
                     LetterDisposition::create([
-                        'letter_id' => $app->id,
-                        'position_id' => $disposition->id,
-                        'disposisi_id' => null,
+                        'surat_id' => $app->id,
+                        'disposisi_id' => null, // null indicate tata usaha
                         'tanggal_diterima' => $request->tanggal_diterima,
                         'status' => 'Diproses',
                         'urutan' => 0,
@@ -304,8 +349,7 @@ class LetterController extends Controller
                             $disposisi = Disposisi::find($disposisiId);
 
                             LetterDisposition::create([
-                                'letter_id' => $app->id,
-                                'position_id' => $disposisi->approver_id,
+                                'surat_id' => $app->id,
                                 'disposisi_id' => $disposisi->id,
                                 'tanggal_diterima' => null,
                                 'status' => null,
@@ -329,7 +373,7 @@ class LetterController extends Controller
             return response()->json([]);
         }
 
-        $letter = $letter->load('pemohon', 'file', 'sk', 'pihak_pembuat_sk', 'dispositions.letter', 'dispositions.position', 'dispositions.verifikator', 'dispositions.disposition');
+        $letter = $letter->load('pemohon', 'ratings', 'prodi', 'role', 'file', 'sk', 'pembuat_sk', 'dispositions.surat', 'dispositions.disposition', 'dispositions.verifikator', 'dispositions.verifikatorRole');
 
         $selesaiDalam = '-';
         if ($letter->tanggal_diterima && $letter->tanggal_selesai) {
@@ -348,10 +392,10 @@ class LetterController extends Controller
     {
         try {
             $data = $request->all();
-            $data['proposal_file'] = $letter->proposal_file;
+            $data['proposal_id'] = $letter->proposal_id;
 
-            if ($request->proposal_file) {
-                $file = $request->file('proposal_file');
+            if ($request->proposal_id) {
+                $file = $request->file('proposal_id');
                 if ($file->getSize() > 614400) {
                     throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
                 }
@@ -368,7 +412,7 @@ class LetterController extends Controller
                     "file_url" => $url,
                 ]);
 
-                $data['proposal_file'] = $media->id;
+                $data['proposal_id'] = $media->id;
             }
 
             $letter->update($data);
@@ -405,13 +449,13 @@ class LetterController extends Controller
     {
         try {
             // Find letter where status diproses
-            $currentDisposition = LetterDisposition::where('letter_id', $letter->id)->where('status', 'Diproses')->first();
+            $currentDisposition = LetterDisposition::where('surat_id', $letter->id)->where('status', 'Diproses')->first();
 
             DB::transaction(function () use ($currentDisposition, $request, $letter) {
                 if ($request->status == 'Setujui') {
                     $nextDisposition = LetterDisposition::with('disposition')
                         ->where("urutan", $currentDisposition->urutan + 1)
-                        ->where('letter_id', $letter->id)
+                        ->where('surat_id', $letter->id)
                         ->where("status", null)
                         ->first();
 
@@ -420,7 +464,7 @@ class LetterController extends Controller
 
                         // Create letter tu
                         LetterDisposition::create([
-                            'letter_id' => $letter->id,
+                            'surat_id' => $letter->id,
                             'position_id' => null,
                             'disposisi_id' => null,
                             'tanggal_diterima' => now(),
@@ -438,8 +482,8 @@ class LetterController extends Controller
                     }
 
                     $skfileId = null;
-                    if ($request->sk_file) {
-                        $file = $request->file('sk_file');
+                    if ($request->sk_id) {
+                        $file = $request->file('sk_id');
                         if ($file->getSize() > 614400) {
                             throw new \Exception("Ukuran file '" . $file->getClientOriginalName() . "' tidak boleh lebih dari 600 KB.");
                         }
@@ -463,7 +507,7 @@ class LetterController extends Controller
                     $letter->update([
                         'status' => $applicatoinStatus,
                         'tanggal_selesai' => $applicatoinStatus == 'Selesai' ? now() : null,
-                        'sk_file' => $request->sk_file ? $skfileId : $letter->sk_file,
+                        'sk_id' => $request->sk_id ? $skfileId : $letter->sk_id,
                     ]);
                 } else {
                     $letter->update([
@@ -489,19 +533,19 @@ class LetterController extends Controller
 
     public function targetDisposition(Letter $letter)
     {
-        $currentDisposition = LetterDisposition::with('letter.pihak_pembuat_sk')->where('letter_id', $letter->id)->where('status', 'Diproses')->first();
+        $currentDisposition = LetterDisposition::with('surat.pembuat_sk')->where('surat_id', $letter->id)->where('status', 'Diproses')->first();
         $nextDisposition = LetterDisposition::with('disposition')
             ->where("urutan", $currentDisposition->urutan + 1)
-            ->where('letter_id', $letter->id)
+            ->where('surat_id', $letter->id)
             ->where("status", null)
             ->first();
         $nextDispositionName = "TU";
 
         return response()->json([
-            "needUpdate" =>  $currentDisposition->letter->tanggal_diterima == null,
+            "needUpdate" =>  $currentDisposition->surat->tanggal_diterima == null,
             "nextDisposition" => !$nextDisposition ? $nextDispositionName : $nextDisposition->disposition->name,
-            "perlu_sk" => $currentDisposition->letter->perlu_sk
-                ? $currentDisposition->letter->pihak_pembuat_sk_id == $currentDisposition->disposisi_id
+            "perlu_sk" => $currentDisposition->surat->perlu_sk
+                ? $currentDisposition->surat->pembuat_sk_id == $currentDisposition->disposisi_id
                 : false,
         ]);
     }
@@ -510,7 +554,7 @@ class LetterController extends Controller
     {
         try {
             // Find letter where status diproses
-            $appHistory = LetterDisposition::where('letter_id', $letter->id)->where('status', 'Diproses')->first();
+            $appHistory = LetterDisposition::where('surat_id', $letter->id)->where('status', 'Diproses')->first();
 
             DB::transaction(function () use ($appHistory, $request, $letter) {
                 // Update letter status
@@ -541,5 +585,31 @@ class LetterController extends Controller
         }
 
         return view('letter.spj', compact('letter'));
+    }
+
+    public function getRating(Letter $letter)
+    {
+        $rating = SPJRating::where('surat_id', $letter->id)->where('user_id', request()->user()->id)->first();
+        return response()->json(['data' => $rating], 200);
+    }
+
+    public function rating(Request $request)
+    {
+        $rating = SPJRating::where('surat_id', $request->surat_id)->where('user_id', $request->user()->id)->first();
+        if ($rating) {
+            $rating->update([
+                'rating' => (int)$request->rating,
+                'catatan' => $request->catatan,
+            ]);
+        } else {
+            SPJRating::create([
+                'surat_id' => $request->surat_id,
+                'user_id' => $request->user()->id,
+                'rating' => (int)$request->rating,
+                'catatan' => $request->catatan,
+                'tipe' => 'PENGAJUAN',
+            ]);
+        }
+        return redirect()->route('letter.index')->with('success', 'Rating berhasil ditetapkan.');
     }
 }

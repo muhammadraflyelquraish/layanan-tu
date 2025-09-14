@@ -13,10 +13,10 @@ class CreateSPJDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('t_spj_document', function (Blueprint $table) {
+        Schema::create('t_spj_file', function (Blueprint $table) {
             $table->id();
             $table->foreignId('spj_id')->references('id')->on('t_spj');
-            $table->foreignId('spj_category_id')->references('id')->on('t_spj_category');
+            $table->foreignId('spj_label_id')->references('id')->on('t_spj_label');
             $table->foreignId('file_id')->nullable()->references('id')->on('t_media');
             $table->text('link')->nullable();
             $table->timestamps();
@@ -30,6 +30,6 @@ class CreateSPJDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_spj_document');
+        Schema::dropIfExists('t_spj_file');
     }
 }

@@ -13,7 +13,7 @@ class CreateLettersTable extends Migration
      */
     public function up()
     {
-        Schema::create('t_letter', function (Blueprint $table) {
+        Schema::create('t_surat', function (Blueprint $table) {
             $table->id();
             $table->string('kode');
             $table->string('nomor_agenda')->nullable();
@@ -25,13 +25,15 @@ class CreateLettersTable extends Migration
             $table->timestamp('tanggal_diterima')->nullable();
             $table->string('untuk')->nullable();
             $table->string('status')->nullable();
-            $table->foreignId('proposal_file')->nullable()->references('id')->on('t_media');
+            $table->foreignId('proposal_id')->nullable()->references('id')->on('t_media');
             $table->boolean('disertai_dana')->nullable();
             $table->text('alasan_penolakan')->nullable();
             $table->timestamp('tanggal_selesai')->nullable();
             $table->boolean('perlu_sk')->default(false);
-            $table->foreignId('pihak_pembuat_sk_id')->nullable()->references('id')->on('t_disposisi');
-            $table->foreignId('sk_file')->nullable()->references('id')->on('t_media');
+            $table->foreignId('pembuat_sk_id')->nullable()->references('id')->on('t_disposisi');
+            $table->foreignId('sk_id')->nullable()->references('id')->on('t_media');
+            $table->foreignId('role_id')->nullable()->references('id')->on('t_role');
+            $table->foreignId('prodi_id')->nullable()->references('id')->on('t_prodi');
             $table->timestamps();
         });
     }
@@ -43,6 +45,6 @@ class CreateLettersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_letter');
+        Schema::dropIfExists('t_surat');
     }
 }

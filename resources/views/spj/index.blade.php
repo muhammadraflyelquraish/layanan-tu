@@ -34,7 +34,7 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
 
-    @if(auth()->user()->role_id != 2)
+    @if(auth()->user()->role_id != 2 && auth()->user()->role_id != 6 && auth()->user()->role_id != 7 && auth()->user()->role_id != 8)
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -74,7 +74,15 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <!-- buffer -->
+                            <div class="form-group">
+                                <label>Prodi</label>
+                                <select name="prodi_id" id="prodi_id" class="form-control select2-prodi">
+                                    <option value=""></option>
+                                    @foreach($prodi as $pr)
+                                    <option value="{{ $pr->id }}">{{ $pr->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <!-- <button class="btn btn-success" style="margin-top: 26px;" id="applyFilter" type="button"><i class="fa fa-filter"></i> Filter</button> -->
@@ -107,7 +115,7 @@
                                     <th>Tanggal Selesai</th>
                                     <th>Catatan</th>
                                     <th>Status</th>
-                                    <th>Rating</th>
+                                    <!-- <th>Rating</th> -->
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                                 @else
@@ -119,7 +127,7 @@
                                     <th>Tanggal Selesai</th>
                                     <th>Catatan</th>
                                     <th>Status</th>
-                                    <th>Rating</th>
+                                    <!-- <th>Rating</th> -->
                                     <th class="text-right" width="1px">Aksi</th>
                                 </tr>
                                 @endif
@@ -184,6 +192,12 @@
             width: '100%'
         });
 
+        $('.select2-prodi').select2({
+            placeholder: "Filter Prodi..",
+            allowClear: true,
+            width: '100%'
+        });
+
         //BASE
         let ladda = $('.ladda-button-demo').ladda();
 
@@ -241,10 +255,10 @@
                 data: 'status',
                 name: 'status'
             },
-            {
-                data: 'rating',
-                name: 'rating'
-            },
+            // {
+            //     data: 'rating',
+            //     name: 'rating'
+            // },
             {
                 data: 'action',
                 name: 'action',
@@ -285,10 +299,10 @@
                     data: 'status',
                     name: 'status'
                 },
-                {
-                    data: 'rating',
-                    name: 'rating'
-                },
+                // {
+                //     data: 'rating',
+                //     name: 'rating'
+                // },
                 {
                     data: 'action',
                     name: 'action',
@@ -301,9 +315,9 @@
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
-            // order: [
-            //     [1, 'desc']
-            // ],
+            order: [
+                [1, 'desc']
+            ],
             ajax: {
                 url: "{{ route('spj.data') }}",
                 type: "GET",
@@ -311,6 +325,7 @@
                     d.search = $('input[name="search"]').val()
                     d.pemohon_id = $('select[name="pemohon_id"]').val()
                     d.status = $('select[name="status"]').val()
+                    d.prodi_id = $('select[name="prodi_id"]').val()
                 }
             },
             columns: columns,

@@ -9,7 +9,7 @@ class SPJCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 't_spj_category';
+    protected $table = 't_spj_label';
 
     /**
      * The attributes that are mass assignable.

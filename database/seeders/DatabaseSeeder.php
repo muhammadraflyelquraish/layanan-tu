@@ -3,10 +3,14 @@
 namespace Database\Seeders;
 
 use App\Models\Disposisi;
+use App\Models\DisposisiRole;
+use App\Models\Fakultas;
+use App\Models\Prodi;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\SPJCategory;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -53,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "TU",
+                "name" => "Administrasi Umum (Tata Usaha)",
                 "role_id" => 3,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -69,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Dekan",
+                "name" => "Administrasi Umum (Dekan)",
                 "role_id" => 4,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -78,7 +82,7 @@ class DatabaseSeeder extends Seeder
                     'USER' => 0,
                     'ROLE' => 0,
                     'LETTER' => 1,
-                    'SPJ' => 0,
+                    'SPJ' => 1,
                     'LABEL_SPJ' => 0,
                     'DISPOSISI' => 0,
                     'ARSIP' => 1,
@@ -101,23 +105,23 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Teknik Informatika",
+                "name" => "Dosen",
                 "role_id" => 6,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
                 "permission" => [
-                    'DASHBOARD' => 1,
+                    'DASHBOARD' => 0,
                     'USER' => 0,
                     'ROLE' => 0,
                     'LETTER' => 1,
-                    'SPJ' => 0,
+                    'SPJ' => 1,
                     'LABEL_SPJ' => 0,
                     'DISPOSISI' => 0,
-                    'ARSIP' => 1,
+                    'ARSIP' => 0,
                 ]
             ],
             [
-                "name" => "Prodi Agribisnis",
+                "name" => "Prodi",
                 "role_id" => 7,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -126,14 +130,14 @@ class DatabaseSeeder extends Seeder
                     'USER' => 0,
                     'ROLE' => 0,
                     'LETTER' => 1,
-                    'SPJ' => 0,
+                    'SPJ' => 1,
                     'LABEL_SPJ' => 0,
                     'DISPOSISI' => 0,
                     'ARSIP' => 1,
                 ]
             ],
             [
-                "name" => "Prodi Sistem Informasi",
+                "name" => "Sekretaris Prodi",
                 "role_id" => 8,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -142,14 +146,14 @@ class DatabaseSeeder extends Seeder
                     'USER' => 0,
                     'ROLE' => 0,
                     'LETTER' => 1,
-                    'SPJ' => 0,
+                    'SPJ' => 1,
                     'LABEL_SPJ' => 0,
                     'DISPOSISI' => 0,
                     'ARSIP' => 1,
                 ]
             ],
             [
-                "name" => "Prodi Matematika",
+                "name" => "PLT",
                 "role_id" => 9,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -165,7 +169,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Fisika",
+                "name" => "Akademik",
                 "role_id" => 10,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -181,7 +185,7 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Kimia",
+                "name" => "Umum",
                 "role_id" => 11,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
@@ -197,88 +201,8 @@ class DatabaseSeeder extends Seeder
                 ]
             ],
             [
-                "name" => "Prodi Biologi",
+                "name" => "Perpustakaan",
                 "role_id" => 12,
-                "is_disposition" => true,
-                "is_allow_deleted" => false,
-                "permission" => [
-                    'DASHBOARD' => 1,
-                    'USER' => 0,
-                    'ROLE' => 0,
-                    'LETTER' => 1,
-                    'SPJ' => 0,
-                    'LABEL_SPJ' => 0,
-                    'DISPOSISI' => 0,
-                    'ARSIP' => 1,
-                ]
-            ],
-            [
-                "name" => "Prodi Teknik Pertambangan",
-                "role_id" => 13,
-                "is_disposition" => true,
-                "is_allow_deleted" => false,
-                "permission" => [
-                    'DASHBOARD' => 1,
-                    'USER' => 0,
-                    'ROLE' => 0,
-                    'LETTER' => 1,
-                    'SPJ' => 0,
-                    'LABEL_SPJ' => 0,
-                    'DISPOSISI' => 0,
-                    'ARSIP' => 1,
-                ]
-            ],
-            [
-                "name" => "PLT",
-                "role_id" => 14,
-                "is_disposition" => true,
-                "is_allow_deleted" => false,
-                "permission" => [
-                    'DASHBOARD' => 1,
-                    'USER' => 0,
-                    'ROLE' => 0,
-                    'LETTER' => 1,
-                    'SPJ' => 0,
-                    'LABEL_SPJ' => 0,
-                    'DISPOSISI' => 0,
-                    'ARSIP' => 1,
-                ]
-            ],
-            [
-                "name" => "Akademik",
-                "role_id" => 15,
-                "is_disposition" => true,
-                "is_allow_deleted" => false,
-                "permission" => [
-                    'DASHBOARD' => 1,
-                    'USER' => 0,
-                    'ROLE' => 0,
-                    'LETTER' => 1,
-                    'SPJ' => 0,
-                    'LABEL_SPJ' => 0,
-                    'DISPOSISI' => 0,
-                    'ARSIP' => 1,
-                ]
-            ],
-            [
-                "name" => "Umum",
-                "role_id" => 16,
-                "is_disposition" => true,
-                "is_allow_deleted" => false,
-                "permission" => [
-                    'DASHBOARD' => 1,
-                    'USER' => 0,
-                    'ROLE' => 0,
-                    'LETTER' => 1,
-                    'SPJ' => 0,
-                    'LABEL_SPJ' => 0,
-                    'DISPOSISI' => 0,
-                    'ARSIP' => 1,
-                ]
-            ],
-            [
-                "name" => "Perpus",
-                "role_id" => 17,
                 "is_disposition" => true,
                 "is_allow_deleted" => false,
                 "permission" => [
@@ -296,126 +220,222 @@ class DatabaseSeeder extends Seeder
 
         $users = [
             [
-                "role_id" => 1,
                 "name" => "Admin TU",
                 "email" => "admin@gmail.com",
-                "no_identity" => "0000000000001"
+                "roles" => [
+                    ["role_id" => 1],
+                ]
             ],
             [
-                "role_id" => 2,
-                "name" => "Gibral Anugrah",
-                "email" => "pemohon@gmail.com",
-                "no_identity" => "0000000000002"
+                "name" => "Gibral Anugrah, S.Kom",
+                "email" => "pemohonti@gmail.com",
+                "roles" => [
+                    ["role_id" => 2, "prodi_id" => 5]
+                ]
             ],
             [
-                "role_id" => 3,
-                "name" => "Susi Sundari",
+                "name" => "Muhammad Rafly El Quraish, S.Kom",
+                "email" => "pemohonmatematika@gmail.com",
+                "roles" => [
+                    ["role_id" => 2, "prodi_id" => 3],
+                ]
+            ],
+            [
+                "name" => "Susi Sundari, SE",
                 "email" => "tu@gmail.com",
-                "no_identity" => "0000000000003"
+                "roles" => [
+                    ["role_id" => 3],
+                ]
             ],
             [
-                "role_id" => 4,
-                "name" => "Alwi Khasani",
+                "name" => "Alwi Khasani, SM",
                 "email" => "dekan@gmail.com",
-                "no_identity" => "0000000000004"
+                "roles" => [
+                    ["role_id" => 4],
+                ]
             ],
             [
-                "role_id" => 5,
-                "name" => "Nia Sumianingsih",
+                "name" => "Nia Sumianingsih, SE",
                 "email" => "keuangan@gmail.com",
-                "no_identity" => "0000000000005"
+                "roles" => [
+                    ["role_id" => 5],
+                ]
+            ],
+            [
+                "name" => "Dr. Dewi Kharani, M.Sc",
+                "email" => "proditi@gmail.com",
+                "roles" => [
+                    ["role_id" => 6, "prodi_id" => 5],
+                    ["role_id" => 7, "prodi_id" => 5],
+                ]
+            ],
+            [
+                "name" => "Saepul Aripiyanto, S.Kom",
+                "email" => "sekproditi@gmail.com",
+                "roles" => [
+                    ["role_id" => 6, "prodi_id" => 5],
+                    ["role_id" => 8, "prodi_id" => 5],
+                ]
+            ],
+            [
+                "name" => "Zulmaneri, MM",
+                "email" => "prodiagri@gmail.com",
+                "roles" => [
+                    ["role_id" => 6, "prodi_id" => 7],
+                    ["role_id" => 7, "prodi_id" => 7],
+                ]
+            ],
+            [
+                "name" => "Dr. Qurrotulaini, MT",
+                "email" => "prodisi@gmail.com",
+                "roles" => [
+                    ["role_id" => 6, "prodi_id" => 2],
+                    ["role_id" => 7, "prodi_id" => 2],
+                ]
+            ],
+            [
+                "name" => "Taufik E.S. M.Sc. Tech. Ph.D",
+                "email" => "prodimatematika@gmail.com",
+                "roles" => [
+                    ["role_id" => 7, "prodi_id" => 3],
+                    ["role_id" => 6, "prodi_id" => 5],
+                ]
             ]
         ];
 
         $dispositions = [
             [
                 "name" => "Dekan",
-                "approver_id" => 4,
-                "urutan" => 1,
+                "approver" => [
+                    ["role_id" => 4],
+                ],
+                "urutan" => 1
             ],
             [
                 "name" => "Wadek Akademik",
-                "approver_id" => 4,
+                "approver" => [
+                    ["role_id" => 4],
+                ],
                 "urutan" => 2,
             ],
             [
                 "name" => "Wadek Kemahasiswaan",
-                "approver_id" => 4,
+                "approver" => [
+                    ["role_id" => 4],
+                ],
                 "urutan" => 3,
             ],
             [
                 "name" => "Wadek Administrasi Umum",
-                "approver_id" => 4,
+                "approver" => [
+                    ["role_id" => 4],
+                ],
                 "urutan" => 4,
             ],
             [
                 "name" => "Kabag TU",
-                "approver_id" => 3,
+                "approver" => [
+                    ["role_id" => 3],
+                ],
                 "urutan" => 5,
             ],
             [
                 "name" => "Keuangan",
-                "approver_id" => 5,
+                "approver" => [
+                    ["role_id" => 5],
+                ],
                 "urutan" => 6,
             ],
             [
-                "name" => "Prodi Teknik Informatika",
-                "approver_id" => 6,
+                "name" => "Prodi Fisika",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 1],
+                    ["role_id" => 8, "prodi_id" => 1],
+                ],
                 "urutan" => 7,
             ],
             [
-                "name" => "Prodi Agribisnis",
-                "approver_id" => 7,
+                "name" => "Prodi Sistem Informasi",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 2],
+                    ["role_id" => 8, "prodi_id" => 2],
+                ],
                 "urutan" => 8,
             ],
             [
-                "name" => "Prodi Sistem Informasi",
-                "approver_id" => 8,
+                "name" => "Prodi Matematika",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 3],
+                    ["role_id" => 8, "prodi_id" => 3],
+                ],
                 "urutan" => 9,
             ],
             [
-                "name" => "Prodi Matematika",
-                "approver_id" => 9,
+                "name" => "Prodi Kimia",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 4],
+                    ["role_id" => 8, "prodi_id" => 4],
+                ],
                 "urutan" => 10,
             ],
             [
-                "name" => "Prodi Fisika",
-                "approver_id" => 10,
+                "name" => "Prodi Teknik Informatika",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 5],
+                    ["role_id" => 8, "prodi_id" => 5],
+                ],
                 "urutan" => 11,
             ],
             [
-                "name" => "Prodi Kimia",
-                "approver_id" => 11,
+                "name" => "Prodi Biologi",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 6],
+                    ["role_id" => 8, "prodi_id" => 6],
+                ],
                 "urutan" => 12,
             ],
             [
-                "name" => "Prodi Biologi",
-                "approver_id" => 12,
+                "name" => "Prodi Agribisnis",
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 7],
+                    ["role_id" => 8, "prodi_id" => 7],
+                ],
                 "urutan" => 13,
             ],
             [
                 "name" => "Prodi Teknik Pertambangan",
-                "approver_id" => 13,
+                "approver" => [
+                    ["role_id" => 7, "prodi_id" => 8],
+                    ["role_id" => 8, "prodi_id" => 8],
+                ],
                 "urutan" => 14,
             ],
             [
                 "name" => "PLT",
-                "approver_id" => 14,
+                "approver" => [
+                    ["role_id" => 9],
+                ],
                 "urutan" => 15,
             ],
             [
                 "name" => "Akademik",
-                "approver_id" => 15,
+                "approver" => [
+                    ["role_id" => 10],
+                ],
                 "urutan" => 16,
             ],
             [
                 "name" => "Umum",
-                "approver_id" => 16,
+                "approver" => [
+                    ["role_id" => 11],
+                ],
                 "urutan" => 17,
             ],
             [
-                "name" => "Perpus",
-                "approver_id" => 17,
+                "name" => "Perpustakaan",
+                "approver" => [
+                    ["role_id" => 12],
+                ],
                 "urutan" => 18,
             ],
         ];
@@ -535,6 +555,81 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
+        $fakultas = [
+            [
+                "name" => "Fakultas Sains dan Teknologi",
+            ],
+        ];
+
+        $prodi = [
+            [
+                "id" => 1,
+                "fakultas_id" => 1,
+                "name" => "Fisika",
+            ],
+            [
+                "id" => 2,
+                "fakultas_id" => 1,
+                "name" => "Sistem Informasi",
+            ],
+            [
+                "id" => 3,
+                "fakultas_id" => 1,
+                "name" => "Matematika",
+            ],
+            [
+                "id" => 4,
+                "fakultas_id" => 1,
+                "name" => "Kimia",
+            ],
+            [
+                "id" => 5,
+                "fakultas_id" => 1,
+                "name" => "Teknik Informatika",
+            ],
+            [
+                "id" => 6,
+                "fakultas_id" => 1,
+                "name" => "Biologi",
+            ],
+            [
+                "id" => 7,
+                "fakultas_id" => 1,
+                "name" => "Agribisnis",
+            ],
+            [
+                "id" => 8,
+                "fakultas_id" => 1,
+                "name" => "Teknik Pertambangan",
+            ],
+            [
+                "id" => 9,
+                "fakultas_id" => 1,
+                "name" => "Magister Agribisnis",
+            ],
+            [
+                "id" => 10,
+                "fakultas_id" => 1,
+                "name" => "Magister Teknologi Informasi",
+            ],
+        ];
+
+        // Fakultas
+        foreach ($fakultas as $fak) {
+            Fakultas::create([
+                "name" => $fak['name'],
+            ]);
+        }
+
+        // Prodi
+        foreach ($prodi as $pro) {
+            Prodi::create([
+                "name" => $pro['name'],
+                "fakultas_id" => $pro['fakultas_id'],
+            ]);
+        }
+
+        // Role & Permission
         foreach ($role_permissions as $role) {
             Role::create([
                 "name" => $role['name'],
@@ -550,23 +645,37 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // User & User Role
         foreach ($users as $user) {
-            User::create([
+            $newUser = User::create([
                 "name" => $user['name'],
-                "no_identity" => $user['no_identity'],
                 "email" => $user['email'],
-                "password" => Hash::make("tugogo+"),
-                "role_id" => $user['role_id'],
+                "password" => Hash::make("Admin1++"),
                 "status" => "ACTIVE"
             ]);
+
+            foreach ($user["roles"] as $rl) {
+                UserRole::create([
+                    "user_id" => $newUser->id,
+                    "role_id" => $rl['role_id'] ?? null,
+                    "prodi_id" => $rl['prodi_id'] ?? null,
+                ]);
+            };
         };
 
         foreach ($dispositions as $disposition) {
-            Disposisi::create([
+            $disposisi = Disposisi::create([
                 "name" => $disposition['name'],
-                "approver_id" => $disposition['approver_id'],
                 "urutan" => $disposition['urutan'],
             ]);
+
+            foreach ($disposition["approver"] as $app) {
+                DisposisiRole::create([
+                    "disposisi_id" => $disposisi->id,
+                    "role_id" => $app['role_id'] ?? null,
+                    "prodi_id" => $app['prodi_id'] ?? null,
+                ]);
+            };
         };
 
         foreach ($labelSPJS as $labelSPJ) {

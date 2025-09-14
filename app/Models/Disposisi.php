@@ -18,12 +18,11 @@ class Disposisi extends Model
      */
     protected $fillable = [
         'name',
-        'approver_id',
         'urutan',
     ];
 
-    function approver()
+    function approvers()
     {
-        return $this->belongsTo(Role::class, 'approver_id');
+        return $this->hasMany(DisposisiRole::class, 'disposisi_id', 'id')->orderBy("created_at", "desc");
     }
 }

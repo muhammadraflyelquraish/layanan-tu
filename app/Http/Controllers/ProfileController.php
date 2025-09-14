@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\UserRole;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -43,5 +44,20 @@ class ProfileController extends Controller
         $user->update($data);
 
         return Redirect::route('profile.edit')->with('status', 'Profile berhasil diupdate');
+    }
+
+    public function changeRole(Request $request)
+    {
+        $user = auth()->user();
+        $userRoleId = $request->query('user_role_id');
+
+        $userRole = UserRole::where('id', $userRoleId)->where('user_id', $user->id)->first();
+        if ($userRole) {
+            $user->role_id = $userRole->role_id;
+            $user->prodi_id = $userRole->prodi_id;
+            $user->save();
+        }
+
+        return Redirect::route('letter.index');
     }
 }

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPJ Lampiran Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid black;
+            padding-left: 10px;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .breadcrumb a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        /* Form Section */
+        .form-section {
+            border: 2px solid black;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-textarea {
+            width: 100%;
+            border: 2px solid black;
+            padding: 10px;
+            font-size: 14px;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Attachment Table */
+        .attachment-section {
+            margin-top: 30px;
+        }
+
+        .attachment-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .attachment-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .attachment-table th,
+        .attachment-table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .attachment-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .attachment-table td {
+            font-size: 12px;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+            width: 50px;
+        }
+
+        .label-cell {
+            width: 300px;
+        }
+
+        .file-cell {
+            width: 300px;
+        }
+
+        .link-cell {
+            width: 250px;
+        }
+
+        .action-cell {
+            width: 80px;
+            text-align: center;
+        }
+
+        .label-dropdown {
+            width: 100%;
+            border: 1px solid black;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-btn {
+            border: 1px solid black;
+            padding: 5px 10px;
+            font-size: 11px;
+            background: white;
+        }
+
+        .file-name {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .file-size {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .link-input {
+            width: 100%;
+            border: 1px solid black;
+            padding: 5px;
+            font-size: 10px;
+        }
+
+        .delete-btn {
+            border: 1px solid black;
+            background: white;
+            padding: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .add-attachment {
+            border: 1px solid black;
+            background: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            border: 2px solid black;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            background: white;
+        }
+
+        .btn-primary {
+            background: black;
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Joko..</h3>
+                    <p>Pemohon</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item active"><a href="#">▢ SPJ</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 10 Juli 2025 - 00:13:38
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Lampiran Surat Pertanggungjawaban</div>
+            <div class="breadcrumb">
+                <a href="#">Pengajuan</a>
+                <span class="breadcrumb-separator">/</span>
+                <span>SPJ</span>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <div class="section-title">Data Surat Pertanggungjawaban</div>
+
+                <div class="form-group">
+                    <label class="form-label">Judul</label>
+                    <textarea class="form-textarea" placeholder="Pembayaran Stadium General"></textarea>
+                </div>
+
+                <!-- Attachment Section -->
+                <div class="attachment-section">
+                    <div class="attachment-title">Lampiran</div>
+
+                    <table class="attachment-table">
+                        <thead>
+                            <tr>
+                                <th class="row-number">No</th>
+                                <th class="label-cell">Label</th>
+                                <th class="file-cell">File <span class="file-size">(Maksimal: 5MB)</span></th>
+                                <th class="link-cell">Tautan</th>
+                                <th class="action-cell">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="row-number">1</td>
+                                <td class="label-cell">
+                                    <select class="label-dropdown">
+                                        <option>Bukti Lembar MCM *apabila dibayar melalui non tunal/MCM</option>
+                                    </select>
+                                </td>
+                                <td class="file-cell">
+                                    <div class="file-upload">
+                                        <button class="file-btn">Choose File</button>
+                                        <span class="file-name">rdk-v2-sign 2 denda.pdf</span>
+                                    </div>
+                                </td>
+                                <td class="link-cell">-</td>
+                                <td class="action-cell">
+                                    <button class="delete-btn">🗑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="row-number">2</td>
+                                <td class="label-cell">
+                                    <select class="label-dropdown">
+                                        <option>SK KPA Narasumber</option>
+                                    </select>
+                                </td>
+                                <td class="file-cell">
+                                    <div class="file-upload">
+                                        <button class="file-btn">Choose File</button>
+                                        <span class="file-name">ba-bongkar-desdem-signature.pdf</span>
+                                    </div>
+                                </td>
+                                <td class="link-cell">-</td>
+                                <td class="action-cell">
+                                    <button class="delete-btn">🗑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="row-number">3</td>
+                                <td class="label-cell">
+                                    <select class="label-dropdown">
+                                        <option>Lembar SPPR Aplikasi Bendara *non tunal/MCM</option>
+                                    </select>
+                                </td>
+                                <td class="file-cell">
+                                    <div class="file-upload">
+                                        <button class="file-btn">Choose File</button>
+                                        <span class="file-name">baph-cif-ppn-dpp-signature.pdf</span>
+                                    </div>
+                                </td>
+                                <td class="link-cell">-</td>
+                                <td class="action-cell">
+                                    <button class="delete-btn">🗑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="row-number">4</td>
+                                <td class="label-cell">
+                                    <select class="label-dropdown">
+                                        <option>Rekaman (Dalam Bentuk CD) dan Melampirkan Link</option>
+                                    </select>
+                                </td>
+                                <td class="file-cell">
+                                    <div class="file-upload">
+                                        <button class="file-btn">Choose File</button>
+                                        <span class="file-name">No file chosen</span>
+                                    </div>
+                                </td>
+                                <td class="link-cell">
+                                    <input type="text" class="link-input"
+                                        placeholder="https://www.youtube.com/watch?v=UNk6LT7Yokk&list=RDJn-Xp75j">
+                                </td>
+                                <td class="action-cell">
+                                    <button class="delete-btn">🗑</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="add-attachment">+ Tambah Lampiran</button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn">◀ Kembali</button>
+                <button class="btn btn-primary">💾 Simpan</button>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

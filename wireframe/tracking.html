@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Surat Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: black;
+            padding: 20px;
+        }
+
+        .tracking-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid black;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .tracking-header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 2px solid black;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .app-button {
+            border: 2px solid black;
+            background: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .tracking-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Content Section */
+        .tracking-content {
+            padding: 20px;
+        }
+
+        /* Table Controls */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .show-entries {
+            font-size: 14px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .search-box {
+            border: 2px solid black;
+            padding: 5px 10px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .sort-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+        }
+
+        .data-table td {
+            font-size: 12px;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+            width: 50px;
+        }
+
+        .code-cell {
+            font-family: monospace;
+            width: 120px;
+        }
+
+        .source-cell {
+            width: 100px;
+        }
+
+        .type-cell {
+            width: 140px;
+        }
+
+        .subject-cell {
+            width: 250px;
+        }
+
+        .status-cell {
+            width: 100px;
+        }
+
+        .proposal-cell {
+            width: 120px;
+        }
+
+        .sk-cell {
+            width: 100px;
+        }
+
+        .action-cell {
+            width: 80px;
+            text-align: center;
+        }
+
+        .status-badge {
+            border: 1px solid black;
+            padding: 3px 8px;
+            font-size: 11px;
+            text-align: center;
+            width: fit-content;
+            border-radius: 2px;
+        }
+
+        .status-selesai {
+            background: #e0e0e0;
+        }
+
+        .status-diproses {
+            background: #f0f0f0;
+        }
+
+        .doc-link {
+            text-decoration: underline;
+            color: black;
+            font-size: 11px;
+        }
+
+        .action-btn {
+            border: 1px solid black;
+            padding: 4px 8px;
+            font-size: 10px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        /* Pagination */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .showing-info {
+            font-size: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            border: 1px solid black;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .page-btn.active {
+            background: black;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tracking-container">
+        <!-- Header -->
+        <div class="tracking-header">
+            <button class="app-button">▢ Masuk Aplikasi</button>
+            <div class="tracking-title">Tracking Surat</div>
+        </div>
+
+        <!-- Content -->
+        <div class="tracking-content">
+            <div class="table-controls">
+                <div class="show-entries">
+                    Show <select style="border: 1px solid black; padding: 2px;">
+                        <option>10</option>
+                    </select> entries
+                </div>
+                <div class="search-container">
+                    <span class="search-label">Search:</span>
+                    <input type="text" class="search-box">
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="row-number">No <span class="sort-icon">▲▼</span></th>
+                        <th class="code-cell">Kode Pengajuan <span class="sort-icon">▲▼</span></th>
+                        <th class="source-cell">Asal Surat <span class="sort-icon">▲▼</span></th>
+                        <th class="type-cell">Jenis Surat <span class="sort-icon">▲▼</span></th>
+                        <th class="subject-cell">Hal <span class="sort-icon">▲▼</span></th>
+                        <th class="status-cell">Status <span class="sort-icon">▲▼</span></th>
+                        <th class="proposal-cell">Proposal <span class="sort-icon">▲▼</span></th>
+                        <th class="sk-cell">SK <span class="sort-icon">▲▼</span></th>
+                        <th class="action-cell">Aksi <span class="sort-icon">▲▼</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-number">1</td>
+                        <td class="code-cell">P202506011</td>
+                        <td class="source-cell">Himti</td>
+                        <td class="type-cell">Surat Pembayaran</td>
+                        <td class="subject-cell">Peminjaman Ruangan FST 5004</td>
+                        <td class="status-cell">
+                            <span class="status-badge status-selesai">Selesai</span>
+                        </td>
+                        <td class="proposal-cell">
+                            <span class="doc-link">⎗ Dok Proposal</span>
+                        </td>
+                        <td class="sk-cell">
+                            <span class="doc-link">⎗ Dok SK</span>
+                        </td>
+                        <td class="action-cell">
+                            <button class="action-btn">⎗</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">2</td>
+                        <td class="code-cell">P202506010</td>
+                        <td class="source-cell">Himti</td>
+                        <td class="type-cell">Surat Pembayaran</td>
+                        <td class="subject-cell">Peminjaman Ruangan FST 4005</td>
+                        <td class="status-cell">
+                            <span class="status-badge status-selesai">Selesai</span>
+                        </td>
+                        <td class="proposal-cell">
+                            <span class="doc-link">⎗ Dok Proposal</span>
+                        </td>
+                        <td class="sk-cell">
+                            <span class="doc-link">⎗ Dok SK</span>
+                        </td>
+                        <td class="action-cell">
+                            <button class="action-btn">⎗</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">3</td>
+                        <td class="code-cell">P202506009</td>
+                        <td class="source-cell">Himti</td>
+                        <td class="type-cell">Surat Pembayaran</td>
+                        <td class="subject-cell">Peminjaman Ruangan FST 4005</td>
+                        <td class="status-cell">
+                            <span class="status-badge status-diproses">Diproses</span>
+                        </td>
+                        <td class="proposal-cell">
+                            <span class="doc-link">⎗ Dok Proposal</span>
+                        </td>
+                        <td class="sk-cell">-</td>
+                        <td class="action-cell">
+                            <button class="action-btn">⎗</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination-info">
+                <div class="showing-info">Showing 1 to 3 of 3 entries</div>
+                <div class="pagination">
+                    <button class="page-btn">Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

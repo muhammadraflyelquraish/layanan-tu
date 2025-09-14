@@ -9,7 +9,7 @@ class Letter extends Model
 {
     use HasFactory;
 
-    protected $table = 't_letter';
+    protected $table = 't_surat';
 
     /**
      * The attributes that are mass assignable.
@@ -27,13 +27,15 @@ class Letter extends Model
         'tanggal_diterima',
         'untuk',
         'status',
-        'proposal_file',
+        'proposal_id',
         'disertai_dana',
         'alasan_penolakan',
         'tanggal_selesai',
         'perlu_sk',
-        'pihak_pembuat_sk_id',
-        'sk_file'
+        'pembuat_sk_id',
+        'sk_id',
+        'role_id',
+        'prodi_id',
     ];
 
     function pemohon()
@@ -41,28 +43,43 @@ class Letter extends Model
         return $this->belongsTo(User::class);
     }
 
-    function pihak_pembuat_sk()
+    function pembuat_sk()
     {
-        return $this->belongsTo(Disposisi::class, 'pihak_pembuat_sk_id', 'id');
+        return $this->belongsTo(Disposisi::class, 'pembuat_sk_id', 'id');
     }
 
     function dispositions()
     {
-        return $this->hasMany(LetterDisposition::class)->orderBy('urutan', 'desc');
+        return $this->hasMany(LetterDisposition::class, 'surat_id', 'id')->orderBy('urutan', 'desc');
     }
 
     function spjs()
     {
-        return $this->hasMany(SPJ::class, 'letter_id', 'id')->orderBy('created_at', 'desc');
+        return $this->hasMany(SPJ::class, 'surat_id', 'id')->orderBy('created_at', 'desc');
     }
 
     function file()
     {
-        return $this->belongsTo(Media::class,  'proposal_file', 'id');
+        return $this->belongsTo(Media::class,  'proposal_id', 'id');
     }
 
     function sk()
     {
-        return $this->belongsTo(Media::class,  'sk_file', 'id');
+        return $this->belongsTo(Media::class,  'sk_id', 'id');
+    }
+
+    function role()
+    {
+        return $this->belongsTo(Role::class,  'role_id', 'id');
+    }
+
+    function prodi()
+    {
+        return $this->belongsTo(Prodi::class,  'prodi_id', 'id');
+    }
+
+    function ratings()
+    {
+        return $this->hasMany(SPJRating::class, 'surat_id', 'id')->orderBy('created_at', 'desc');
     }
 }

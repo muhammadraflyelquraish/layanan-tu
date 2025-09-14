@@ -121,7 +121,7 @@
                                     <td id="asal_surat"></td>
                                     <th class="text-right">File</th>
                                     <td class="text-center">:</td>
-                                    <td id="proposal_file"></td>
+                                    <td id="proposal_id"></td>
                                 </tr>
                                 <tr>
                                     <th>Hal</th>
@@ -137,7 +137,7 @@
                                     <td id="perlu_sk"></td>
                                     <th class="text-right">Pihak Pembuat SK</th>
                                     <td class="text-center">:</td>
-                                    <td id="pihak_pembuat_sk_id"></td>
+                                    <td id="pembuat_sk_id"></td>
                                 </tr>
                                 <tr>
                                     <th>Tanggal Selesai</th>
@@ -317,11 +317,11 @@
                     modal.find('#detailInformation').find('#untuk').text(app.letter.untuk);
                     modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
                     modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
-                    modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                    modal.find('#detailInformation').find('#proposal_id').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
                     modal.find('#detailInformation').find('#sk').html(app.letter?.sk ? `<a href="${app.letter?.sk.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok SK</a>` : '-');
                     modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
                     // modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
-                    modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')
+                    modal.find('#detailInformation').find('#pembuat_sk_id').text(app?.letter?.pembuat_sk?.name ?? '-')
                     modal.find('#detailInformation').find('#tanggal_selesai').text(tanggalSelesai);
                     modal.find('#detailInformation').find('#selesai_dalam_waktu').text(app?.selesai_dalam);
 

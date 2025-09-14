@@ -90,7 +90,7 @@
                                 @for ($i = 1; $i <= 5; $i++)
                                     <span data-value="{{ $i }}" class="star" style="{{ $i <= $spj->ratings[0]->rating ? 'color: #f5b301' : '' }}">&#9733;</span>
                                     @endfor
-                                    <br> <small>Catatan: {{ $spj->ratings[0]->catatan ?? '-' }}</small>
+                                    <br> <small>catatan: {{ $spj->ratings[0]->catatan ?? '-' }}</small>
                                     @else
                                     -
                                     @endif

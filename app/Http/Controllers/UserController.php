@@ -8,6 +8,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
 use App\Models\User;
+use App\Models\UserRole;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 use Illuminate\Validation\Rules;
@@ -23,13 +25,24 @@ class UserController extends Controller
 
     public function data(): JsonResponse
     {
-        $user = User::select('t_user.*', 't_role.name as role_name')
-            ->leftJoin('t_role', 't_user.role_id', '=', 't_role.id');
-
-        return DataTables::of($user)
+        $users = User::query();
+        return DataTables::of($users)
             ->addIndexColumn()
             ->addColumn('role.name', function ($row) {
-                return $row->role_name;
+                $roleName = "";
+                $roles = $row->roles;
+                foreach ($roles as $key => $role) {
+                    if ($key >= 3) {
+                        $roleName .= ', ...';
+                        break;
+                    }
+
+                    $roleName .= (empty($roleName) ? '' : ', ')
+                        . $role->role->name
+                        . (isset($role->prodi) ? ' (' . $role->prodi->name . ')' : '');
+                }
+
+                return $roleName;
             })
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
@@ -38,7 +51,7 @@ class UserController extends Controller
                 $button .= '</div>';
                 return $button;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'role.name'])
             ->toJson();
     }
 
@@ -47,8 +60,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('name', 'id');
-        return view('user.create', compact('roles'));
+        return view('user.create');
     }
 
     public function store(Request $request)
@@ -58,18 +70,26 @@ class UserController extends Controller
             'no_identity' => ['required', 'string', 'max:255', 'unique:' . User::class],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role_id' => ['required', 'string'],
             'status' => ['required', 'string', 'in:ACTIVE,INACTIVE'],
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'no_identity' => $request->no_identity,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
-            'status' => $request->status,
-        ]);
+        DB::transaction(function () use ($request) {
+            $user = User::create([
+                'name' => $request->name,
+                'no_identity' => $request->no_identity,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'status' => $request->status,
+            ]);
+
+            foreach ($request->roles as $i => $roleId) {
+                UserRole::create([
+                    'user_id' => $user->id,
+                    'role_id' => $roleId,
+                    'prodi_id' => $request->prodis[$i],
+                ]);
+            }
+        });
 
         return redirect()->route('user.index')->with('success', 'Data berhasil ditambahkan');
     }
@@ -79,9 +99,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $user->load('role');
-        $roles = Role::pluck('name', 'id');
-        return view('user.update', compact('user', 'roles'));
+        $user->load('roles');
+        return view('user.update', compact('user'));
     }
 
 
@@ -92,7 +111,6 @@ class UserController extends Controller
             'no_identity' => ['required', 'string', 'max:255', 'unique:' . User::class . ',no_identity,' . $user->id],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role_id' => ['required', 'string'],
             'status' => ['required', 'string', 'in:ACTIVE,INACTIVE'],
         ]);
 
@@ -108,7 +126,19 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        $user->update($data);
+        DB::transaction(function () use ($user, $data, $request) {
+            $user->update($data);
+
+            $user->roles()->delete();
+
+            foreach ($request->roles as $i => $roleId) {
+                UserRole::create([
+                    'user_id' => $user->id,
+                    'role_id' => $roleId,
+                    'prodi_id' => $request->prodis[$i],
+                ]);
+            }
+        });
 
         return redirect()->route('user.index')->with('success', 'Data berhasil diubah');
     }
@@ -116,6 +146,7 @@ class UserController extends Controller
     public function destroy(User $user): JsonResponse
     {
         try {
+            $user->roles()->delete();
             $user->delete();
             return response()->json(['res' => 'success'], 204);
         } catch (\Exception $e) {

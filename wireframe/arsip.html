@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid black;
+            padding-left: 10px;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            border: 2px solid black;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .filter-input {
+            border: 2px solid black;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            border: 2px solid black;
+            padding: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .filter-btn {
+            border: 2px solid black;
+            background: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            width: fit-content;
+        }
+
+        /* List Title */
+        .list-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Table Controls */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .show-entries {
+            font-size: 14px;
+        }
+
+        .search-box {
+            border: 2px solid black;
+            padding: 5px 10px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 10px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .sort-icon {
+            position: absolute;
+            right: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 8px;
+        }
+
+        .data-table td {
+            vertical-align: middle;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+            width: 30px;
+        }
+
+        .code-cell {
+            font-family: monospace;
+            width: 100px;
+        }
+
+        .sub-text {
+            font-size: 8px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .email-text {
+            font-size: 8px;
+            color: #666;
+        }
+
+        .status-badge {
+            border: 1px solid black;
+            padding: 2px 6px;
+            font-size: 8px;
+            text-align: center;
+            width: fit-content;
+        }
+
+        .status-selesai {
+            background: #f0f0f0;
+        }
+
+        .status-diproses {
+            background: #e0e0e0;
+        }
+
+        .action-btn {
+            border: 1px solid black;
+            padding: 2px 6px;
+            font-size: 8px;
+            margin: 1px;
+            background: white;
+        }
+
+        .link-btn {
+            text-decoration: underline;
+            border: none;
+            background: none;
+            padding: 0;
+            font-size: 8px;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 2px;
+            flex-wrap: wrap;
+        }
+
+        /* Pagination */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .showing-info {
+            font-size: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            border: 1px solid black;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .page-btn.active {
+            background: black;
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Susi..</h3>
+                    <p>TU</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#">▢ Beranda</a></li>
+                <li class="nav-item"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item"><a href="#">▢ Disposisi</a></li>
+                <li class="nav-item active"><a href="#">▢ Arsip</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 10 Juli 2025 - 00:07:06
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Arsip</div>
+            <div class="breadcrumb">Arsip</div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-title">Filter</div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Search</label>
+                        <input type="text" class="filter-input" placeholder="Cari Pengajuan..">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Pemohon</label>
+                        <select class="filter-select">
+                            <option>Filter Pemohon..</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status</label>
+                        <select class="filter-select">
+                            <option>Filter Status..</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Jenis Surat</label>
+                        <select class="filter-select">
+                            <option>Filter Jenis Surat..</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="filter-btn">▼ Filter</button>
+            </div>
+
+            <div class="list-title">Daftar Pengajuan</div>
+
+            <div class="table-controls">
+                <div class="show-entries">
+                    Show <select style="border: 1px solid black; padding: 2px;">
+                        <option>10</option>
+                    </select> entries
+                </div>
+                <div>
+                    Search: <input type="text" class="search-box">
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="row-number">No <span class="sort-icon">▲▼</span></th>
+                        <th>Kode Pengajuan <span class="sort-icon">▲▼</span></th>
+                        <th>Pemohon <span class="sort-icon">▲▼</span></th>
+                        <th>Tanggal Diterima <span class="sort-icon">▲▼</span></th>
+                        <th>Asal Surat <span class="sort-icon">▲▼</span></th>
+                        <th>Hal <span class="sort-icon">▲▼</span></th>
+                        <th>Untuk <span class="sort-icon">▲▼</span></th>
+                        <th>Jenis Surat <span class="sort-icon">▲▼</span></th>
+                        <th>Status <span class="sort-icon">▲▼</span></th>
+                        <th>Proposal <span class="sort-icon">▲▼</span></th>
+                        <th>SK <span class="sort-icon">▲▼</span></th>
+                        <th>Aksi <span class="sort-icon">▲▼</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-number">1</td>
+                        <td class="code-cell">
+                            P202506011
+                            <div class="sub-text">Nomor Agenda: 10</div>
+                        </td>
+                        <td>
+                            Joko
+                            <div class="email-text">pemohon@gmail.com</div>
+                        </td>
+                        <td>26 Jun 2025 - 07:06</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan FST 5004</td>
+                        <td>Prodi TI</td>
+                        <td>Surat Pembayaran</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">2</td>
+                        <td class="code-cell">
+                            P202506010
+                            <div class="sub-text">Nomor Agenda: 9</div>
+                        </td>
+                        <td>
+                            Joko
+                            <div class="email-text">pemohon@gmail.com</div>
+                        </td>
+                        <td>26 Jun 2025 - 06:20</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan FST 4005</td>
+                        <td>Keuangan</td>
+                        <td>Surat Pembayaran</td>
+                        <td><span class="status-badge status-diproses">Diproses</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">3</td>
+                        <td class="code-cell">
+                            P202506009
+                            <div class="sub-text">Nomor Agenda: 8</div>
+                        </td>
+                        <td>
+                            Oreom Aulp
+                            <div class="email-text">oreomaulp@gmail.com</div>
+                        </td>
+                        <td>25 Jun 2025 - 01:55</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan FST 4005</td>
+                        <td>Prodi</td>
+                        <td>Surat Pembayaran</td>
+                        <td><span class="status-badge status-diproses">Diproses</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">4</td>
+                        <td class="code-cell">
+                            P202506008
+                            <div class="sub-text">Nomor Agenda: 7</div>
+                        </td>
+                        <td>
+                            Saepul Aripiyanto
+                            <div class="email-text">saepul.aripiyanto@uinjkt.ac.id</div>
+                        </td>
+                        <td>24 Jun 2025 - 23:50</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan FST 4005</td>
+                        <td>Prodi TI</td>
+                        <td>Surat Masuk</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">5</td>
+                        <td class="code-cell">
+                            P202506007
+                            <div class="sub-text">Nomor Agenda: 6</div>
+                        </td>
+                        <td>
+                            Saepul Aripiyanto
+                            <div class="email-text">saepul.aripiyanto@uinjkt.ac.id</div>
+                        </td>
+                        <td>24 Jun 2025 - 22:25</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan FST 4001</td>
+                        <td>Prodi</td>
+                        <td>Surat Masuk</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">6</td>
+                        <td class="code-cell">
+                            P202506006
+                            <div class="sub-text">Nomor Agenda: 6</div>
+                        </td>
+                        <td>
+                            Saepul Aripiyanto
+                            <div class="email-text">saepul.aripiyanto@uinjkt.ac.id</div>
+                        </td>
+                        <td>23 Jun 2025 - 19:09</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan</td>
+                        <td>Prodi TI</td>
+                        <td>Surat Masuk</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">7</td>
+                        <td class="code-cell">
+                            P202506005
+                            <div class="sub-text">Nomor Agenda: 5</div>
+                        </td>
+                        <td>
+                            Joko
+                            <div class="email-text">pemohon@gmail.com</div>
+                        </td>
+                        <td>23 Jun 2025 - 04:30</td>
+                        <td>Himti</td>
+                        <td>Peminjaman Ruangan</td>
+                        <td>Prodi Teknik Informatika</td>
+                        <td>Surat Masuk</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">8</td>
+                        <td class="code-cell">
+                            P202506003
+                            <div class="sub-text">Nomor Agenda: 3</div>
+                        </td>
+                        <td>
+                            Joko
+                            <div class="email-text">pemohon@gmail.com</div>
+                        </td>
+                        <td>22 Jun 2025 - 15:40</td>
+                        <td>Teknik Informatika</td>
+                        <td>Pembayaran Stadium General</td>
+                        <td>Keuangan</td>
+                        <td>Surat Pembayaran</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">9</td>
+                        <td class="code-cell">
+                            P202506002
+                            <div class="sub-text">Nomor Agenda: 2</div>
+                        </td>
+                        <td>
+                            Joko
+                            <div class="email-text">pemohon@gmail.com</div>
+                        </td>
+                        <td>23 Jun 2025 - 03:06</td>
+                        <td>Himti</td>
+                        <td>Pengajuan Ruangan</td>
+                        <td>Kabag TU</td>
+                        <td>Surat Pembayaran</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination-info">
+                <div class="showing-info">Showing 1 to 9 of 9 entries</div>
+                <div class="pagination">
+                    <button class="page-btn">Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

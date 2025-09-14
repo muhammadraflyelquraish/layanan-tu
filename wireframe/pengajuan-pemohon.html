@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengajuan Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            border-left: 3px solid black;
+            padding-left: 10px;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .create-btn {
+            border: 2px solid black;
+            background: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .show-entries {
+            font-size: 14px;
+        }
+
+        .search-box {
+            border: 2px solid black;
+            padding: 5px 10px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .sort-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .data-table td {
+            vertical-align: middle;
+        }
+
+        .row-number {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .code-cell {
+            font-family: monospace;
+        }
+
+        .sub-text {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            border: 1px solid black;
+            padding: 2px 8px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .status-selesai {
+            background: #f0f0f0;
+        }
+
+        .status-proses {
+            background: #e0e0e0;
+        }
+
+        .action-btn {
+            border: 1px solid black;
+            padding: 2px 6px;
+            font-size: 10px;
+            margin: 1px;
+            background: white;
+        }
+
+        .link-btn {
+            text-decoration: underline;
+            border: none;
+            background: none;
+            padding: 0;
+            font-size: 10px;
+        }
+
+        /* Pagination */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .showing-info {
+            font-size: 12px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            border: 1px solid black;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .page-btn.active {
+            background: black;
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Joko..</h3>
+                    <p>Pemohon</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item active"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item"><a href="#">▢ SPJ</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 09 Juli 2025 - 02:21:00
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Pengajuan</div>
+            <div class="breadcrumb">Pengajuan</div>
+
+            <div class="action-bar">
+                <button class="create-btn">▢ Buat Pengajuan</button>
+
+                <div class="table-controls">
+                    <div class="show-entries">
+                        Show <select style="border: 1px solid black; padding: 2px;">
+                            <option>10</option>
+                        </select> entries
+                    </div>
+                    <div>
+                        Search: <input type="text" class="search-box">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="row-number">No <span class="sort-icon">▲▼</span></th>
+                        <th>Kode Pengajuan <span class="sort-icon">▲▼</span></th>
+                        <th>Asal Surat <span class="sort-icon">▲▼</span></th>
+                        <th>Jenis Surat <span class="sort-icon">▲▼</span></th>
+                        <th>Hal <span class="sort-icon">▲▼</span></th>
+                        <th>Status <span class="sort-icon">▲▼</span></th>
+                        <th>Proposal <span class="sort-icon">▲▼</span></th>
+                        <th>SK <span class="sort-icon">▲▼</span></th>
+                        <th>Aksi <span class="sort-icon">▲▼</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-number">1</td>
+                        <td class="code-cell">
+                            P202506011
+                            <div class="sub-text">Nomor Agenda: 10</div>
+                        </td>
+                        <td>Himti</td>
+                        <td>Surat Pembayaran</td>
+                        <td>Peminjaman Ruangan FST 5004</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td>
+                            <button class="action-btn">▢ SPJ</button>
+                            <button class="action-btn">⎗</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">2</td>
+                        <td class="code-cell">
+                            P202506010
+                            <div class="sub-text">Nomor Agenda: 9</div>
+                        </td>
+                        <td>Himti</td>
+                        <td>Surat Masuk</td>
+                        <td>Peminjaman Ruangan FST 4005</td>
+                        <td><span class="status-badge status-proses">Diproses</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">3</td>
+                        <td class="code-cell">
+                            P202506005
+                            <div class="sub-text">Nomor Agenda: 5</div>
+                        </td>
+                        <td>Himti</td>
+                        <td>Surat Masuk</td>
+                        <td>Peminjaman Ruangan</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td><button class="link-btn">⎗ Dok SK</button></td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">4</td>
+                        <td class="code-cell">
+                            P202506003
+                            <div class="sub-text">Nomor Agenda: 3</div>
+                        </td>
+                        <td>Teknik Informatika</td>
+                        <td>Surat Pembayaran</td>
+                        <td>Pembayaran Stadium General</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">5</td>
+                        <td class="code-cell">
+                            P202506002
+                            <div class="sub-text">Nomor Agenda: 2</div>
+                        </td>
+                        <td>Himti</td>
+                        <td>Surat Pembayaran</td>
+                        <td>Pengajuan Ruangan</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                    <tr>
+                        <td class="row-number">6</td>
+                        <td class="code-cell">
+                            P202506001
+                            <div class="sub-text">Nomor Agenda: 1</div>
+                        </td>
+                        <td>Himti</td>
+                        <td>Surat Pembayaran</td>
+                        <td>Peminjaman Ruangan</td>
+                        <td><span class="status-badge status-selesai">Selesai</span></td>
+                        <td><button class="link-btn">⎗ Dok Proposal</button></td>
+                        <td>-</td>
+                        <td><button class="action-btn">⎗</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination-info">
+                <div class="showing-info">Showing 1 to 6 of 6 entries</div>
+                <div class="pagination">
+                    <button class="page-btn">Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

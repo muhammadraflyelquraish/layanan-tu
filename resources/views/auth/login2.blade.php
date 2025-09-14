@@ -347,15 +347,15 @@
                 <a href="{{ route('qr.login') }}" class="btn-qr">
                     <i class="fas fa-qrcode mr-2"></i> Tracking Surat
                 </a>
-
+                <!-- 
                 <a href="{{ route('auth.google') }}" class="btn-google">
                     <img src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s96-fcrop64=1,00000000ffffffff-rw" alt="Google Logo">
                     Login dengan Google
-                </a>
+                </a> -->
 
                 @if (Route::has('register'))
                 <p class="register-text">
-                    Belum punya akun? <a href="{{ route('register') }}">Daftar</a>
+                    Belum punya akun? <a target="_blank" href="https://layanan-fst.uinjakarta.id/register">Daftar</a>
                 </p>
                 @endif
             </form>

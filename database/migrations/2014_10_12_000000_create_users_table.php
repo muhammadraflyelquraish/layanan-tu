@@ -20,11 +20,12 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable()->unique();
             $table->boolean('email_verified')->default(false);
             $table->string('password')->nullable();
-            $table->foreignId('role_id')->references('id')->on('t_role');
             $table->enum('status', ['ACTIVE', 'INACTIVE']);
             $table->text('avatar')->nullable();
             $table->text('avatar_original')->nullable();
             $table->enum('user_type', ['REGISTER', 'GOOGLE', 'LAYANAN'])->default('REGISTER');
+            $table->foreignId('role_id')->nullable()->references('id')->on('t_role');
+            $table->foreignId('prodi_id')->nullable()->references('id')->on('t_prodi');
             $table->rememberToken();
             $table->timestamps();
         });

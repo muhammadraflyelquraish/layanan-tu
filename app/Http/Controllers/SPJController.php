@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Letter;
 use App\Models\Media;
+use App\Models\Prodi;
 use App\Models\SPJ;
 use App\Models\SPJDocument;
 use App\Models\SPJHistory;
@@ -20,25 +21,25 @@ class SPJController extends Controller
 {
     public function index(): View
     {
-        $pemohon = User::where("role_id", 2)->get();
-        return view('spj.index', compact('pemohon'));
+        $pemohon = User::where("role_id", "!=", 3)->get();
+        $prodi = Prodi::get();
+        return view('spj.index', compact('pemohon', 'prodi'));
     }
 
     public function data(): JsonResponse
     {
-        $latestRatings = DB::table('t_spj_rating as r1')
+        $latestRatings = DB::table('t_rating as r1')
             ->select('r1.spj_id', 'r1.rating')
-            ->whereRaw('r1.created_at = (SELECT MAX(r2.created_at) FROM t_spj_rating r2 WHERE r2.spj_id = r1.spj_id)')
+            ->whereRaw('r1.created_at = (SELECT MAX(r2.created_at) FROM t_rating r2 WHERE r2.spj_id = r1.spj_id)')
             ->groupBy('r1.spj_id', 'r1.rating');
 
         $app = SPJ::with(['user', 'letter'])
-            ->leftJoin('t_letter as l', 'l.id', '=', 't_spj.letter_id')
+            ->leftJoin('t_surat as l', 'l.id', '=', 't_spj.surat_id')
             ->leftJoin('t_user as u', 'u.id', '=', 't_spj.user_id')
             ->leftJoinSub($latestRatings, 'latest_rating', function ($join) {
                 $join->on('latest_rating.spj_id', '=', 't_spj.id');
             })
             ->select('t_spj.*', 'l.kode as letter_kode', 'u.name as user_name', 'latest_rating.rating as rating_value');
-
 
         if (auth()->user()->role_id == 2) {
             $app->where("t_spj.user_id", auth()->user()->id);
@@ -50,6 +51,10 @@ class SPJController extends Controller
 
         $app->when(request('pemohon_id'), function ($query) {
             $query->where('t_spj.user_id', request('pemohon_id'));
+        });
+
+        $app->when(request('prodi_id'), function ($query) {
+            $query->where('l.prodi_id', request('prodi_id'));
         });
 
         $app->when(request('search'), function ($query) {
@@ -77,15 +82,21 @@ class SPJController extends Controller
             ->addColumn('action', function ($row) {
                 $button = '<div class="btn-group pull-right">';
 
-                if ($row->status == "Diproses" && auth()->user()->role_id != 2) {
+                // User Login
+                $userLogin = auth()->user();
+
+                // Button Proses
+                if ($row->status == "Diproses" && $userLogin->role_id == 5) {
                     $button .= '<a href="' . route('spj.approval.view', $row->id) . '" class="btn btn-sm btn-info"><i class="fa fa-arrow-right"></i></a>';
                 }
 
-                if ($row->status == "Revisi") {
+                // Button Revisi
+                if ($row->status == "Revisi" && $row->user_id == $userLogin->id) {
                     $button .= '<a href="' . route('spj.edit', $row->id) . '" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>';
                 }
 
-                if ($row->status == "Disetujui" && auth()->user()->role_id == 2) {
+                // Button Rating
+                if ($row->status == "Disetujui" && $row->user_id == $userLogin->id) {
                     $button .= '<button type="button" data-toggle="modal" data-id="' . $row->id . '" data-target="#modalRating" class="btn btn-sm btn-info"><i class="fa fa-star"></i></button>';
                 }
 
@@ -97,7 +108,7 @@ class SPJController extends Controller
                 return '' . $row->letter_kode . ' <br> <small>Nomor Agenda: ' . $row->letter->nomor_agenda . '</small>';
             })
             ->editColumn('user.name', function ($row) {
-                return '' . $row->user->name . ' <br> <small>(' . $row->user->email . ')</small>';
+                return $row->user->name . ' <br> <small>' . $row->user->email . '</small>' . ' <br> <small>' . ($row->letter->prodi ? 'Prodi: ' . $row->letter->prodi->name : '') . '</small>';
             })
             ->editColumn('tanggal_proses', function ($row) {
                 return $row->tanggal_proses ? date('d M Y - H:i', strtotime($row->tanggal_proses)) : '-';
@@ -148,7 +159,7 @@ class SPJController extends Controller
     {
         try {
             $request->validate([
-                'letter_id' => 'required|string',
+                'surat_id' => 'required|string',
                 'jenis' => 'required|string',
                 'categories' => 'required|array',
                 'files' => 'array',
@@ -160,10 +171,10 @@ class SPJController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                $letter = Letter::with('pemohon')->find($request->letter_id);
+                $letter = Letter::with('pemohon')->find($request->surat_id);
 
                 $spj = SPJ::create([
-                    "letter_id" => $request->letter_id,
+                    "surat_id" => $request->surat_id,
                     "user_id" => $letter->pemohon_id,
                     "jenis" => $request->jenis,
                     "status" => "Diproses",
@@ -202,7 +213,7 @@ class SPJController extends Controller
 
                     SPJDocument::create([
                         "spj_id" => $spj->id,
-                        "spj_category_id" => $category,
+                        "spj_label_id" => $category,
                         "file_id" => $mediaId,
                         "link" => $link
                     ]);
@@ -321,7 +332,7 @@ class SPJController extends Controller
 
                         $spjDocument->update([
                             "spj_id" => $spj->id,
-                            "spj_category_id" => $categoryId,
+                            "spj_label_id" => $categoryId,
                             "file_id" => $mediaId,
                             "link" => $link
                         ]);
@@ -357,7 +368,7 @@ class SPJController extends Controller
 
                         $spjDocument = SPJDocument::create([
                             "spj_id" => $spj->id,
-                            "spj_category_id" => $categoryId,
+                            "spj_label_id" => $categoryId,
                             "file_id" => $mediaId,
                             "link" => $link
                         ]);
@@ -396,6 +407,7 @@ class SPJController extends Controller
                 'user_id' => $request->user()->id,
                 'rating' => (int)$request->rating,
                 'catatan' => $request->catatan,
+                'tipe' => 'SPJ',
             ]);
         }
         return redirect()->route('spj.index')->with('success', 'Rating berhasil ditetapkan.');

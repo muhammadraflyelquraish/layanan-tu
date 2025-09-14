@@ -9,7 +9,7 @@ class SPJDocument extends Model
 {
     use HasFactory;
 
-    protected $table = 't_spj_document';
+    protected $table = 't_spj_file';
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +18,7 @@ class SPJDocument extends Model
      */
     protected $fillable = [
         'spj_id',
-        'spj_category_id',
+        'spj_label_id',
         'file_id',
         'link'
     ];
@@ -30,6 +30,6 @@ class SPJDocument extends Model
 
     function category()
     {
-        return $this->belongsTo(SPJCategory::class,  'spj_category_id', 'id');
+        return $this->belongsTo(SPJCategory::class,  'spj_label_id', 'id');
     }
 }

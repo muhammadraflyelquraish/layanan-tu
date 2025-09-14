@@ -17,7 +17,7 @@ class SPJ extends Model
      * @var array
      */
     protected $fillable = [
-        'letter_id',
+        'surat_id',
         'user_id',
         'jenis',
         'status',
@@ -30,12 +30,12 @@ class SPJ extends Model
 
     function letter()
     {
-        return $this->belongsTo(Letter::class);
+        return $this->belongsTo(Letter::class, 'surat_id');
     }
 
     function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     function documents()

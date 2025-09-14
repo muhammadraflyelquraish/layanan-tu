@@ -11,31 +11,55 @@ class DashboardController extends Controller
 {
     function index()
     {
+        $userLogin = auth()->user();
+
         $thisMonth = date('m');
 
         // Total pengajuan bulan ini
-        $totalPengajuanBulanIni = Letter::whereMonth('created_at', $thisMonth)->count();
+        $totalPengajuanBulanIni = Letter::query()
+            ->when($userLogin->role_id == 7 || $userLogin->role_id == 8, function ($query) use ($userLogin) {
+                $query->where('prodi_id', $userLogin->prodi_id);
+            })
+            ->whereMonth('created_at', $thisMonth)->count();
 
         // Total waiting approval
         $totalMenugguPersetujuanBulanIni = LetterDisposition::where('status', 'Diproses')
             ->whereMonth('created_at', $thisMonth)
-            ->when(auth()->user()->role_id != 1, function ($query) {
-                $query->where('position_id', auth()->user()->role_id);
+            ->when($userLogin->role_id != 1, function ($query) use ($userLogin) {
+                $query->whereHas('disposition', function ($subQuery) use ($userLogin) {
+                    $subQuery->whereHas('approvers', function ($approverQuery) use ($userLogin) {
+                        $approverQuery->where('role_id', $userLogin->role_id);
+                    });
+                });
             })
             ->count();
 
         // Total selesai
-        $totalSelesai = Letter::where('status', 'Selesai')->whereMonth('created_at', $thisMonth)->count();
+        $totalSelesai = Letter::query()
+            ->when($userLogin->role_id == 7 || $userLogin->role_id == 8, function ($query) use ($userLogin) {
+                $query->where('prodi_id', $userLogin->prodi_id);
+            })
+            ->where('status', 'Selesai')
+            ->whereMonth('created_at', $thisMonth)->count();
 
         // Total ditolak
-        $totalTolak = Letter::where('status', 'Ditolak')->whereMonth('created_at', $thisMonth)->count();
+        $totalTolak = Letter::query()
+            ->when($userLogin->role_id == 7 || $userLogin->role_id == 8, function ($query) use ($userLogin) {
+                $query->where('prodi_id', $userLogin->prodi_id);
+            })
+            ->where('status', 'Ditolak')
+            ->whereMonth('created_at', $thisMonth)->count();
 
-        // Avg rating
-        $avgRating = SPJRating::avg('rating');
-        $avgRating = round($avgRating, 1);
+        // Avg rating SPJ
+        $avgRatingSpj = SPJRating::where('spj_id', '!=', null)->avg('rating');
+        $avgRatingSpj = round($avgRatingSpj, 1);
+
+        // Avg rating Pengajuan
+        $avgRatingPengajuan = SPJRating::where('surat_id', '!=', null)->avg('rating');
+        $avgRatingPengajuan = round($avgRatingPengajuan, 1);
 
         // Avg pengajuan
-        $avgPengajuanInMinutes = DB::table('t_letter')
+        $avgPengajuanInMinutes = DB::table('t_surat')
             ->whereNotNull('tanggal_diterima')
             ->whereNotNull('tanggal_selesai')
             ->selectRaw("AVG(EXTRACT(EPOCH FROM tanggal_selesai - tanggal_diterima) / 60) as avg_minutes")
@@ -75,7 +99,7 @@ class DashboardController extends Controller
         }
 
         // // Avg pengajuan
-        // $avgPengajuanInMinutes = DB::table('t_letter')
+        // $avgPengajuanInMinutes = DB::table('t_surat')
         //     ->whereNotNull('tanggal_diterima')
         //     ->whereNotNull('tanggal_selesai')
         //     ->selectRaw("AVG(TIMESTAMPDIFF(MINUTE, tanggal_diterima, tanggal_selesai)) as avg_minutes")
@@ -114,6 +138,6 @@ class DashboardController extends Controller
         //     $avgSpj = "{$days} Hari, {$hours} Jam, {$minutes} Menit";
         // }
 
-        return view('dashboard', compact('totalPengajuanBulanIni', 'totalMenugguPersetujuanBulanIni', 'totalSelesai', 'totalTolak', 'avgRating', 'avgPengajuan', 'avgSpj'));
+        return view('dashboard', compact('totalPengajuanBulanIni', 'totalMenugguPersetujuanBulanIni', 'totalSelesai', 'totalTolak', 'avgRatingSpj', 'avgRatingPengajuan', 'avgPengajuan', 'avgSpj'));
     }
 }

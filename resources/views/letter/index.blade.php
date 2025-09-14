@@ -1,5 +1,25 @@
 @extends('layouts.master')
 
+@push('css')
+<style>
+    .rating {
+        display: inline-flex;
+        font-size: 3rem;
+        cursor: pointer;
+    }
+
+    .star {
+        color: #ddd;
+        transition: color 0.3s;
+    }
+
+    .star.hovered,
+    .star.selected {
+        color: #f5b301;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -14,7 +34,7 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
 
-    @if(auth()->user()->role_id != 2)
+    @if(auth()->user()->role_id != 2 && auth()->user()->role_id != 6)
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
@@ -66,6 +86,17 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Prodi</label>
+                                <select name="prodi_id" id="prodi_id" class="form-control select2-prodi">
+                                    <option value=""></option>
+                                    @foreach($prodi as $pr)
+                                    <option value="{{ $pr->id }}">{{ $pr->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="padding-top: 26px;">
                             <button class="btn btn-success" id="applyFilter" type="button"><i class="fa fa-filter"></i> Filter</button>
                         </div>
                     </div>
@@ -79,8 +110,8 @@
         <div class="col-lg-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    @if(auth()->user()->role_id != 2)
-                    <h5><button class="btn btn-success btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEdit"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5>
+                    @if(auth()->user()->role_id == 3)
+                    <!-- <h5><button class="btn btn-success btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEdit"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5> -->
                     @else
                     <h5><button class="btn btn-success btn-sm" data-toggle="modal" data-mode="add" data-target="#ModalAddEditPemohon"><i class="fa fa-plus-square mr-1"></i> Buat Pengajuan</button></h5>
                     @endif
@@ -112,7 +143,7 @@
                                     <th class="text-center" width="1px">No</th>
                                     <th>Kode Pengajuan</th>
                                     <th>Pemohon</th>
-                                    <th>Tanggal Diterima</th>
+                                    <!-- <th>Tanggal Diterima</th> -->
                                     <th>Asal Surat</th>
                                     <th>Hal</th>
                                     <th>Untuk</th>
@@ -145,7 +176,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <input type="hidden" class="form-control" id="letter_id" name="letter_id">
+                    <input type="hidden" class="form-control" id="surat_id" name="surat_id">
 
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Tanggal Surat</label>
@@ -182,10 +213,10 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Proposal</label>
                         <div class="col-sm-8">
-                            <input type="file" class="form-control" id="proposal_file" name="proposal_file" required tabindex="7" accept=".pdf">
+                            <input type="file" class="form-control" id="proposal_id" name="proposal_id" required tabindex="7" accept=".pdf">
                             <small>(Maksimal: 1MB)</small>
-                            <small class="text-danger" id="proposal_file_error"></small>
-                            <div id="proposal_file_text"></div>
+                            <small class="text-danger" id="proposal_id_error"></small>
+                            <div id="proposal_id_text"></div>
                         </div>
                     </div>
                 </div>
@@ -210,15 +241,30 @@
                     </button>
                 </div>
 
-                <div class="row">
+                <div class="modal-body">
+                    <h5>Informasi Pemohon</h5>
+                    <table class="table" id="detailInformation">
+                        <tr>
+                            <th>Nama</th>
+                            <td class="text-center">:</td>
+                            <td id="nama_pemohon"></td>
+                            <th class="text-right">Prodi</th>
+                            <td class="text-center">:</td>
+                            <td id="prodi"></td>
+                        </tr>
+                        <tr>
+                            <th>Pengajuan</th>
+                            <td class="text-center">:</td>
+                            <td id="kode_pengajuan"></td>
+                        </tr>
+                    </table>
 
-                    <div class="col-md-6">
-                        <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
                             <h5>Data Pengajuan</h5>
+                            <input type="hidden" class="form-control" id="surat_id" name="surat_id">
 
-                            <input type="hidden" class="form-control" id="letter_id" name="letter_id">
-
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Pemohon</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" name="pemohon_id" id="pemohon_id" required>
@@ -232,26 +278,19 @@
                                     </select>
                                     <small class="text-danger" id="pemohon_id_error"></small>
                                 </div>
-                            </div>
-                            <div class="form-group row">
+                            </div> -->
+                            <!-- <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Nomor Agenda</label>
                                 <div class="col-sm-8">
                                     <input type="number" class="form-control" id="nomor_agenda" name="nomor_agenda" value="{{ $nomorAgenda }}" disabled tabindex="2" required>
                                     <small class="text-danger" id="nomor_agenda_error"></small>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Tanggal Surat</label>
                                 <div class="col-sm-8">
                                     <input type="date" class="form-control" id="tanggal_surat" name="tanggal_surat" tabindex="3" required>
                                     <small class="text-danger" id="tanggal_surat_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Nomor Surat</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" tabindex="3" required>
-                                    <small class="text-danger" id="nomor_surat_error"></small>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -269,20 +308,6 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Tanggal Diterima</label>
-                                <div class="col-sm-8">
-                                    <input type="datetime-local" class="form-control" id="tanggal_diterima" name="tanggal_diterima" tabindex="6" required>
-                                    <small class="text-danger" id="tanggal_diterima_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-4 col-form-label">Untuk</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="untuk" name="untuk" tabindex="7" required>
-                                    <small class="text-danger" id="untuk_error"></small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Jenis Surat</label>
                                 <div class="col-sm-8">
                                     <select class="form-control" name="disertai_dana" id="disertai_dana" required>
@@ -296,17 +321,46 @@
                             <div class="form-group row">
                                 <label class="col-sm-4 col-form-label">Proposal</label>
                                 <div class="col-sm-8">
-                                    <input type="file" class="form-control" id="proposal_file" name="proposal_file" tabindex="7" accept=".pdf">
-                                    <small>(Maksimal: 1MB)</small>
-                                    <small class="text-danger" id="proposal_file_error"></small>
-                                    <div id="proposal_file_text"></div>
+                                    <input type="file" class="form-control" id="proposal_id" name="proposal_id" tabindex="7" accept=".pdf">
+                                    <small>(Maksimal: 1MB) <div id="proposal_id_text"></div></small>
+                                    <small class="text-danger" id="proposal_id_error"></small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Tanggal Diterima</label>
+                                <div class="col-sm-8">
+                                    <input type="datetime-local" class="form-control" id="tanggal_diterima" name="tanggal_diterima" tabindex="6" required>
+                                    <small class="text-danger" id="tanggal_diterima_error"></small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Nomor Surat</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" tabindex="3" required>
+                                    <small class="text-danger" id="nomor_surat_error"></small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Untuk</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="untuk" name="untuk" tabindex="7" required>
+                                    <small class="text-danger" id="untuk_error"></small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">SK</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="pembuat_sk_id" id="pembuat_sk_id">
+                                        <option value="">--Pilih pihak pembuat SK--</option>
+                                    </select>
+                                    <small>
+                                        <i>Info: Kosongkan jika tidak diperlukan</i> <br>
+                                        <i>Catatan: Isi telebih dahulu <u>Pihak yang terlibat Approval</u> untuk memilih</i>
+                                    </small>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="modal-body">
+                        <div class="col-md-6">
                             <h5>Pihak yang terlibat Approval</h5>
 
                             @foreach($disposisi as $pm)
@@ -316,18 +370,19 @@
                             </div>
                             @endforeach
 
-                            <div class="form-group row pt-4">
+                            <!-- <div class="form-group row pt-4">
                                 <label class="col-sm-4 col-form-label">Perlu SK?</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" name="pihak_pembuat_sk_id" id="pihak_pembuat_sk_id">
+                                    <select class="form-control" name="pembuat_sk_id" id="pembuat_sk_id">
                                         <option value="">--Pilih Pihak Pembuat SK--</option>
                                     </select>
                                     <small><i>Kosongkan jika tidak diperlukan</i></small>
                                 </div>
-                            </div>
-                        </div>
+                            </div> -->
 
+                        </div>
                     </div>
+
                 </div>
 
                 <div class="modal-footer justify-content-between">
@@ -399,12 +454,12 @@
                             <td id="hal"></td>
                             <th class="text-right">File</th>
                             <td class="text-center">:</td>
-                            <td id="proposal_file"></td>
+                            <td id="proposal_id"></td>
                         </tr>
                         <tr>
                             <th>Pihak Pembuat SK</th>
                             <td class="text-center">:</td>
-                            <td id="pihak_pembuat_sk_id"></td>
+                            <td id="pembuat_sk_id"></td>
                             <th class="text-right">SK</th>
                             <td class="text-center">:</td>
                             <td id="sk"></td>
@@ -416,6 +471,11 @@
                             <th class="text-right">Selesai Dalam</th>
                             <td class="text-center">:</td>
                             <td id="selesai_dalam_waktu"></td>
+                        </tr>
+                        <tr>
+                            <th>Rating</th>
+                            <td class="text-center">:</td>
+                            <td id="rating" colspan="4"></td>
                         </tr>
                         <tr>
                             <th>Alasan Penolakan</th>
@@ -461,7 +521,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <input type="hidden" class="form-control" name="letter_id" id="letter_id">
+                    <input type="hidden" class="form-control" name="surat_id" id="surat_id">
 
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Status</label>
@@ -484,8 +544,8 @@
                     <div class="form-group row" hidden>
                         <label class="col-sm-4 col-form-label">Surat Keluar</label>
                         <div class="col-sm-8">
-                            <input type="file" class="form-control" name="sk_file" id="sk_file">
-                            <small class="text-danger" id="sk_file_error"></small>
+                            <input type="file" class="form-control" name="sk_id" id="sk_id">
+                            <small class="text-danger" id="sk_id_error"></small>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -536,6 +596,40 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalRating" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('letter.rating') }}" method="POST" id="formRating">
+                <div class="modal-body">
+                    @csrf
+                    @method('POST')
+
+                    <h4 class="text-center">Bagaimana pengalaman kamu menggunakan layanan ini?</h4>
+                    <input type="hidden" name="surat_id" id="surat_id">
+                    <div class="modal-body text-center">
+                        <div id="starRating" class="rating" data-selected="0">
+                            <span data-value="1" class="star">&#9733;</span>
+                            <span data-value="2" class="star">&#9733;</span>
+                            <span data-value="3" class="star">&#9733;</span>
+                            <span data-value="4" class="star">&#9733;</span>
+                            <span data-value="5" class="star">&#9733;</span>
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput" value="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" cols="1" id="catatan" name="catatan" placeholder="Tulis pengalaman kamu disini yaa.."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-lg btn-success btn-block ladda-button ladda-button-demo" data-style="zoom-in" id="submitRating" tabindex="8">Rating</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('script')
@@ -555,6 +649,12 @@
 
         $('.select2-jenis-surat').select2({
             placeholder: "Filter Jenis Surat..",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('.select2-prodi').select2({
+            placeholder: "Filter Prodi..",
             allowClear: true,
             width: '100%'
         });
@@ -594,7 +694,7 @@
                 tanggal_diterima: "Tanggal diterima tidak boleh kosong",
                 untuk: "Untuk tidak boleh kosong",
                 disertai_dana: "Jenis surat tidak boleh kosong",
-                proposal_file: "Proposal tidak boleh kosong"
+                proposal_id: "Proposal tidak boleh kosong"
             },
             success: function(messages) {
                 $(messages).remove();
@@ -639,7 +739,7 @@
                 asal_surat: "Asal surat tidak boleh kosong",
                 hal: "Hal tidak boleh kosong",
                 disertai_dana: "Jenis surat tidak boleh kosong",
-                proposal_file: "Proposal tidak boleh kosong"
+                proposal_id: "Proposal tidak boleh kosong"
             },
             success: function(messages) {
                 $(messages).remove();
@@ -689,10 +789,10 @@
                 data: 'pemohon.name',
                 name: 'pemohon.name'
             },
-            {
-                data: 'tanggal_diterima',
-                name: 'tanggal_diterima'
-            },
+            // {
+            //     data: 'tanggal_diterima',
+            //     name: 'tanggal_diterima'
+            // },
             {
                 data: 'asal_surat',
                 name: 'asal_surat'
@@ -781,6 +881,7 @@
                 },
             ]
         }
+
         let serverSideTable = $('.dataTables').DataTable({
             processing: true,
             serverSide: true,
@@ -795,6 +896,7 @@
                     d.pemohon_id = $('select[name="pemohon_id"]').val()
                     d.status = $('select[name="status"]').val()
                     d.disertai_dana = $('select[name="disertai_dana"]').val()
+                    d.prodi_id = $('select[name="prodi_id"]').val()
                 }
             },
             columns: columns,
@@ -817,8 +919,10 @@
 
                 modal.find('#modal-title').text('Edit Pengajuan');
                 $.get('{{ route("letter.store") }}/' + id, function(app) {
-                    modal.find('#proposal_file').prop('required', false)
-                    modal.find('#letter_id').val(app.letter.id)
+                    console.log(app);
+
+                    modal.find('#proposal_id').prop('required', false)
+                    modal.find('#surat_id').val(app.letter.id)
                     modal.find('#pemohon_id').val(app.letter.pemohon_id).attr('disabled', true)
                     modal.find('#nomor_agenda').val(app.letter.nomor_agenda)
                     modal.find('#tanggal_surat').val(app.letter.tanggal_surat)
@@ -828,7 +932,11 @@
                     modal.find('#tanggal_diterima').val(app.letter.tanggal_diterima)
                     modal.find('#untuk').val(app.letter.untuk)
                     modal.find('#disertai_dana').val(app.letter.disertai_dana == false || app.letter.disertai_dana == '0' ? '0' : '1')
-                    modal.find('#proposal_file_text').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                    modal.find('#proposal_id_text').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+
+                    modal.find('#detailInformation').find('#nama_pemohon').html(`${app.letter.pemohon.name} <br> <small>${app.letter.pemohon.email}</small>`)
+                    modal.find('#detailInformation').find('#kode_pengajuan').html(`${app.letter.kode} <br> <small>Nomor Agenda: ${app.letter.nomor_agenda}</small>`);
+                    modal.find('#detailInformation').find('#prodi').html(`${app.letter.prodi.name} <br> <small>Role: ${app.letter.role.name}</small>`);
 
                     let dispositions = app.letter.dispositions.reverse();
                     for (let i = 0; i < dispositions.length; i++) {
@@ -842,18 +950,18 @@
                         modal.find(`.disposisi-${element.disposisi_id}`).parent().next().find('#order').text(`(${i})`);
                         selected.push(element?.disposisi_id?.toString())
 
-                        const formPengajuan = $('#ModalAddEdit').find('#pihak_pembuat_sk_id');
+                        const formPengajuan = $('#ModalAddEdit').find('#pembuat_sk_id');
                         const option = `<option value="${element.disposisi_id}">${element.disposition.name}</option>`
                         formPengajuan.append(option)
                     }
 
-                    modal.find('#pihak_pembuat_sk_id').val(app.letter.pihak_pembuat_sk_id)
+                    modal.find('#pembuat_sk_id').val(app.letter.pembuat_sk_id)
                 })
             } else {
                 $('#formAddEdit').trigger('reset').attr('action', '{{ route("letter.store") }}').attr('method', 'POST')
                 modal.find('#modal-title').text('Buat Pengajuan');
                 modal.find('#pemohon_id').attr('disabled', false)
-                modal.find('#proposal_file').prop('required', true)
+                modal.find('#proposal_id').prop('required', true)
             }
         })
 
@@ -861,24 +969,24 @@
             let button = $(e.relatedTarget)
             let modal = $(this)
             if (button.data('mode') == 'edit') {
-                modal.find('#proposal_file').prop('required', false)
+                modal.find('#proposal_id').prop('required', false)
                 let id = button.data('integrity')
                 let closeTr = button.closest('tr')
                 $('#formAddEditPemohon').attr('action', '{{ route("letter.store") }}').attr('method', 'POST')
 
                 modal.find('#modal-title').text('Edit Pengajuan');
                 $.get('{{ route("letter.store") }}/' + id, function(app) {
-                    modal.find('#letter_id').val(app.letter.id)
+                    modal.find('#surat_id').val(app.letter.id)
                     modal.find('#tanggal_surat').val(app.letter.tanggal_surat)
                     modal.find('#asal_surat').val(app.letter.asal_surat)
                     modal.find('#hal').val(app.letter.hal)
                     modal.find('#disertai_dana').val(app.letter.disertai_dana == false || app.letter.disertai_dana == '0' ? '0' : '1')
-                    modal.find('#proposal_file_text').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                    modal.find('#proposal_id_text').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
                 })
             } else {
                 $('#formAddEditPemohon').trigger('reset').attr('action', '{{ route("letter.store") }}').attr('method', 'POST')
                 modal.find('#modal-title').text('Buat Pengajuan');
-                modal.find('#proposal_file').prop('required', true)
+                modal.find('#proposal_id').prop('required', true)
             }
         })
 
@@ -936,13 +1044,28 @@
                 modal.find('#detailInformation').find('#untuk').text(app.letter.untuk);
                 modal.find('#detailInformation').find('#disertai_dana').text(jenisSurat);
                 modal.find('#detailInformation').find('#alasan_penolakan').text(app.letter.alasan_penolakan ?? '-');
-                modal.find('#detailInformation').find('#proposal_file').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
+                modal.find('#detailInformation').find('#proposal_id').html(`<a href="${app.letter.file.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok Proposal</a>`);
                 modal.find('#detailInformation').find('#sk').html(app.letter?.sk ? `<a href="${app.letter?.sk.file_url}" target="_blank"><i class="fa fa-file-pdf-o"></i> Dok SK</a>` : '-');
                 modal.find('#detailInformation').find('#status').html(`<span class="badge badge-sm ${app.letter.status === 'Selesai' ? 'badge-primary' : app.letter.status === 'Ditolak' ? 'badge-danger' : 'badge-warning'}">${app.letter.status}</span>`);
                 modal.find('#detailInformation').find('#perlu_sk').text(app.letter.perlu_sk ? "Ya" : "Tidak")
-                modal.find('#detailInformation').find('#pihak_pembuat_sk_id').text(app?.letter?.pihak_pembuat_sk?.name ?? '-')
+                modal.find('#detailInformation').find('#pembuat_sk_id').text(app?.letter?.pembuat_sk?.name ?? '-')
                 modal.find('#detailInformation').find('#tanggal_selesai').text(tanggalSelesai);
                 modal.find('#detailInformation').find('#selesai_dalam_waktu').text(app?.selesai_dalam);
+
+                let ratingHtml = '';
+                if (app.letter.ratings?.length) {
+                    const ratingValue = app.letter.ratings[0].rating;
+                    const ratingNote = app.letter.ratings[0].catatan ?? '-';
+                    let stars = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const starColor = i <= ratingValue ? 'color: #f5b301' : '';
+                        stars += `<span data-value="${i}" class="star" style="${starColor}">&#9733;</span>`;
+                    }
+                    ratingHtml = `${stars} <br> <small>catatan: ${ratingNote}</small>`;
+                } else {
+                    ratingHtml = '-';
+                }
+                modal.find('#detailInformation').find('#rating').html(ratingHtml);
 
                 // disposition detail
                 modal.find('#detailDisposition').find('tbody').children().remove()
@@ -997,21 +1120,21 @@
             let modal = $(this)
             let id = button.data('integrity')
             $('#formDisposition').attr('action', "{{ url('/letter/') }}/" + id + '/disposition').attr('method', 'POST')
-            $('#ModalDisposition').find('#letter_id').val(id)
+            $('#ModalDisposition').find('#surat_id').val(id)
             $('#ModalDisposition').find('#position_id').closest('.form-group').attr('hidden', true);
-            $('#ModalDisposition').find('#sk_file').closest('.form-group').attr('hidden', true);
+            $('#ModalDisposition').find('#sk_id').closest('.form-group').attr('hidden', true);
         })
 
         $('#ModalDisposition').on('hidden.bs.modal', function() {
             $('#ModalDisposition').find('#status').val(null);
-            $('#ModalDisposition').find('#letter_id').val(null)
+            $('#ModalDisposition').find('#surat_id').val(null)
         })
 
         $('#ModalDisposition').find('#status').change(function() {
             const selectedValue = $(this).val();
 
             if (selectedValue == "Setujui") {
-                const id = $('#ModalDisposition').find('#letter_id').val()
+                const id = $('#ModalDisposition').find('#surat_id').val()
                 $.get("{{ url('/letter/') }}/" + id + '/target-disposition', function(res) {
                     if (res.needUpdate) {
                         sweetalert('Informasi', 'Mohon lengkapi data pengajuan dan tetapkan disposisi terlebih dahulu.', 'info')
@@ -1021,8 +1144,8 @@
                     if (res.perlu_sk) {
                         $('#ModalDisposition').find('#position_id').closest('.form-group').removeAttr('hidden');
                         $('#ModalDisposition').find('#position_id').val(res.nextDisposition)
-                        $('#ModalDisposition').find('#sk_file').closest('.form-group').removeAttr('hidden');
-                        $('#ModalDisposition').find('#sk_file').attr('required', true);
+                        $('#ModalDisposition').find('#sk_id').closest('.form-group').removeAttr('hidden');
+                        $('#ModalDisposition').find('#sk_id').attr('required', true);
                     } else {
                         $('#ModalDisposition').find('#position_id').closest('.form-group').removeAttr('hidden');
                         $('#ModalDisposition').find('#position_id').val(res.nextDisposition)
@@ -1030,14 +1153,14 @@
                 })
             } else {
                 $('#ModalDisposition').find('#position_id').closest('.form-group').attr('hidden', true);
-                $('#ModalDisposition').find('#sk_file').closest('.form-group').attr('hidden', true);
+                $('#ModalDisposition').find('#sk_id').closest('.form-group').attr('hidden', true);
             }
         });
 
         $("#formDisposition").validate({
             messages: {
                 status: "Status tidak boleh kosong",
-                sk_file: "SK file tidak boleh kosong",
+                sk_id: "SK file tidak boleh kosong",
             },
             success: function(messages) {
                 $(messages).remove();
@@ -1172,7 +1295,7 @@
             const disposisiName = row.find('#disposisi_name');
 
             // LIST SK
-            const formPengajuan = $('#ModalAddEdit').find('#pihak_pembuat_sk_id');
+            const formPengajuan = $('#ModalAddEdit').find('#pembuat_sk_id');
             const option = `<option value="${checkbox.val()}">${disposisiName.text()}</option>`
 
             if (checkbox.is(':checked')) {
@@ -1186,6 +1309,61 @@
             }
 
             setOrderDisposisi()
+        })
+
+        $("#starRating .star").each(function() {
+            $(this).on("mouseover", function() {
+                const value = $(this).attr("data-value");
+                $("#starRating .star").each(function() {
+                    $(this).toggleClass("hovered", $(this).attr("data-value") <= value);
+                });
+            });
+
+            $(this).on("mouseout", function() {
+                $("#starRating .star").each(function() {
+                    $(this).removeClass("hovered");
+                });
+            });
+
+            $(this).on("click", function() {
+                const value = $(this).attr("data-value");
+                $("#ratingInput").val(value);
+                $("#starRating .star").each(function() {
+                    $(this).toggleClass("selected", $(this).attr("data-value") <= value);
+                });
+            });
+        });
+
+        $('#modalRating').on('shown.bs.modal', function(e) {
+            let button = $(e.relatedTarget)
+            let modal = $(this)
+            let id = button.data('id')
+            modal.find('#surat_id').val(id);
+
+            $.get("{{ url('/letter/') }}/" + id + '/rating', function(app) {
+                modal.find('#catatan').text(app.data.catatan)
+                modal.find('#ratingInput').val(app.data.rating)
+                $("#starRating .star").each(function() {
+                    $(this).toggleClass("hovered", $(this).attr("data-value") <= app.data.rating);
+                });
+            })
+        })
+
+        $(document).on('click', '#submitRating', function(e) {
+            let button = $(this)
+            swal({
+                title: `Simpan Rating?`,
+                text: 'Click "Ya" untuk melanjutkan',
+                showCancelButton: true,
+                confirmButtonColor: "#007bff",
+                confirmButtonText: `Ya, Simpan`,
+                closeOnConfirm: false
+            }, function() {
+                LaddaStart()
+                swal.close();
+                button.closest('form#formRating').submit();
+                LaddaAndDrawTable()
+            });
         })
 
     });

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 2px solid black;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .nav-item a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid black;
+        }
+
+        .date-info {
+            font-size: 14px;
+        }
+
+        .service-info {
+            font-size: 12px;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        /* Profile Form */
+        .profile-form {
+            max-width: 600px;
+            border: 2px solid black;
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            border: 2px solid black;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .form-input[readonly] {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .password-section {
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        .password-note {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .password-input {
+            width: 100%;
+            border: 2px solid black;
+            padding: 10px;
+            font-size: 14px;
+            background: white;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            border: 2px solid black;
+            background: black;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid black;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <h3>Hai, Nia Kurniawati Nings..</h3>
+                    <p>Keuangan</p>
+                </div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#">▢ Beranda</a></li>
+                <li class="nav-item"><a href="#">▢ Pengajuan</a></li>
+                <li class="nav-item"><a href="#">▢ SPJ</a></li>
+                <li class="nav-item"><a href="#">▢ Label SPJ</a></li>
+                <li class="nav-item"><a href="#">▢ Arsip</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="date-info">
+                    <strong>Tanggal:</strong> 10 Juli 2025 - 00:12:12
+                </div>
+                <div class="service-info">
+                    Layanan Tata Usaha - Fakultas Sains & Teknologi
+                </div>
+            </div>
+
+            <div class="page-title">Profile</div>
+
+            <!-- Profile Form -->
+            <div class="profile-form">
+                <div class="form-section">
+                    <div class="section-title">Informasi Pengguna</div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nama lengkap</label>
+                        <input type="text" class="form-input" value="Nia Kurniawati Ningsih">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">NIM/NIP/NIDN</label>
+                        <input type="text" class="form-input" value="112109100005" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" value="keuangan@gmail.com" readonly>
+                    </div>
+                </div>
+
+                <div class="form-section password-section">
+                    <div class="section-title">Ubah Password</div>
+                    <div class="password-note">(Kosongkan jika tidak ingin mengubah password)</div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password Lama</label>
+                        <input type="password" class="password-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="password-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ketik ulang kata sandi</label>
+                        <input type="password" class="password-input">
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button class="submit-btn">🔄 Update</button>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>© Layanan Tata Usaha - Fakultas Sains & Teknologi</div>
+                <div>2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

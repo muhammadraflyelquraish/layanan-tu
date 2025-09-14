@@ -16,7 +16,6 @@ class CreateDisposisisTable extends Migration
         Schema::create('t_disposisi', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('approver_id')->references('id')->on('t_role');
             $table->integer('urutan')->default(0);
             $table->timestamps();
         });
