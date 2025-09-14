@@ -36,4 +36,9 @@ class UserLayanan extends Model
         'remember_token',
         'email_verified_at',
     ];
+
+    public function pivot()
+    {
+        return $this->hasMany(UserPivotLayanan::class, 'id_user');
+    }
 }

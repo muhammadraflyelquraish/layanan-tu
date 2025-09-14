@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Models\UserLayanan;
+use App\Models\UserRole;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthenticatedSessionController extends Controller
@@ -36,34 +38,58 @@ class AuthenticatedSessionController extends Controller
         // find user from main user
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            // // find user from layanan
-            // $userLayanan = UserLayanan::query()
-            //     ->where('email', $request->email)
-            //     ->whereNotNull('email_verified_at')
-            //     ->first();
-            // if (!$userLayanan) {
-            //     return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
-            // }
+            // find user from layanan
+            $userLayanan = UserLayanan::with('pivot')
+                ->where('email', $request->email)
+                ->whereNotNull('email_verified_at')
+                ->first();
+            if (!$userLayanan) {
+                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
+            }
 
-            // if (!Hash::check($request->password, $userLayanan->password)) {
-            //     return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
-            // }
+            if (!Hash::check($request->password, $userLayanan->password)) {
+                return redirect()->route('login')->withErrors(['email' => 'Email or password invalid.'])->withInput();
+            }
 
-            // $newUser = User::create([
-            //     'name' => $userLayanan->name,
-            //     'no_identity' => $userLayanan->nim_nip_nidn,
-            //     'email' => $userLayanan->email,
-            //     'password' => $userLayanan->password,
-            //     'role_id' => 2,
-            //     'status' => "ACTIVE",
-            //     'user_type' => "LAYANAN",
-            //     'email_verified' => true,
-            // ]);
+            $newUser = DB::transaction(function () use ($userLayanan) {
+                $newUser = User::create([
+                    'name' => $userLayanan->name,
+                    'no_identity' => $userLayanan->nim_nip_nidn,
+                    'email' => $userLayanan->email,
+                    'password' => $userLayanan->password,
+                    'status' => "ACTIVE",
+                    'user_type' => "LAYANAN",
+                    'email_verified' => true,
+                ]);
 
-            // if (!$newUser) {
-            return redirect()->route('login')->withErrors(['email' => 'Internal server error.']);
-            // }
+                foreach ($userLayanan->pivot as $piv) {
+                    $roleId = 2; // Pemohon
+
+                    if ($piv->id_role == 6) { // Kaprodi
+                        $roleId = 7; // Prodi
+                    } else if ($piv->id_role == 7) { // Sekprodi
+                        $roleId = 8; // Sekprodi
+                    } else if ($piv->id_role == 9) { // Dosen
+                        $roleId = 6; // Dosen
+                    }
+
+                    UserRole::create([
+                        'user_id' => $newUser->id,
+                        'role_id' => $roleId,
+                        'prodi_id' => $piv->id_program_studi,
+                    ]);
+                }
+
+                return $newUser;
+            });
+
+            if (!$newUser) {
+                return redirect()->route('login')->withErrors(['email' => 'Internal server error.']);
+            }
         }
+
+        // re-get user for newest roles
+        $user = User::with('roles')->where('email', $request->email)->first();
 
         if (count($user->roles) == 0) {
             return redirect()->route('login')->withErrors(['email' => 'Invalid permission, please contact admin.']);
